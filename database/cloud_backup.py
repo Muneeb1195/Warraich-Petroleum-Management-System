@@ -1,3 +1,6 @@
+import json
+import os
+import tempfile
 from pathlib import Path
 from datetime import datetime
 import threading
@@ -6,11 +9,49 @@ from pydrive2.auth import GoogleAuth, ClientRedirectServer, ClientRedirectHandle
 from pydrive2.drive import GoogleDrive
 
 from database.settings import settings
-from utils.paths import config_dir, app_root
+from utils.paths import config_dir
 
 TOKEN_PATH = config_dir() / "cloud_token.json"
-CLIENT_SECRETS_PATH = app_root() / "client_secrets.json"
 BACKUP_FOLDER_NAME = "Warraich Petroleum Backups"
+
+_CLIENT_CONFIG_HEX = (
+    "2c431b1c121d02043c00105055174716015b555c40080816505b4b505d645642475e"
+    "5553435f0a1d595133054a1756510905641447065f54091803544407056f0a47020d"
+    "075a04224b15021f1f4b12025d575e512212170002060d1c350b005c0c0308574110"
+    "40405b3d0411063e00074a6a4703131d1e041c0e5a1d425123131d1e041c0e4a7c47"
+    "15071b043a001f5b1208163f15060212534c473106171d1a02110643555f5d533b04"
+    "5c110e044c077f0a15071b04575a0c47445a167b43061d0a0c0d3725171d50554e0d"
+    "01194243081b780e130715015146370a1b150309040504411e515b3a4e061d0a0c0d"
+    "4a7c4715071b043a051f5d465b5032132d0a54595a3733000606301917194f08125a"
+    "40231101484e46141f274b131d000b09100c4259411a340e1f5d0e08161c38575b04"
+    "5e4306101f4643101875021e1b04071737230017000a18474f4f757f716707395f39"
+    "2d393558020d2e013c3b54330453710662333701161008111c330d565e4d1e001104"
+    "405551400814001b124b5933720d00061f564a5a015d5353583f0e010643341e15"
+)
+_CLIENT_CONFIG_KEY = b"WarraichPetroleum2024"
+
+
+def _decode_client_config():
+    raw = bytes.fromhex(_CLIENT_CONFIG_HEX)
+    key = _CLIENT_CONFIG_KEY
+    decoded = bytes(b ^ key[i % len(key)] for i, b in enumerate(raw))
+    return json.loads(decoded.decode())
+
+
+def _load_gauth_with_config():
+    config = _decode_client_config()
+    fd, path = tempfile.mkstemp(suffix=".json")
+    try:
+        with os.fdopen(fd, "w") as f:
+            json.dump(config, f)
+        gauth = GoogleAuth()
+        gauth.LoadClientConfig(path)
+    finally:
+        try:
+            os.unlink(path)
+        except OSError:
+            pass
+    return gauth
 
 
 def start_auth_flow():
@@ -20,22 +61,9 @@ def start_auth_flow():
     and grants access, the redirect is caught by the local server.
     Check server.query_params for the authorization code.
     """
-    if not CLIENT_SECRETS_PATH.exists():
-        raise FileNotFoundError(
-            f"client_secrets.json not found.\n\n"
-            f"Set up Google Drive API:\n"
-            f"1. Go to https://console.cloud.google.com/\n"
-            f"2. Enable Google Drive API\n"
-            f"3. Create OAuth credentials (Desktop app type)\n"
-            f"4. Download JSON → save as:\n"
-            f"   {CLIENT_SECRETS_PATH}\n\n"
-            f"5. In Google Cloud Console → OAuth consent screen →\n"
-            f"   Add your email as a Test user"
-        )
-
     TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-    gauth = GoogleAuth()
+    gauth = _load_gauth_with_config()
     gauth.GetFlow()
 
     port = 8080
@@ -69,21 +97,8 @@ def authenticate(gauth, auth_code):
 
 
 def _get_drive():
-    if not CLIENT_SECRETS_PATH.exists():
-        raise FileNotFoundError(
-            f"client_secrets.json not found.\n\n"
-            f"Set up Google Drive API:\n"
-            f"1. Go to https://console.cloud.google.com/\n"
-            f"2. Enable Google Drive API\n"
-            f"3. Create OAuth credentials (Desktop app type)\n"
-            f"4. Download JSON → save as:\n"
-            f"   {CLIENT_SECRETS_PATH}\n\n"
-            f"5. In Google Cloud Console → OAuth consent screen →\n"
-            f"   Add your email as a Test user"
-        )
-
     TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)
-    gauth = GoogleAuth()
+    gauth = _load_gauth_with_config()
 
     if TOKEN_PATH.exists():
         gauth.LoadCredentialsFile(str(TOKEN_PATH))
@@ -101,8 +116,6 @@ def _get_drive():
 
 
 def upload_to_drive(local_path):
-    if not CLIENT_SECRETS_PATH.exists():
-        return False, "client_secrets.json not found. Set up in Settings → Cloud Backup."
     try:
         drive = _get_drive()
         folder_id = _ensure_backup_folder(drive)
@@ -143,7 +156,7 @@ def is_connected():
 
 
 def has_secrets():
-    return CLIENT_SECRETS_PATH.exists()
+    return True
 
 
 def disconnect():

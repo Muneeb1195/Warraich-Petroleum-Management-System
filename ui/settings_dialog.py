@@ -155,21 +155,6 @@ class SettingsDialog(QDialog):
                 disconnect()
                 self._update_cloud_ui()
         else:
-            if not has_secrets():
-                from database.cloud_backup import CLIENT_SECRETS_PATH
-                QMessageBox.critical(
-                    self, "Not Set Up",
-                    f"client_secrets.json not found.\n\n"
-                    f"Set up Google Drive API:\n"
-                    f"1. Go to https://console.cloud.google.com/\n"
-                    f"2. Enable Google Drive API\n"
-                    f"3. Create OAuth credentials (Desktop app)\n"
-                    f"4. Download JSON → save as:\n"
-                    f"   {CLIENT_SECRETS_PATH}\n\n"
-                    f"5. In Google Cloud Console → OAuth consent screen →\n"
-                    f"   Add your email as a Test user"
-                )
-                return
             try:
                 from database.cloud_backup import start_auth_flow, authenticate
                 gauth, url, server = start_auth_flow()
