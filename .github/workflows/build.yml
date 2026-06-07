@@ -59,7 +59,6 @@ jobs:
           pyinstaller --onefile --windowed \
             --add-data "settings.ini:." \
             --add-data "resources:resources" \
-            --add-data "client_secrets.json:." \
             --name "WarraichPetroleum" main.py
 
       - name: Upload artifact (Linux)
