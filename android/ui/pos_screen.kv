@@ -1,0 +1,332 @@
+<PosScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        # Top bar
+        BoxLayout:
+            size_hint_y: 0.07
+            canvas.before:
+                Color:
+                    rgba: 0.1, 0.1, 0.12, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Button:
+                text: "< Back"
+                size_hint_x: 0.15
+                background_normal: ""
+                background_color: 0.12, 0.12, 0.15, 1
+                color: 1, 1, 1, 1
+                on_press: root.go_back()
+            Label:
+                text: "Point of Sale"
+                font_size: "18sp"
+                bold: True
+                color: 1, 1, 1, 1
+            Label:
+                text: ""
+
+        # Main split: left items + right cart
+        BoxLayout:
+            orientation: "horizontal"
+            spacing: dp(8)
+            padding: [dp(8), dp(4)]
+
+            # Left panel: items selection
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_x: 0.6
+                canvas.before:
+                    Color:
+                        rgba: 0.09, 0.09, 0.12, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                padding: dp(4)
+                spacing: dp(4)
+
+                TabbedPanel:
+                    do_default_tab: False
+                    tab_width: self.width / 2
+                    background_color: 0.12, 0.12, 0.15, 1
+                    border: 0
+                    TabbedPanelItem:
+                        text: "Fuel Sales"
+                        ScrollView:
+                            do_scroll_x: False
+                            GridLayout:
+                                id: fuel_container
+                                cols: 1
+                                size_hint_y: None
+                                height: self.minimum_height
+                                spacing: dp(2)
+                    TabbedPanelItem:
+                        text: "Lube Sales"
+                        ScrollView:
+                            do_scroll_x: False
+                            GridLayout:
+                                id: lube_container
+                                cols: 1
+                                size_hint_y: None
+                                height: self.minimum_height
+                                spacing: dp(2)
+
+            # Right panel: cart & checkout
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_x: 0.4
+                canvas.before:
+                    Color:
+                        rgba: 0.09, 0.09, 0.12, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                padding: [dp(8), dp(4)]
+                spacing: dp(4)
+
+                Label:
+                    text: "Cart & Checkout"
+                    size_hint_y: None
+                    height: dp(28)
+                    font_size: "15sp"
+                    bold: True
+                    color: 1, 1, 1, 1
+
+                # Options: Customer, Payment, GST
+                BoxLayout:
+                    orientation: "vertical"
+                    size_hint_y: None
+                    height: dp(120)
+                    spacing: dp(4)
+                    padding: [dp(4), dp(4)]
+                    canvas.before:
+                        Color:
+                            rgba: 0.12, 0.12, 0.15, 1
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                    BoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: dp(32)
+                        Label:
+                            text: "Customer:"
+                            size_hint_x: 0.35
+                            color: 0.8, 0.8, 0.8, 1
+                            font_size: "12sp"
+                        Spinner:
+                            id: customer_spinner
+                            size_hint_x: 0.65
+                            text: "Walk-in Customer"
+                            values: ["Walk-in Customer"]
+                            background_color: 0.18, 0.18, 0.22, 1
+                            color: 1, 1, 1, 1
+
+                    BoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: dp(32)
+                        Label:
+                            text: "Payment:"
+                            size_hint_x: 0.35
+                            color: 0.8, 0.8, 0.8, 1
+                            font_size: "12sp"
+                        Spinner:
+                            id: payment_spinner
+                            size_hint_x: 0.65
+                            text: "Cash"
+                            values: ["Cash", "Card", "UPI", "Credit"]
+                            background_color: 0.18, 0.18, 0.22, 1
+                            color: 1, 1, 1, 1
+
+                    BoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: dp(32)
+                        Label:
+                            text: "GST %:"
+                            size_hint_x: 0.35
+                            color: 0.8, 0.8, 0.8, 1
+                            font_size: "12sp"
+                        TextInput:
+                            id: gst_input
+                            size_hint_x: 0.65
+                            multiline: False
+                            input_filter: "float"
+                            text: "18"
+                            foreground_color: 1, 1, 1, 1
+                            background_color: 0.15, 0.15, 0.18, 1
+                            on_text: root.on_gst_change()
+
+                # Cart items header
+                BoxLayout:
+                    orientation: "horizontal"
+                    size_hint_y: None
+                    height: dp(24)
+                    spacing: dp(4)
+                    padding: [dp(4), 0]
+                    Label:
+                        text: "Item"
+                        size_hint_x: 0.35
+                        bold: True
+                        color: 0.6, 0.6, 0.6, 1
+                        font_size: "11sp"
+                    Label:
+                        text: "Qty"
+                        size_hint_x: 0.15
+                        bold: True
+                        color: 0.6, 0.6, 0.6, 1
+                        font_size: "11sp"
+                    Label:
+                        text: "Rate"
+                        size_hint_x: 0.15
+                        bold: True
+                        color: 0.6, 0.6, 0.6, 1
+                        font_size: "11sp"
+                    Label:
+                        text: "Amount"
+                        size_hint_x: 0.2
+                        bold: True
+                        color: 0.6, 0.6, 0.6, 1
+                        font_size: "11sp"
+                    Label:
+                        text: ""
+                        size_hint_x: 0.1
+
+                # Cart items scrollable list
+                ScrollView:
+                    BoxLayout:
+                        id: cart_container
+                        orientation: "vertical"
+                        size_hint_y: None
+                        height: self.minimum_height
+                        spacing: dp(2)
+
+                # Totals
+                BoxLayout:
+                    orientation: "vertical"
+                    size_hint_y: None
+                    height: dp(150)
+                    spacing: dp(2)
+                    padding: [dp(4), dp(4)]
+                    canvas.before:
+                        Color:
+                            rgba: 0.12, 0.12, 0.15, 1
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                    BoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: dp(22)
+                        Label:
+                            text: "Taxable Amount:"
+                            color: 0.8, 0.8, 0.8, 1
+                            font_size: "12sp"
+                            halign: "left"
+                        Label:
+                            id: taxable_label
+                            text: "Rs 0"
+                            color: 1, 1, 1, 1
+                            font_size: "12sp"
+
+                    BoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: dp(22)
+                        Label:
+                            text: "CGST:"
+                            color: 0.8, 0.8, 0.8, 1
+                            font_size: "12sp"
+                            halign: "left"
+                        Label:
+                            id: cgst_label
+                            text: "Rs 0"
+                            color: 1, 1, 1, 1
+                            font_size: "12sp"
+
+                    BoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: dp(22)
+                        Label:
+                            text: "SGST:"
+                            color: 0.8, 0.8, 0.8, 1
+                            font_size: "12sp"
+                            halign: "left"
+                        Label:
+                            id: sgst_label
+                            text: "Rs 0"
+                            color: 1, 1, 1, 1
+                            font_size: "12sp"
+
+                    BoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: dp(22)
+                        Label:
+                            text: "Total:"
+                            color: 0.8, 0.8, 0.8, 1
+                            font_size: "12sp"
+                            halign: "left"
+                        Label:
+                            id: total_label
+                            text: "Rs 0"
+                            color: 1, 1, 1, 1
+                            font_size: "12sp"
+
+                    BoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: dp(22)
+                        Label:
+                            text: "Round Off:"
+                            color: 0.8, 0.8, 0.8, 1
+                            font_size: "12sp"
+                            halign: "left"
+                        Label:
+                            id: round_off_label
+                            text: "Rs 0"
+                            color: 1, 1, 1, 1
+                            font_size: "12sp"
+
+                    BoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: dp(26)
+                        Label:
+                            text: "Grand Total:"
+                            color: 0.6, 0.8, 1, 1
+                            font_size: "14sp"
+                            bold: True
+                            halign: "left"
+                        Label:
+                            id: grand_total_label
+                            text: "Rs 0"
+                            color: 0.4, 0.7, 1, 1
+                            font_size: "14sp"
+                            bold: True
+
+                # Buttons
+                BoxLayout:
+                    orientation: "horizontal"
+                    size_hint_y: None
+                    height: dp(40)
+                    spacing: dp(6)
+                    padding: [dp(4), dp(4)]
+
+                    Button:
+                        text: "Clear Cart"
+                        background_normal: ""
+                        background_color: 0.5, 0.15, 0.15, 1
+                        color: 1, 1, 1, 1
+                        on_press: root._clear_cart()
+
+                    Button:
+                        text: "Complete Sale"
+                        background_normal: ""
+                        background_color: 0.15, 0.5, 0.15, 1
+                        color: 1, 1, 1, 1
+                        on_press: root._checkout()

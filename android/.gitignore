@@ -1,0 +1,3 @@
+.buildozer/
+bin/
+libs/**/__pycache__/

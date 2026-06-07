@@ -1,0 +1,303 @@
+<InventoryScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        # Top bar
+        BoxLayout:
+            size_hint_y: 0.07
+            canvas.before:
+                Color:
+                    rgba: 0.1, 0.1, 0.12, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Button:
+                text: "< Back"
+                size_hint_x: 0.15
+                background_normal: ""
+                background_color: 0.12, 0.12, 0.15, 1
+                color: 1, 1, 1, 1
+                on_press: root.go_back()
+            Label:
+                text: "Inventory Management"
+                font_size: "18sp"
+                bold: True
+                color: 1, 1, 1, 1
+            Label:
+                text: ""
+
+        # Main content
+        BoxLayout:
+            orientation: "vertical"
+            padding: [dp(6), dp(4)]
+            spacing: dp(4)
+
+            TabbedPanel:
+                do_default_tab: False
+                tab_width: self.width / 3
+                background_color: 0.12, 0.12, 0.15, 1
+                border: 0
+
+                # ======= TANKS TAB =======
+                TabbedPanelItem:
+                    text: "Tanks"
+                    BoxLayout:
+                        orientation: "vertical"
+                        spacing: dp(4)
+                        padding: dp(4)
+
+                        # Header row: title + add button
+                        BoxLayout:
+                            orientation: "horizontal"
+                            size_hint_y: None
+                            height: dp(36)
+                            spacing: dp(8)
+                            Label:
+                                text: "Fuel Storage Tanks"
+                                font_size: "14sp"
+                                bold: True
+                                color: 1, 1, 1, 1
+                                halign: "left"
+                            Widget:
+                            Button:
+                                text: "+ Add Tank"
+                                size_hint_x: 0.3
+                                background_normal: ""
+                                background_color: 0.15, 0.5, 0.15, 1
+                                color: 1, 1, 1, 1
+                                on_press: root.show_tank_form()
+
+                        # Search bar
+                        TextInput:
+                            id: tank_search
+                            size_hint_y: None
+                            height: dp(32)
+                            hint_text: "Search tanks..."
+                            multiline: False
+                            foreground_color: 1, 1, 1, 1
+                            background_color: 0.15, 0.15, 0.18, 1
+                            on_text: root.filter_tanks(self.text)
+
+                        # Column headers
+                        BoxLayout:
+                            orientation: "horizontal"
+                            size_hint_y: None
+                            height: dp(24)
+                            spacing: dp(4)
+                            padding: [dp(4), 0]
+                            Label:
+                                text: "Name"
+                                size_hint_x: 0.2
+                                bold: True
+                                color: 0.6, 0.6, 0.6, 1
+                                font_size: "11sp"
+                            Label:
+                                text: "Fuel"
+                                size_hint_x: 0.15
+                                bold: True
+                                color: 0.6, 0.6, 0.6, 1
+                                font_size: "11sp"
+                            Label:
+                                text: "Capacity"
+                                size_hint_x: 0.15
+                                bold: True
+                                color: 0.6, 0.6, 0.6, 1
+                                font_size: "11sp"
+                            Label:
+                                text: "Level"
+                                size_hint_x: 0.15
+                                bold: True
+                                color: 0.6, 0.6, 0.6, 1
+                                font_size: "11sp"
+                            Label:
+                                text: ""
+                                size_hint_x: 0.25
+
+                        # Scrollable tank rows
+                        ScrollView:
+                            GridLayout:
+                                id: tank_container
+                                cols: 1
+                                size_hint_y: None
+                                height: self.minimum_height
+                                spacing: dp(2)
+
+                # ======= PUMPS TAB =======
+                TabbedPanelItem:
+                    text: "Pumps"
+                    BoxLayout:
+                        orientation: "vertical"
+                        spacing: dp(4)
+                        padding: dp(4)
+
+                        # Header
+                        BoxLayout:
+                            orientation: "horizontal"
+                            size_hint_y: None
+                            height: dp(36)
+                            spacing: dp(8)
+                            Label:
+                                text: "Dispensing Pumps"
+                                font_size: "14sp"
+                                bold: True
+                                color: 1, 1, 1, 1
+                                halign: "left"
+                            Widget:
+                            Button:
+                                text: "+ Add Pump"
+                                size_hint_x: 0.3
+                                background_normal: ""
+                                background_color: 0.15, 0.5, 0.15, 1
+                                color: 1, 1, 1, 1
+                                on_press: root.show_pump_form()
+
+                        # Search
+                        TextInput:
+                            id: pump_search
+                            size_hint_y: None
+                            height: dp(32)
+                            hint_text: "Search pumps..."
+                            multiline: False
+                            foreground_color: 1, 1, 1, 1
+                            background_color: 0.15, 0.15, 0.18, 1
+                            on_text: root.filter_pumps(self.text)
+
+                        # Column headers
+                        BoxLayout:
+                            orientation: "horizontal"
+                            size_hint_y: None
+                            height: dp(24)
+                            spacing: dp(4)
+                            padding: [dp(4), 0]
+                            Label:
+                                text: "Pump No"
+                                size_hint_x: 0.15
+                                bold: True
+                                color: 0.6, 0.6, 0.6, 1
+                                font_size: "11sp"
+                            Label:
+                                text: "Tank"
+                                size_hint_x: 0.15
+                                bold: True
+                                color: 0.6, 0.6, 0.6, 1
+                                font_size: "11sp"
+                            Label:
+                                text: "Fuel"
+                                size_hint_x: 0.15
+                                bold: True
+                                color: 0.6, 0.6, 0.6, 1
+                                font_size: "11sp"
+                            Label:
+                                text: "Description"
+                                size_hint_x: 0.25
+                                bold: True
+                                color: 0.6, 0.6, 0.6, 1
+                                font_size: "11sp"
+                            Label:
+                                text: ""
+                                size_hint_x: 0.2
+
+                        # Scrollable pump rows
+                        ScrollView:
+                            GridLayout:
+                                id: pump_container
+                                cols: 1
+                                size_hint_y: None
+                                height: self.minimum_height
+                                spacing: dp(2)
+
+                # ======= LUBRICANTS TAB =======
+                TabbedPanelItem:
+                    text: "Lubricants"
+                    BoxLayout:
+                        orientation: "vertical"
+                        spacing: dp(4)
+                        padding: dp(4)
+
+                        # Header
+                        BoxLayout:
+                            orientation: "horizontal"
+                            size_hint_y: None
+                            height: dp(36)
+                            spacing: dp(8)
+                            Label:
+                                text: "Lubricant Products"
+                                font_size: "14sp"
+                                bold: True
+                                color: 1, 1, 1, 1
+                                halign: "left"
+                            Widget:
+                            Button:
+                                text: "+ Add Product"
+                                size_hint_x: 0.3
+                                background_normal: ""
+                                background_color: 0.15, 0.5, 0.15, 1
+                                color: 1, 1, 1, 1
+                                on_press: root.show_lube_form()
+
+                        # Search
+                        TextInput:
+                            id: lube_search
+                            size_hint_y: None
+                            height: dp(32)
+                            hint_text: "Search products..."
+                            multiline: False
+                            foreground_color: 1, 1, 1, 1
+                            background_color: 0.15, 0.15, 0.18, 1
+                            on_text: root.filter_lubes(self.text)
+
+                        # Column headers
+                        BoxLayout:
+                            orientation: "horizontal"
+                            size_hint_y: None
+                            height: dp(24)
+                            spacing: dp(4)
+                            padding: [dp(4), 0]
+                            Label:
+                                text: "Brand"
+                                size_hint_x: 0.12
+                                bold: True
+                                color: 0.6, 0.6, 0.6, 1
+                                font_size: "11sp"
+                            Label:
+                                text: "Product"
+                                size_hint_x: 0.18
+                                bold: True
+                                color: 0.6, 0.6, 0.6, 1
+                                font_size: "11sp"
+                            Label:
+                                text: "Unit"
+                                size_hint_x: 0.08
+                                bold: True
+                                color: 0.6, 0.6, 0.6, 1
+                                font_size: "11sp"
+                            Label:
+                                text: "Stock"
+                                size_hint_x: 0.08
+                                bold: True
+                                color: 0.6, 0.6, 0.6, 1
+                                font_size: "11sp"
+                            Label:
+                                text: "Price"
+                                size_hint_x: 0.1
+                                bold: True
+                                color: 0.6, 0.6, 0.6, 1
+                                font_size: "11sp"
+                            Label:
+                                text: "GST"
+                                size_hint_x: 0.06
+                                bold: True
+                                color: 0.6, 0.6, 0.6, 1
+                                font_size: "11sp"
+                            Label:
+                                text: ""
+                                size_hint_x: 0.2
+
+                        # Scrollable lube rows
+                        ScrollView:
+                            GridLayout:
+                                id: lube_container
+                                cols: 1
+                                size_hint_y: None
+                                height: self.minimum_height
+                                spacing: dp(2)

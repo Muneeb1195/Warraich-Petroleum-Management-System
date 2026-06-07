@@ -1,0 +1,130 @@
+<MainScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        # Header bar
+        BoxLayout:
+            size_hint_y: 0.1
+            canvas.before:
+                Color:
+                    rgba: 0.1, 0.1, 0.12, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Label:
+                text: "⛽ Warraich Petroleum"
+                font_size: "20sp"
+                bold: True
+                color: 1, 1, 1, 1
+            Label:
+                text: "Management System"
+                font_size: "12sp"
+                color: 0.6, 0.6, 0.6, 1
+
+        # Body with sidebar + content placeholder
+        BoxLayout:
+            orientation: "horizontal"
+
+            # Sidebar
+            BoxLayout:
+                orientation: "vertical"
+                size_hint_x: 0.3
+                canvas.before:
+                    Color:
+                        rgba: 0.07, 0.07, 0.1, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                spacing: 2
+
+                Button:
+                    text: "📊 Dashboard"
+                    size_hint_y: None
+                    height: "48dp"
+                    background_normal: ""
+                    background_color: 0.12, 0.12, 0.15, 1
+                    color: 1, 1, 1, 1
+                    on_press: root.manager.current = "dashboard"
+                Button:
+                    text: "⛽ Inventory"
+                    size_hint_y: None
+                    height: "48dp"
+                    background_normal: ""
+                    background_color: 0.12, 0.12, 0.15, 1
+                    color: 1, 1, 1, 1
+                    on_press: root.manager.current = "inventory"
+                Button:
+                    text: "🧾 POS / Sales"
+                    size_hint_y: None
+                    height: "48dp"
+                    background_normal: ""
+                    background_color: 0.12, 0.12, 0.15, 1
+                    color: 1, 1, 1, 1
+                    on_press: root.manager.current = "pos"
+                Button:
+                    text: "👥 Customers"
+                    size_hint_y: None
+                    height: "48dp"
+                    background_normal: ""
+                    background_color: 0.12, 0.12, 0.15, 1
+                    color: 1, 1, 1, 1
+                    on_press: root.manager.current = "customers"
+                Button:
+                    text: "💰 Expenses"
+                    size_hint_y: None
+                    height: "48dp"
+                    background_normal: ""
+                    background_color: 0.12, 0.12, 0.15, 1
+                    color: 1, 1, 1, 1
+                    on_press: root.manager.current = "expenses"
+                Button:
+                    text: "📈 Reports"
+                    size_hint_y: None
+                    height: "48dp"
+                    background_normal: ""
+                    background_color: 0.12, 0.12, 0.15, 1
+                    color: 1, 1, 1, 1
+                    on_press: root.manager.current = "reports"
+                Button:
+                    text: "👥 Staff"
+                    size_hint_y: None
+                    height: "48dp"
+                    background_normal: ""
+                    background_color: 0.12, 0.12, 0.15, 1
+                    color: 1, 1, 1, 1
+                    on_press: root.manager.current = "staff"
+                Button:
+                    text: "⚙️ Settings"
+                    size_hint_y: None
+                    height: "48dp"
+                    background_normal: ""
+                    background_color: 0.12, 0.12, 0.15, 1
+                    color: 1, 1, 1, 1
+
+                Widget:  # Spacer
+
+                Label:
+                    text: "v1.0"
+                    size_hint_y: None
+                    height: "32dp"
+                    color: 0.4, 0.4, 0.4, 1
+
+            # Content area placeholder
+            BoxLayout:
+                orientation: "vertical"
+                padding: "16dp"
+                canvas.before:
+                    Color:
+                        rgba: 0.13, 0.14, 0.16, 1
+                    Rectangle:
+                        pos: self.pos
+                        size: self.size
+                Label:
+                    text: "Welcome to Warraich Petroleum"
+                    font_size: "24sp"
+                    bold: True
+                    color: 1, 1, 1, 1
+                Label:
+                    text: "Select a section from the sidebar to get started."
+                    font_size: "14sp"
+                    color: 0.6, 0.6, 0.6, 1

@@ -1,0 +1,108 @@
+<ExpenseScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        # Top bar
+        BoxLayout:
+            size_hint_y: 0.07
+            canvas.before:
+                Color:
+                    rgba: 0.1, 0.1, 0.12, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Button:
+                text: "< Back"
+                size_hint_x: 0.15
+                background_normal: ""
+                background_color: 0.12, 0.12, 0.15, 1
+                color: 1, 1, 1, 1
+                on_press: root.go_back()
+            Label:
+                text: "Expenses"
+                font_size: "18sp"
+                bold: True
+                color: 1, 1, 1, 1
+            Label:
+                text: ""
+
+        BoxLayout:
+            orientation: "vertical"
+            padding: [dp(8), dp(4)]
+            spacing: dp(4)
+
+            # Header row
+            BoxLayout:
+                orientation: "horizontal"
+                size_hint_y: None
+                height: dp(36)
+                spacing: dp(8)
+                Label:
+                    text: "Business Expenses"
+                    font_size: "14sp"
+                    bold: True
+                    color: 1, 1, 1, 1
+                    halign: "left"
+                Widget:
+                Button:
+                    text: "+ Add Expense"
+                    size_hint_x: 0.35
+                    background_normal: ""
+                    background_color: 0.15, 0.5, 0.15, 1
+                    color: 1, 1, 1, 1
+                    on_press: root.show_form()
+
+            # Search bar
+            TextInput:
+                id: expense_search
+                size_hint_y: None
+                height: dp(32)
+                hint_text: "Search expenses..."
+                multiline: False
+                foreground_color: 1, 1, 1, 1
+                background_color: 0.15, 0.15, 0.18, 1
+                on_text: root.filter(self.text)
+
+            # Column headers
+            BoxLayout:
+                orientation: "horizontal"
+                size_hint_y: None
+                height: dp(24)
+                spacing: dp(4)
+                padding: [dp(4), 0]
+                Label:
+                    text: "Date"
+                    size_hint_x: 0.15
+                    bold: True
+                    color: 0.6, 0.6, 0.6, 1
+                    font_size: "11sp"
+                Label:
+                    text: "Category"
+                    size_hint_x: 0.2
+                    bold: True
+                    color: 0.6, 0.6, 0.6, 1
+                    font_size: "11sp"
+                Label:
+                    text: "Amount"
+                    size_hint_x: 0.12
+                    bold: True
+                    color: 0.6, 0.6, 0.6, 1
+                    font_size: "11sp"
+                Label:
+                    text: "Description"
+                    size_hint_x: 0.3
+                    bold: True
+                    color: 0.6, 0.6, 0.6, 1
+                    font_size: "11sp"
+                Label:
+                    text: ""
+                    size_hint_x: 0.18
+
+            # Scrollable expense rows
+            ScrollView:
+                GridLayout:
+                    id: expense_container
+                    cols: 1
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: dp(2)

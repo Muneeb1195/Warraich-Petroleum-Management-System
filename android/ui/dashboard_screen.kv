@@ -1,0 +1,168 @@
+# Custom StatCard widget
+<StatCard>:
+    canvas.before:
+        Color:
+            rgba: 0.09, 0.09, 0.12, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        Color:
+            rgba: root.accent_rgba
+        Rectangle:
+            pos: self.pos
+            size: [dp(4), self.height]
+    Label:
+        text: root.icon
+        size_hint_x: 0.2
+        font_size: "24sp"
+        color: 1, 1, 1, 1
+    BoxLayout:
+        orientation: "vertical"
+        spacing: dp(2)
+        Label:
+            text: root.card_title
+            font_size: "10sp"
+            bold: True
+            color: 0.55, 0.55, 0.58, 1
+            halign: "left"
+            text_size: self.width, None
+        Label:
+            text: root.card_value
+            font_size: "20sp"
+            bold: True
+            color: root.value_color
+            halign: "left"
+            text_size: self.width, None
+
+
+<DashboardScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        # Top bar
+        BoxLayout:
+            size_hint_y: 0.07
+            canvas.before:
+                Color:
+                    rgba: 0.1, 0.1, 0.12, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Widget:
+            Label:
+                text: "Dashboard"
+                font_size: "20sp"
+                bold: True
+                color: 1, 1, 1, 1
+            Button:
+                text: "Refresh"
+                size_hint_x: 0.2
+                background_normal: ""
+                background_color: 0.12, 0.12, 0.15, 1
+                color: 0.6, 0.6, 0.6, 1
+                on_press: root.refresh()
+
+        # Scrollable dashboard content
+        ScrollView:
+            do_scroll_x: False
+            GridLayout:
+                cols: 1
+                size_hint_y: None
+                height: self.minimum_height
+                spacing: dp(8)
+                padding: [dp(8), dp(8)]
+
+                # Subtitle
+                Label:
+                    text: "Real-time overview of sales, stock, and staff"
+                    size_hint_y: None
+                    height: dp(20)
+                    color: 0.55, 0.55, 0.58, 1
+                    font_size: "12sp"
+                    halign: "left"
+                    text_size: self.width, None
+
+                # Stat cards grid (2 columns x 4 rows)
+                GridLayout:
+                    cols: 2
+                    size_hint_y: None
+                    height: dp(640)
+                    spacing: dp(8)
+                    padding: [0, 0]
+
+                    StatCard:
+                        icon: "💰"
+                        card_title: "TODAY'S SALES"
+                        card_value: "Rs 0"
+                        accent: "#58a6ff"
+                        id: today_sales_card
+                    StatCard:
+                        icon: "📈"
+                        card_title: "THIS MONTH"
+                        card_value: "Rs 0"
+                        accent: "#3fb950"
+                        id: month_sales_card
+                    StatCard:
+                        icon: "📊"
+                        card_title: "TODAY'S PROFIT"
+                        card_value: "Rs 0"
+                        accent: "#d29922"
+                        id: profit_card
+                    StatCard:
+                        icon: "💸"
+                        card_title: "TODAY'S EXPENSES"
+                        card_value: "Rs 0"
+                        accent: "#f85149"
+                        id: expenses_card
+                    StatCard:
+                        icon: "⛽"
+                        card_title: "FUEL TANKS"
+                        card_value: "0"
+                        accent: "#58a6ff"
+                        id: tank_card
+                    StatCard:
+                        icon: "🛢️"
+                        card_title: "LUBE PRODUCTS"
+                        card_value: "0"
+                        accent: "#3fb950"
+                        id: lube_card
+                    StatCard:
+                        icon: "👥"
+                        card_title: "ACTIVE STAFF"
+                        card_value: "0"
+                        accent: "#d29922"
+                        id: staff_card
+                    StatCard:
+                        icon: "💵"
+                        card_title: "PENDING PAYROLL"
+                        card_value: "Rs 0"
+                        accent: "#f85149"
+                        id: payroll_card
+
+                # Action buttons
+                BoxLayout:
+                    orientation: "horizontal"
+                    size_hint_y: None
+                    height: dp(48)
+                    spacing: dp(12)
+                    padding: [0, dp(4)]
+
+                    Button:
+                        text: "🧾 Quick Sale"
+                        background_normal: ""
+                        background_color: 0.13, 0.53, 0.21, 1
+                        color: 1, 1, 1, 1
+                        font_size: "14sp"
+                        on_press: root.quick_sale()
+                    Button:
+                        text: "📋 Close Day"
+                        background_normal: ""
+                        background_color: 0.8, 0.58, 0.1, 1
+                        color: 0.05, 0.07, 0.09, 1
+                        font_size: "14sp"
+                        on_press: root.close_day()
+
+                # Spacer at bottom
+                Widget:
+                    size_hint_y: None
+                    height: dp(20)
