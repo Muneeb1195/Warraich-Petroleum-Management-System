@@ -8,6 +8,7 @@ backup/*
 !reports/.gitkeep
 !backup/.gitkeep
 *.spec
+!android/buildozer.spec
 dist/
 build/
 client_secrets.json
