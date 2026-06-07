@@ -1,10 +1,8 @@
 from pathlib import Path
 from datetime import datetime
-import http.server
 import threading
-import urllib.parse
 
-from pydrive2.auth import GoogleAuth
+from pydrive2.auth import GoogleAuth, ClientRedirectServer, ClientRedirectHandler
 from pydrive2.drive import GoogleDrive
 
 from database.settings import settings
@@ -15,45 +13,12 @@ CLIENT_SECRETS_PATH = app_root() / "client_secrets.json"
 BACKUP_FOLDER_NAME = "Warraich Petroleum Backups"
 
 
-class _OAuthHandler(http.server.BaseHTTPRequestHandler):
-    server_version = "OAuthCallback/1.0"
-
-    def do_GET(self):
-        parsed = urllib.parse.urlparse(self.path)
-        params = urllib.parse.parse_qs(parsed.query)
-        code = params.get("code", [None])[0]
-        if code:
-            self.server.auth_code = code
-
-        self.send_response(200)
-        self.send_header("Content-Type", "text/html; charset=utf-8")
-        self.send_header("Connection", "close")
-        self.end_headers()
-        if code:
-            self.wfile.write(
-                b"<html><body style='font-family:sans-serif;text-align:center;padding:40px;'>"
-                b"<h2>Authorization complete!</h2>"
-                b"<p>You can close this window and return to the app.</p>"
-                b"</body></html>"
-            )
-        else:
-            self.wfile.write(
-                b"<html><body style='font-family:sans-serif;text-align:center;padding:40px;'>"
-                b"<h2>No authorization code found</h2>"
-                b"<p>Close this window and try again.</p>"
-                b"</body></html>"
-            )
-
-    def log_message(self, format, *args):
-        pass
-
-
 def start_auth_flow():
     """Start Google OAuth with a local callback server.
 
     Returns (gauth, auth_url, server). When the user visits auth_url
     and grants access, the redirect is caught by the local server.
-    Check server.auth_code for the result, then call shutdown().
+    Check server.query_params for the authorization code.
     """
     if not CLIENT_SECRETS_PATH.exists():
         raise FileNotFoundError(
@@ -70,18 +35,30 @@ def start_auth_flow():
 
     TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-    server = http.server.HTTPServer(("127.0.0.1", 0), _OAuthHandler)
-    server.auth_code = None
-    port = server.server_address[1]
-    thread = threading.Thread(target=server.serve_forever, daemon=True)
-    thread.start()
-
-    redirect_uri = f"http://127.0.0.1:{port}/"
     gauth = GoogleAuth()
-    gauth.redirect_uri = redirect_uri
+    gauth.GetFlow()
+
+    port = 8080
+    while port <= 8090:
+        try:
+            httpd = ClientRedirectServer(("127.0.0.1", port), ClientRedirectHandler)
+            break
+        except OSError:
+            port += 1
+    else:
+        raise RuntimeError("Could not find a free port for the callback server")
+
+    httpd.query_params = None
+    oauth_callback = f"http://127.0.0.1:{port}/"
+    gauth.flow.redirect_uri = oauth_callback
     url = gauth.GetAuthUrl()
 
-    return gauth, url, server
+    def _handle():
+        httpd.handle_request()
+
+    threading.Thread(target=_handle, daemon=True).start()
+
+    return gauth, url, httpd
 
 
 def authenticate(gauth, auth_code):

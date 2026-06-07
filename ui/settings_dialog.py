@@ -280,12 +280,12 @@ class AuthDialog(QDialog):
         self._timer.start(300)
 
     def _check_server(self):
-        if self._server.auth_code:
-            self._code = self._server.auth_code
+        if self._server.query_params and "code" in self._server.query_params:
+            self._code = self._server.query_params["code"]
             self._timer.stop()
             self._status.setText("Authorization received! Completing setup...")
             self._status.setStyleSheet("color: #3fb950; font-size: 12px; padding: 4px 0;")
-            self._server.shutdown()
+            self._server.server_close()
             QApplication.processEvents()
             self.accept()
 
@@ -294,7 +294,7 @@ class AuthDialog(QDialog):
         if code:
             self._code = code
             self._timer.stop()
-            self._server.shutdown()
+            self._server.server_close()
             self.accept()
         else:
             self._status.setText("Please paste the authorization code or wait for the browser redirect.")
@@ -305,3 +305,8 @@ class AuthDialog(QDialog):
 
     def _copy_to_clipboard(self, text):
         QApplication.clipboard().setText(text)
+
+    def reject(self):
+        self._timer.stop()
+        self._server.server_close()
+        super().reject()
