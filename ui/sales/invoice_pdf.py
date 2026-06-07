@@ -10,9 +10,9 @@ from reportlab.platypus import (SimpleDocTemplate, Table, TableStyle,
 from reportlab.pdfgen import canvas
 
 from database.settings import settings
+from utils.paths import docs_dir
 
-
-OUTPUT_DIR = Path(__file__).resolve().parent.parent.parent / "reports"
+OUTPUT_DIR = docs_dir()
 
 
 def generate_invoice(sale_data, items):

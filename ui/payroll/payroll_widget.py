@@ -153,15 +153,15 @@ class PayrollWidget(QWidget):
             return
         self._generate_payslip_pdf(emp, record)
         QMessageBox.information(self, "Success",
-                                f"Payslip saved to reports/payslip_{emp['name']}_{month}_{year}.pdf")
+                                f"Payslip saved to\n{filepath}")
 
     def _generate_payslip_pdf(self, emp, record):
         from reportlab.lib.pagesizes import A4
         from reportlab.pdfgen import canvas
-        from pathlib import Path
+        from utils.paths import docs_dir
 
-        filename = f"reports/payslip_{emp['name']}_{record['month']}_{record['year']}.pdf"
-        filepath = Path(__file__).resolve().parent.parent.parent / filename
+        filename = f"payslip_{emp['name']}_{record['month']}_{record['year']}.pdf"
+        filepath = docs_dir() / filename
         filepath.parent.mkdir(parents=True, exist_ok=True)
 
         c = canvas.Canvas(str(filepath), pagesize=A4)

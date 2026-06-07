@@ -414,10 +414,10 @@ class DashboardWidget(QWidget):
     def _print_day_close(self, today, expenses, profit, payment_split):
         from reportlab.lib.pagesizes import A4
         from reportlab.pdfgen import canvas
-        from pathlib import Path
+        from utils.paths import docs_dir
 
-        filename = f"reports/dayclose_{datetime.now().strftime('%Y%m%d')}.pdf"
-        filepath = Path(__file__).resolve().parent.parent.parent / filename
+        filename = f"dayclose_{datetime.now().strftime('%Y%m%d')}.pdf"
+        filepath = docs_dir() / filename
         filepath.parent.mkdir(parents=True, exist_ok=True)
 
         c = canvas.Canvas(str(filepath), pagesize=A4)

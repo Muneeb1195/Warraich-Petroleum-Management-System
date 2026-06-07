@@ -8,6 +8,7 @@ from database.connection import init_db
 from database.settings import settings
 from database.backup import start_auto_backup
 from ui.main_window import MainWindow
+from utils.paths import resource_path
 
 
 def main():
@@ -15,7 +16,7 @@ def main():
     app.setApplicationName("Petrol Pump Management")
     app.setOrganizationName("Warraich Petroleum")
 
-    style_path = Path(__file__).resolve().parent / "resources" / "style.qss"
+    style_path = resource_path("resources/style.qss")
     if style_path.exists():
         with open(style_path) as f:
             app.setStyleSheet(f.read())

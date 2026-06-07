@@ -4,9 +4,10 @@ from pydrive2.auth import GoogleAuth
 from pydrive2.drive import GoogleDrive
 
 from database.settings import settings
+from utils.paths import config_dir, app_root
 
-TOKEN_PATH = Path(__file__).resolve().parent.parent / "cloud_token.json"
-CLIENT_SECRETS_PATH = Path(__file__).resolve().parent.parent / "client_secrets.json"
+TOKEN_PATH = config_dir() / "cloud_token.json"
+CLIENT_SECRETS_PATH = app_root() / "client_secrets.json"
 BACKUP_FOLDER_NAME = "Warraich Petroleum Backups"
 
 
@@ -21,6 +22,7 @@ def _get_drive():
             f"5. Save it as:\n   {CLIENT_SECRETS_PATH}"
         )
 
+    TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)
     gauth = GoogleAuth()
 
     if TOKEN_PATH.exists():

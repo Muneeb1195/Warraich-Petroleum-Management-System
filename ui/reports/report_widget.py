@@ -292,11 +292,11 @@ class ReportWidget(QWidget):
 
     def _export_excel(self):
         from openpyxl import Workbook
-        from pathlib import Path
+        from utils.paths import docs_dir
 
         report_type = self.report_combo.currentText()
-        filename = f"reports/{report_type}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
-        filepath = Path(__file__).resolve().parent.parent.parent / filename
+        filename = f"{report_type}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx"
+        filepath = docs_dir() / filename
         filepath.parent.mkdir(parents=True, exist_ok=True)
 
         wb = Workbook()

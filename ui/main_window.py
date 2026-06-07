@@ -21,7 +21,6 @@ from ui.reports.shift_reconciliation import ShiftReconciliationWidget
 from ui.settings_dialog import SettingsDialog
 from database.settings import settings
 from database.backup import manual_backup
-from database.cloud_backup import is_connected
 from database.connection import get_connection
 
 
@@ -175,6 +174,7 @@ class MainWindow(QMainWindow):
 
         # === STATUS BAR ===
         status = self.statusBar()
+        from database.cloud_backup import is_connected
         cloud_icon = "☁️" if is_connected() else ""
         cloud_text = f"Cloud: {settings.last_cloud_backup()}" if is_connected() else "☁️ Not connected"
         status_label = QLabel(

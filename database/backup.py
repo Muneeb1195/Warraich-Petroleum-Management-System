@@ -6,8 +6,9 @@ import time
 
 from database.connection import DB_PATH
 from database.settings import settings
+from utils.paths import data_dir
 
-BACKUP_DIR = Path(__file__).resolve().parent.parent / "backup"
+BACKUP_DIR = data_dir() / "backup"
 
 
 def _try_cloud_upload(backup_path):
@@ -37,7 +38,7 @@ def _auto_backup_worker():
     while True:
         try:
             interval_days = max(settings.backup_interval_days(), 1)
-            backup_dir = Path(__file__).resolve().parent.parent / settings.get("Backup", "backup_dir", "backup/")
+            backup_dir = data_dir() / settings.get("Backup", "backup_dir", "backup/")
             backup_dir.mkdir(parents=True, exist_ok=True)
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             backup_file = backup_dir / f"autobackup_{timestamp}.db"

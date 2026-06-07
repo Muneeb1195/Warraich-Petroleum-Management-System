@@ -1,7 +1,8 @@
 import configparser
 from pathlib import Path
+from utils.paths import config_dir
 
-SETTINGS_PATH = Path(__file__).resolve().parent.parent / "settings.ini"
+SETTINGS_PATH = config_dir() / "settings.ini"
 
 
 class Settings:
@@ -29,6 +30,7 @@ class Settings:
         self._config.set(section, key, str(value))
 
     def save(self):
+        SETTINGS_PATH.parent.mkdir(parents=True, exist_ok=True)
         with open(SETTINGS_PATH, "w") as f:
             self._config.write(f)
 

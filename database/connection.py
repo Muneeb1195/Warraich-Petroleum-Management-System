@@ -1,8 +1,8 @@
 import sqlite3
-import os
 from pathlib import Path
+from utils.paths import data_dir
 
-DB_DIR = Path(__file__).resolve().parent.parent / "data"
+DB_DIR = data_dir()
 DB_PATH = DB_DIR / "petrol_pump.db"
 
 
