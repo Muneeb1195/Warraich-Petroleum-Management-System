@@ -11,6 +11,31 @@ CLIENT_SECRETS_PATH = app_root() / "client_secrets.json"
 BACKUP_FOLDER_NAME = "Warraich Petroleum Backups"
 
 
+def get_auth_url():
+    """Get Google OAuth URL. Returns (gauth, url)."""
+    if not CLIENT_SECRETS_PATH.exists():
+        raise FileNotFoundError(
+            f"client_secrets.json not found.\n\n"
+            f"1. Go to https://console.cloud.google.com/\n"
+            f"2. Enable Google Drive API for your project\n"
+            f"3. Create OAuth credentials (Desktop app type)\n"
+            f"4. Download the JSON\n"
+            f"5. Save it as:\n   {CLIENT_SECRETS_PATH}"
+        )
+
+    TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)
+    gauth = GoogleAuth()
+    url = gauth.GetAuthUrl()
+    return gauth, url
+
+
+def authenticate(gauth, auth_code):
+    """Complete authentication with authorization code from user."""
+    gauth.Auth(auth_code)
+    gauth.SaveCredentialsFile(str(TOKEN_PATH))
+    return GoogleDrive(gauth)
+
+
 def _get_drive():
     if not CLIENT_SECRETS_PATH.exists():
         raise FileNotFoundError(
@@ -29,8 +54,8 @@ def _get_drive():
         gauth.LoadCredentialsFile(str(TOKEN_PATH))
 
     if gauth.credentials is None:
-        gauth.LocalWebserverAuth()
-        gauth.SaveCredentialsFile(str(TOKEN_PATH))
+        raise RuntimeError(
+            "Not authenticated. Go to Settings → Cloud Backup and connect your Google account.")
     elif gauth.access_token_expired:
         gauth.Refresh()
         gauth.SaveCredentialsFile(str(TOKEN_PATH))

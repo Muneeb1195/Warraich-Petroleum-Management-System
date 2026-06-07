@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                QLineEdit, QPushButton, QFormLayout, QGroupBox,
                                QDoubleSpinBox, QMessageBox, QTabWidget, QWidget,
-                               QComboBox, QCheckBox)
+                               QComboBox, QCheckBox, QTextEdit, QApplication)
 from PySide6.QtCore import Qt
 from database.settings import settings
 from database.cloud_backup import is_connected, disconnect, has_secrets
@@ -169,13 +169,16 @@ class SettingsDialog(QDialog):
                 )
                 return
             try:
-                from database.cloud_backup import _get_drive
-                QMessageBox.information(
-                    self, "Connecting",
-                    "A browser window will open. Sign in to your Google account and grant access.")
-                _get_drive()
-                self._update_cloud_ui()
-                QMessageBox.information(self, "Connected", "Google Drive connected successfully!")
+                from database.cloud_backup import get_auth_url, authenticate
+                gauth, url = get_auth_url()
+                dlg = AuthDialog(url, self)
+                if dlg.exec() == QDialog.Accepted:
+                    code = dlg.auth_code()
+                    if not code:
+                        return
+                    authenticate(gauth, code.strip())
+                    self._update_cloud_ui()
+                    QMessageBox.information(self, "Connected", "Google Drive connected successfully!")
             except Exception as e:
                 QMessageBox.critical(self, "Connection Failed",
                                      f"Could not connect to Google Drive.\n\n{str(e)}")
@@ -202,3 +205,60 @@ class SettingsDialog(QDialog):
 
     def refresh(self):
         pass
+
+
+class AuthDialog(QDialog):
+    def __init__(self, url, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Google Drive Authorization")
+        self.setMinimumSize(600, 350)
+        self.setModal(True)
+
+        layout = QVBoxLayout(self)
+
+        title = QLabel("Authorize Google Drive Access")
+        title.setStyleSheet("font-size: 16px; font-weight: bold;")
+        layout.addWidget(title)
+
+        layout.addWidget(QLabel("Step 1: Open this URL in your browser:"))
+
+        url_field = QTextEdit()
+        url_field.setPlainText(url)
+        url_field.setReadOnly(True)
+        url_field.setMaximumHeight(60)
+        url_field.setStyleSheet("font-size: 11px;")
+        layout.addWidget(url_field)
+
+        copy_btn = QPushButton("Copy URL")
+        copy_btn.setToolTip("Copy the authorization URL to clipboard")
+        copy_btn.clicked.connect(lambda: (
+            self._copy_to_clipboard(url),
+            copy_btn.setText("Copied!")
+        ))
+        layout.addWidget(copy_btn)
+
+        layout.addSpacing(8)
+        layout.addWidget(QLabel("Step 2: Sign in and grant access, then paste the authorization code below:"))
+
+        self.code_input = QLineEdit()
+        self.code_input.setPlaceholderText("Paste authorization code here")
+        self.code_input.setToolTip("The code shown in your browser after granting access")
+        layout.addWidget(self.code_input)
+
+        btn_layout = QHBoxLayout()
+        ok_btn = QPushButton("Authorize")
+        ok_btn.setToolTip("Complete the authentication with the entered code")
+        ok_btn.clicked.connect(self.accept)
+        cancel_btn = QPushButton("Cancel")
+        cancel_btn.setToolTip("Cancel Google Drive setup")
+        cancel_btn.clicked.connect(self.reject)
+        btn_layout.addStretch()
+        btn_layout.addWidget(ok_btn)
+        btn_layout.addWidget(cancel_btn)
+        layout.addLayout(btn_layout)
+
+    def auth_code(self):
+        return self.code_input.text().strip()
+
+    def _copy_to_clipboard(self, text):
+        QApplication.clipboard().setText(text)
