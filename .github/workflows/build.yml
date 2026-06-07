@@ -42,7 +42,6 @@ jobs:
             libxcb-xinerama0 \
             libxcb-xinput0 \
             libegl1 \
-            libegl1-mesa \
             libgl1 \
             libxrender1 \
             libxi6 \
