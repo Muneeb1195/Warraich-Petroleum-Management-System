@@ -78,5 +78,23 @@ class Settings:
     def date_format(self):
         return self.get("Regional", "date_format", "DD/MM/YYYY")
 
+    def cloud_backup_enabled(self):
+        return self.get("Cloud", "cloud_backup_enabled", "0") == "1"
+
+    def set_cloud_backup_enabled(self, enabled):
+        self.set("Cloud", "cloud_backup_enabled", "1" if enabled else "0")
+        self.save()
+
+    def last_cloud_backup(self):
+        val = self.get("Cloud", "last_cloud_backup", "")
+        if val:
+            try:
+                from datetime import datetime
+                dt = datetime.fromisoformat(val)
+                return dt.strftime("%d/%m/%Y %I:%M %p")
+            except Exception:
+                return val
+        return "Never"
+
 
 settings = Settings()

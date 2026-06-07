@@ -10,12 +10,26 @@ from database.settings import settings
 BACKUP_DIR = Path(__file__).resolve().parent.parent / "backup"
 
 
+def _try_cloud_upload(backup_path):
+    try:
+        from database.cloud_backup import upload_to_drive
+        ok, result = upload_to_drive(backup_path)
+        if ok:
+            print(f"Cloud backup: {result}")
+        else:
+            print(f"Cloud backup failed: {result}")
+    except Exception:
+        pass
+
+
 def manual_backup():
     BACKUP_DIR.mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     backup_file = BACKUP_DIR / f"backup_{timestamp}.db"
     if DB_PATH.exists():
         shutil.copy2(DB_PATH, backup_file)
+    if settings.cloud_backup_enabled():
+        _try_cloud_upload(backup_file)
     return backup_file
 
 
@@ -29,6 +43,8 @@ def _auto_backup_worker():
             backup_file = backup_dir / f"autobackup_{timestamp}.db"
             if DB_PATH.exists():
                 shutil.copy2(DB_PATH, backup_file)
+                if settings.cloud_backup_enabled():
+                    _try_cloud_upload(backup_file)
                 old_backups = sorted(backup_dir.glob("autobackup_*.db"))
                 while len(old_backups) > 10:
                     old_backups[0].unlink()

@@ -10,3 +10,5 @@ backup/*
 *.spec
 dist/
 build/
+client_secrets.json
+cloud_token.json

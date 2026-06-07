@@ -1,9 +1,10 @@
 from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                QLineEdit, QPushButton, QFormLayout, QGroupBox,
                                QDoubleSpinBox, QMessageBox, QTabWidget, QWidget,
-                               QComboBox)
+                               QComboBox, QCheckBox)
 from PySide6.QtCore import Qt
 from database.settings import settings
+from database.cloud_backup import is_connected, disconnect, has_secrets
 from utils.formatting import curr, CURRENCY_SYMBOL_RAW
 
 
@@ -81,6 +82,28 @@ class SettingsDialog(QDialog):
         reg_layout.addRow("Date Format:", self.date_format_combo)
         tabs.addTab(reg_tab, "Regional")
 
+        # Cloud Backup tab
+        cloud_tab = QWidget()
+        cloud_layout = QVBoxLayout(cloud_tab)
+        cloud_layout.setSpacing(16)
+
+        self.cloud_status = QLabel()
+        self.cloud_status.setStyleSheet("font-size: 14px; padding: 8px;")
+        cloud_layout.addWidget(self.cloud_status)
+
+        self.cloud_connect_btn = QPushButton()
+        self.cloud_connect_btn.clicked.connect(self._toggle_cloud)
+        cloud_layout.addWidget(self.cloud_connect_btn)
+
+        self.cloud_enabled_cb = QCheckBox("Enable automatic cloud backup")
+        self.cloud_enabled_cb.setChecked(settings.cloud_backup_enabled())
+        cloud_layout.addWidget(self.cloud_enabled_cb)
+
+        cloud_layout.addWidget(QLabel(f"Last backup: {settings.last_cloud_backup()}"))
+        cloud_layout.addStretch()
+        self._update_cloud_ui()
+        tabs.addTab(cloud_tab, "Cloud Backup")
+
         btn_layout = QHBoxLayout()
         save_btn = QPushButton("Save")
         save_btn.clicked.connect(self._save)
@@ -90,6 +113,52 @@ class SettingsDialog(QDialog):
         btn_layout.addWidget(save_btn)
         btn_layout.addWidget(cancel_btn)
         layout.addLayout(btn_layout)
+
+    def _update_cloud_ui(self):
+        if is_connected():
+            self.cloud_status.setText("✅ Connected to Google Drive")
+            self.cloud_status.setStyleSheet("color: #3fb950; font-size: 14px; padding: 8px;")
+            self.cloud_connect_btn.setText("Disconnect Google Drive")
+            self.cloud_connect_btn.setObjectName("dangerBtn")
+        else:
+            self.cloud_status.setText("❌ Not connected to Google Drive")
+            self.cloud_status.setStyleSheet("color: #f85149; font-size: 14px; padding: 8px;")
+            self.cloud_connect_btn.setText("Connect Google Drive")
+            self.cloud_connect_btn.setObjectName("successBtn")
+
+    def _toggle_cloud(self):
+        if is_connected():
+            reply = QMessageBox.question(self, "Disconnect",
+                                          "Disconnect Google Drive? Cloud backups will stop.",
+                                          QMessageBox.Yes | QMessageBox.No)
+            if reply == QMessageBox.Yes:
+                disconnect()
+                self._update_cloud_ui()
+        else:
+            if not has_secrets():
+                from database.cloud_backup import CLIENT_SECRETS_PATH
+                QMessageBox.critical(
+                    self, "Not Set Up",
+                    f"client_secrets.json not found.\n\n"
+                    f"To set up cloud backup:\n"
+                    f"1. Go to https://console.cloud.google.com/\n"
+                    f"2. Enable Google Drive API\n"
+                    f"3. Create OAuth credentials (Desktop app)\n"
+                    f"4. Download JSON and save as:\n"
+                    f"   {CLIENT_SECRETS_PATH}"
+                )
+                return
+            try:
+                from database.cloud_backup import _get_drive
+                QMessageBox.information(
+                    self, "Connecting",
+                    "A browser window will open. Sign in to your Google account and grant access.")
+                _get_drive()
+                self._update_cloud_ui()
+                QMessageBox.information(self, "Connected", "Google Drive connected successfully!")
+            except Exception as e:
+                QMessageBox.critical(self, "Connection Failed",
+                                     f"Could not connect to Google Drive.\n\n{str(e)}")
 
     def _save(self):
         settings.set_business_info(
@@ -106,6 +175,7 @@ class SettingsDialog(QDialog):
         settings.set("GST", "hsn_lube", self.hsn_lube.text())
         settings.set("Regional", "currency_symbol", self.currency_symbol.text())
         settings.set("Regional", "date_format", self.date_format_combo.currentText())
+        settings.set_cloud_backup_enabled(self.cloud_enabled_cb.isChecked())
         settings.save()
         QMessageBox.information(self, "Saved", "Settings saved successfully.\nRestart the app for some changes to take effect.")
         self.accept()

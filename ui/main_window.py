@@ -21,6 +21,7 @@ from ui.reports.shift_reconciliation import ShiftReconciliationWidget
 from ui.settings_dialog import SettingsDialog
 from database.settings import settings
 from database.backup import manual_backup
+from database.cloud_backup import is_connected
 
 
 class SidebarButton(QPushButton):
@@ -153,7 +154,13 @@ class MainWindow(QMainWindow):
 
         # === STATUS BAR ===
         status = self.statusBar()
-        status_label = QLabel(f"  Auto-backup every {settings.backup_interval_days()} days  |  {settings.business_address() if settings.business_address() else ''}")
+        cloud_icon = "☁️" if is_connected() else ""
+        cloud_text = f"Cloud: {settings.last_cloud_backup()}" if is_connected() else "☁️ Not connected"
+        status_label = QLabel(
+            f"  Auto-backup every {settings.backup_interval_days()} days  |  "
+            f"{cloud_text}  |  "
+            f"{settings.business_address() if settings.business_address() else ''}"
+        )
         status.addWidget(status_label)
 
         self._navigate("dashboard")
