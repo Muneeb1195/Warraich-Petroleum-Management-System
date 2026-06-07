@@ -15,15 +15,21 @@ class AttendanceWidget(QWidget):
         title.setStyleSheet("font-size: 18px; font-weight: bold;")
         layout.addWidget(title)
 
+        subtitle = QLabel("Mark employee attendance for each shift")
+        subtitle.setStyleSheet("color: #8b949e; font-size: 12px; padding: 0 0 12px 0;")
+        layout.addWidget(subtitle)
+
         controls = QHBoxLayout()
         controls.addWidget(QLabel("Date:"))
         self.date_edit = QDateEdit(QDate.currentDate())
         self.date_edit.setCalendarPopup(True)
+        self.date_edit.setToolTip("Select the attendance date")
         self.date_edit.dateChanged.connect(self.refresh)
         controls.addWidget(self.date_edit)
 
         controls.addWidget(QLabel("Shift:"))
         self.shift_combo = QComboBox()
+        self.shift_combo.setToolTip("Select the shift to mark attendance for")
         self.shift_combo.addItems(["Morning", "Evening", "Night"])
         self.shift_combo.currentTextChanged.connect(self.refresh)
         controls.addWidget(self.shift_combo)
@@ -31,6 +37,7 @@ class AttendanceWidget(QWidget):
         controls.addStretch()
 
         mark_all_btn = QPushButton("Mark All Present")
+        mark_all_btn.setToolTip("Set all employees as Present for this shift")
         mark_all_btn.clicked.connect(self._mark_all_present)
         controls.addWidget(mark_all_btn)
 
@@ -79,6 +86,13 @@ class AttendanceWidget(QWidget):
         self.refresh()
 
     def _mark_all_present(self):
+        reply = QMessageBox.question(
+            self, "Confirm",
+            "Set all employees as Present for this shift? This will overwrite existing marks.",
+            QMessageBox.Yes | QMessageBox.No,
+        )
+        if reply != QMessageBox.Yes:
+            return
         date = self.date_edit.date().toString("yyyy-MM-dd")
         shift = self.shift_combo.currentText()
         employees = Employee.get_active()

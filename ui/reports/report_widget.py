@@ -23,18 +23,25 @@ class ReportWidget(QWidget):
         title.setStyleSheet("font-size: 18px; font-weight: bold;")
         layout.addWidget(title)
 
+        subtitle = QLabel("View business summaries and export data to Excel")
+        subtitle.setStyleSheet("color: #8b949e; font-size: 12px; padding: 0 0 12px 0;")
+        layout.addWidget(subtitle)
+
         controls = QHBoxLayout()
         controls.addWidget(QLabel("From:"))
         self.from_date = QDateEdit(QDate.currentDate().addDays(-30))
         self.from_date.setCalendarPopup(True)
+        self.from_date.setToolTip("Start date for the report range")
         controls.addWidget(self.from_date)
 
         controls.addWidget(QLabel("To:"))
         self.to_date = QDateEdit(QDate.currentDate())
         self.to_date.setCalendarPopup(True)
+        self.to_date.setToolTip("End date for the report range")
         controls.addWidget(self.to_date)
 
         self.report_combo = QComboBox()
+        self.report_combo.setToolTip("Select the type of report to generate")
         self.report_combo.addItems([
             "Daily Summary",
             "Profit & Loss",
@@ -47,11 +54,13 @@ class ReportWidget(QWidget):
         controls.addWidget(self.report_combo)
 
         generate_btn = QPushButton("Generate")
+        generate_btn.setToolTip("Generate the selected report")
         generate_btn.clicked.connect(self._generate)
         controls.addWidget(generate_btn)
 
         export_btn = QPushButton("Export Excel")
         export_btn.setObjectName("successBtn")
+        export_btn.setToolTip("Export the current report to an Excel file")
         export_btn.clicked.connect(self._export_excel)
         controls.addWidget(export_btn)
 

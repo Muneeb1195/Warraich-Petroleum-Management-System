@@ -14,11 +14,14 @@ class PumpDialog(QDialog):
         layout = QFormLayout(self)
 
         self.pump_no = QLineEdit()
+        self.pump_no.setToolTip("A unique number or code for this pump (e.g. P-01)")
         self.tank_combo = QComboBox()
+        self.tank_combo.setToolTip("The tank this pump draws fuel from")
         tanks = Tank.get_with_fuel_type()
         for t in tanks:
             self.tank_combo.addItem(f"{t['name']} ({t['fuel_name']})", t["id"])
         self.desc_edit = QLineEdit()
+        self.desc_edit.setToolTip("Optional notes about this pump's location or type")
 
         layout.addRow("Pump No:", self.pump_no)
         layout.addRow("Tank:", self.tank_combo)
@@ -33,8 +36,10 @@ class PumpDialog(QDialog):
 
         btn_layout = QHBoxLayout()
         save_btn = QPushButton("Save")
+        save_btn.setToolTip("Save this pump and return to the list")
         save_btn.clicked.connect(self._save)
         cancel_btn = QPushButton("Cancel")
+        cancel_btn.setToolTip("Discard changes and go back")
         cancel_btn.clicked.connect(self.reject)
         btn_layout.addStretch()
         btn_layout.addWidget(save_btn)
@@ -73,9 +78,14 @@ class PumpListWidget(QWidget):
         header.addWidget(title)
         header.addStretch()
         add_btn = QPushButton("+ Add Pump")
+        add_btn.setToolTip("Add a new dispensing pump")
         add_btn.clicked.connect(self._add)
         header.addWidget(add_btn)
         layout.addLayout(header)
+
+        subtitle = QLabel("Configure dispensing pumps and link them to fuel tanks")
+        subtitle.setStyleSheet("color: #8b949e; font-size: 12px; padding: 0 0 12px 0;")
+        layout.addWidget(subtitle)
 
         self.table = QTableWidget()
         self.table.setColumnCount(5)
@@ -101,10 +111,12 @@ class PumpListWidget(QWidget):
             btn_layout = QHBoxLayout(btn_widget)
             btn_layout.setContentsMargins(4, 2, 4, 2)
             edit_btn = QPushButton("Edit")
+            edit_btn.setToolTip("Edit this pump's details")
             edit_btn.setFixedWidth(60)
             edit_btn.clicked.connect(lambda checked, pid=p["id"]: self._edit(pid))
             del_btn = QPushButton("Del")
             del_btn.setObjectName("dangerBtn")
+            del_btn.setToolTip("Delete this pump permanently")
             del_btn.setFixedWidth(60)
             del_btn.clicked.connect(lambda checked, pid=p["id"]: self._delete(pid))
             btn_layout.addWidget(edit_btn)

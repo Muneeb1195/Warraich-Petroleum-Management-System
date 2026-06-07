@@ -22,9 +22,13 @@ class SupplierDialog(QDialog):
         layout = QFormLayout(self)
 
         self.name_edit = QLineEdit()
+        self.name_edit.setToolTip("Supplier company or person name")
         self.phone_edit = QLineEdit()
+        self.phone_edit.setToolTip("Contact phone number")
         self.address_edit = QLineEdit()
+        self.address_edit.setToolTip("Supplier's business address")
         self.gstin_edit = QLineEdit()
+        self.gstin_edit.setToolTip("GST registration number (if applicable)")
 
         layout.addRow("Name:", self.name_edit)
         layout.addRow("Phone:", self.phone_edit)
@@ -39,8 +43,10 @@ class SupplierDialog(QDialog):
 
         btn_layout = QHBoxLayout()
         save_btn = QPushButton("Save")
+        save_btn.setToolTip("Save this supplier and return")
         save_btn.clicked.connect(self._save)
         cancel_btn = QPushButton("Cancel")
+        cancel_btn.setToolTip("Discard changes and go back")
         cancel_btn.clicked.connect(self.reject)
         btn_layout.addStretch()
         btn_layout.addWidget(save_btn)
@@ -72,12 +78,15 @@ class PurchaseDialog(QDialog):
 
         form_layout = QFormLayout()
         self.supplier_combo = QComboBox()
+        self.supplier_combo.setToolTip("Select the supplier you purchased from")
         suppliers = Supplier.get_all("name")
         for s in suppliers:
             self.supplier_combo.addItem(s["name"], s["id"])
         self.invoice_edit = QLineEdit()
+        self.invoice_edit.setToolTip("Supplier's invoice number for this purchase")
         self.date_edit = QDateEdit(QDate.currentDate())
         self.date_edit.setCalendarPopup(True)
+        self.date_edit.setToolTip("Date of this purchase")
         form_layout.addRow("Supplier:", self.supplier_combo)
         form_layout.addRow("Invoice No:", self.invoice_edit)
         form_layout.addRow("Date:", self.date_edit)
@@ -102,16 +111,19 @@ class PurchaseDialog(QDialog):
         self.qty_spin = QDoubleSpinBox()
         self.qty_spin.setRange(0, 999999)
         self.qty_spin.setDecimals(2)
+        self.qty_spin.setToolTip("Quantity purchased")
         item_header.addWidget(QLabel("Qty:"))
         item_header.addWidget(self.qty_spin)
 
         self.rate_spin = QDoubleSpinBox()
         self.rate_spin.setRange(0, 999999)
         self.rate_spin.setDecimals(2)
+        self.rate_spin.setToolTip("Price per unit")
         item_header.addWidget(QLabel("Rate:"))
         item_header.addWidget(self.rate_spin)
 
         add_item_btn = QPushButton("+ Add")
+        add_item_btn.setToolTip("Add this item to the purchase list")
         add_item_btn.clicked.connect(self._add_item)
         item_header.addWidget(add_item_btn)
 
@@ -130,10 +142,12 @@ class PurchaseDialog(QDialog):
         btn_layout = QHBoxLayout()
         if not purchase_id:
             save_btn = QPushButton("Save Purchase")
+            save_btn.setToolTip("Record this purchase and update stock")
             save_btn.clicked.connect(self._save)
             btn_layout.addStretch()
             btn_layout.addWidget(save_btn)
         cancel_btn = QPushButton("Close")
+        cancel_btn.setToolTip("Go back to purchase list")
         cancel_btn.clicked.connect(self.accept)
         btn_layout.addWidget(cancel_btn)
         layout.addLayout(btn_layout)
@@ -217,9 +231,14 @@ class PurchaseListWidget(QWidget):
         header.addWidget(title)
         header.addStretch()
         add_btn = QPushButton("+ New Purchase")
+        add_btn.setToolTip("Record a new stock purchase from a supplier")
         add_btn.clicked.connect(self._add)
         header.addWidget(add_btn)
         layout.addLayout(header)
+
+        subtitle = QLabel("Record stock purchases from suppliers")
+        subtitle.setStyleSheet("color: #8b949e; font-size: 12px; padding: 0 0 12px 0;")
+        layout.addWidget(subtitle)
 
         self.table = QTableWidget()
         self.table.setColumnCount(5)

@@ -22,25 +22,33 @@ class PayrollWidget(QWidget):
         title.setStyleSheet("font-size: 18px; font-weight: bold;")
         layout.addWidget(title)
 
+        subtitle = QLabel("Calculate salaries and generate payslips for staff")
+        subtitle.setStyleSheet("color: #8b949e; font-size: 12px; padding: 0 0 12px 0;")
+        layout.addWidget(subtitle)
+
         controls = QHBoxLayout()
         controls.addWidget(QLabel("Month:"))
         self.month_spin = QSpinBox()
         self.month_spin.setRange(1, 12)
         self.month_spin.setValue(datetime.now().month)
+        self.month_spin.setToolTip("Select payroll month")
         controls.addWidget(self.month_spin)
 
         controls.addWidget(QLabel("Year:"))
         self.year_spin = QSpinBox()
         self.year_spin.setRange(2020, 2050)
         self.year_spin.setValue(datetime.now().year)
+        self.year_spin.setToolTip("Select payroll year")
         controls.addWidget(self.year_spin)
 
         refresh_btn = QPushButton("Refresh")
+        refresh_btn.setToolTip("Reload payroll data for the selected month")
         refresh_btn.clicked.connect(self.refresh)
         controls.addWidget(refresh_btn)
 
         generate_all_btn = QPushButton("Generate All")
         generate_all_btn.setObjectName("successBtn")
+        generate_all_btn.setToolTip("Calculate salaries for all active employees this month")
         generate_all_btn.clicked.connect(self._generate_all)
         controls.addWidget(generate_all_btn)
 
@@ -59,15 +67,18 @@ class PayrollWidget(QWidget):
 
         btn_layout = QHBoxLayout()
         pay_selected_btn = QPushButton("Mark Selected as Paid")
+        pay_selected_btn.setToolTip("Mark the selected employee's salary as paid")
         pay_selected_btn.clicked.connect(self._pay_selected)
         btn_layout.addWidget(pay_selected_btn)
 
         pay_all_btn = QPushButton("Mark All as Paid")
         pay_all_btn.setObjectName("successBtn")
+        pay_all_btn.setToolTip("Mark all pending salaries as paid")
         pay_all_btn.clicked.connect(self._pay_all)
         btn_layout.addWidget(pay_all_btn)
 
         payslip_btn = QPushButton("Generate Payslip PDF")
+        payslip_btn.setToolTip("Create and save a PDF payslip for the selected employee")
         payslip_btn.clicked.connect(self._payslip)
         btn_layout.addWidget(payslip_btn)
 

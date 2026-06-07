@@ -42,15 +42,18 @@ class ShiftReconciliationWidget(QWidget):
 
         start_btn = QPushButton("Start Shift")
         start_btn.setObjectName("successBtn")
+        start_btn.setToolTip("Begin a new shift — resets readings for all pumps")
         start_btn.clicked.connect(self._start_shift)
         controls.addWidget(start_btn)
 
         close_btn = QPushButton("Close Shift")
+        close_btn.setToolTip("Finalize this shift and record closing readings")
         close_btn.clicked.connect(self._close_shift)
         controls.addWidget(close_btn)
 
         reconcile_btn = QPushButton("Reconcile")
         reconcile_btn.setObjectName("warningBtn")
+        reconcile_btn.setToolTip("Compare pump readings with POS sales to check for discrepancies")
         reconcile_btn.clicked.connect(self._reconcile)
         controls.addWidget(reconcile_btn)
 

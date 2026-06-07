@@ -2,7 +2,8 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                                QPushButton, QTableWidget, QTableWidgetItem,
                                QDialog, QFormLayout, QLineEdit, QDoubleSpinBox,
                                QComboBox, QMessageBox, QHeaderView, QTabWidget,
-                               QGroupBox, QTextEdit, QSpinBox)
+                               QGroupBox, QTextEdit, QSpinBox, QScrollArea,
+                               QFrame)
 from PySide6.QtCore import QUrl
 from PySide6.QtGui import QDesktopServices
 from database.settings import settings
@@ -26,12 +27,28 @@ class PosWidget(QWidget):
         title.setStyleSheet("font-size: 20px; font-weight: bold;")
         layout.addWidget(title)
 
-        tabs = QTabWidget()
-        layout.addWidget(tabs)
+        subtitle = QLabel("Select items on the left, then complete the sale on the right")
+        subtitle.setStyleSheet("color: #8b949e; font-size: 12px; padding: 0 0 12px 0;")
+        layout.addWidget(subtitle)
 
-        tabs.addTab(self._make_fuel_tab(), "Fuel Sales")
-        tabs.addTab(self._make_lube_tab(), "Lube Sales")
-        tabs.addTab(self._make_cart_tab(), "Cart & Checkout")
+        split = QHBoxLayout()
+        split.setSpacing(16)
+
+        left_panel = QWidget()
+        left_layout = QVBoxLayout(left_panel)
+        left_layout.setContentsMargins(0, 0, 0, 0)
+
+        self.item_tabs = QTabWidget()
+        self.item_tabs.addTab(self._make_fuel_tab(), "Fuel Sales")
+        self.item_tabs.addTab(self._make_lube_tab(), "Lube Sales")
+        left_layout.addWidget(self.item_tabs)
+
+        split.addWidget(left_panel, 3)
+
+        right_panel = self._make_cart_panel()
+        split.addWidget(right_panel, 2)
+
+        layout.addLayout(split, 1)
 
     def _make_fuel_tab(self):
         tab = QWidget()
@@ -56,6 +73,7 @@ class PosWidget(QWidget):
                 opening_spin.setRange(0, 999999)
                 opening_spin.setDecimals(2)
                 opening_spin.setValue(0)
+                opening_spin.setToolTip("Meter reading at the start of this sale")
                 gb_layout.addWidget(opening_spin)
 
                 gb_layout.addWidget(QLabel("Closing:"))
@@ -63,6 +81,7 @@ class PosWidget(QWidget):
                 closing_spin.setRange(0, 999999)
                 closing_spin.setDecimals(2)
                 closing_spin.setValue(0)
+                closing_spin.setToolTip("Meter reading after dispensing — minus opening = quantity sold")
                 gb_layout.addWidget(closing_spin)
 
                 gb_layout.addWidget(QLabel("Qty:"))
@@ -77,6 +96,7 @@ class PosWidget(QWidget):
                 closing_spin.valueChanged.connect(update_qty)
 
                 add_btn = QPushButton("Add to Cart")
+                add_btn.setToolTip("Add this pump's fuel to the sale cart")
                 add_btn.clicked.connect(
                     lambda checked, pp=p, op=opening_spin, cl=closing_spin,
                            ql=qty_label: self._add_fuel_to_cart(pp, op, cl, ql)
@@ -119,6 +139,7 @@ class PosWidget(QWidget):
             self.lube_table.setCellWidget(i, 4, qty_spin)
 
             add_btn = QPushButton("Add")
+            add_btn.setToolTip("Add this lubricant product to the sale cart")
             add_btn.clicked.connect(lambda checked, li=l, qs=qty_spin: self._add_lube_to_cart(li, qs))
             btn_w = QWidget()
             btn_l = QHBoxLayout(btn_w)
@@ -129,51 +150,81 @@ class PosWidget(QWidget):
         layout.addWidget(self.lube_table)
         return tab
 
-    def _make_cart_tab(self):
-        tab = QWidget()
-        layout = QVBoxLayout(tab)
+    def _make_cart_panel(self):
+        panel = QFrame()
+        panel.setObjectName("card")
+        panel.setStyleSheet("""
+            QFrame#card {
+                background-color: #161b22;
+                border-radius: 8px;
+                border: 1px solid #21262d;
+            }
+        """)
+        layout = QVBoxLayout(panel)
+        layout.setContentsMargins(12, 12, 12, 12)
+        layout.setSpacing(8)
 
         self.cart_items = []
 
+        cart_title = QLabel("Cart & Checkout")
+        cart_title.setStyleSheet("font-size: 15px; font-weight: 700; color: #f0f6fc; padding-bottom: 4px;")
+        layout.addWidget(cart_title)
+
         opts_group = QGroupBox("Sale Options")
-        opts_layout = QHBoxLayout(opts_group)
-        opts_layout.addWidget(QLabel("Customer:"))
+        opts_layout = QVBoxLayout(opts_group)
+        opts_layout.setSpacing(6)
+
+        cust_row = QHBoxLayout()
+        cust_row.addWidget(QLabel("Customer:"))
         self.customer_combo = QComboBox()
+        self.customer_combo.setToolTip("Select a customer or use Walk-in for cash sales")
         self.customer_combo.addItem("Walk-in Customer", None)
         customers = Customer.get_all("name")
         for c in customers:
             self.customer_combo.addItem(f"{c['name']} ({c['phone']})", c["id"])
-        opts_layout.addWidget(self.customer_combo)
+        cust_row.addWidget(self.customer_combo, 1)
+        opts_layout.addLayout(cust_row)
 
-        opts_layout.addWidget(QLabel("Payment:"))
+        pay_row = QHBoxLayout()
+        pay_row.addWidget(QLabel("Payment:"))
         self.payment_combo = QComboBox()
+        self.payment_combo.setToolTip("Payment method received from customer")
         self.payment_combo.addItems(["Cash", "Card", "UPI", "Credit"])
-        opts_layout.addWidget(self.payment_combo)
+        pay_row.addWidget(self.payment_combo, 1)
+        opts_layout.addLayout(pay_row)
 
-        opts_layout.addWidget(QLabel("GST%:"))
+        gst_row = QHBoxLayout()
+        gst_row.addWidget(QLabel("GST%:"))
         self.gst_spin = QDoubleSpinBox()
         self.gst_spin.setRange(0, 100)
         self.gst_spin.setDecimals(2)
         self.gst_spin.setValue(settings.default_gst_rate())
-        opts_layout.addWidget(self.gst_spin)
+        self.gst_spin.setToolTip("GST tax rate for this sale (splits into CGST + SGST)")
+        gst_row.addWidget(self.gst_spin, 1)
+        opts_layout.addLayout(gst_row)
 
         layout.addWidget(opts_group)
 
         self.cart_table = QTableWidget()
         self.cart_table.setColumnCount(5)
-        self.cart_table.setHorizontalHeaderLabels(["Item", "Qty", "Rate", "Amount", "Action"])
+        self.cart_table.setHorizontalHeaderLabels(["Item", "Qty", "Rate", "Amount", ""])
         self.cart_table.horizontalHeader().setStretchLastSection(True)
-        layout.addWidget(self.cart_table)
+        self.cart_table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.cart_table.setSelectionBehavior(QTableWidget.SelectRows)
+        self.cart_table.setEditTriggers(QTableWidget.NoEditTriggers)
+        self.cart_table.setMinimumHeight(150)
+        layout.addWidget(self.cart_table, 1)
 
         self.totals_group = QGroupBox("Totals")
         totals_layout = QFormLayout(self.totals_group)
+        totals_layout.setSpacing(4)
         self.taxable_label = QLabel(curr(0))
         self.cgst_label = QLabel(curr(0))
         self.sgst_label = QLabel(curr(0))
         self.total_label = QLabel(curr(0))
         self.round_off_label = QLabel(curr(0))
         self.grand_total_label = QLabel(curr(0))
-        self.grand_total_label.setStyleSheet("font-size: 18px; font-weight: bold; color: #1890ff;")
+        self.grand_total_label.setStyleSheet("font-size: 16px; font-weight: bold; color: #58a6ff;")
         totals_layout.addRow("Taxable Amount:", self.taxable_label)
         totals_layout.addRow("CGST:", self.cgst_label)
         totals_layout.addRow("SGST:", self.sgst_label)
@@ -182,27 +233,31 @@ class PosWidget(QWidget):
         totals_layout.addRow("Grand Total:", self.grand_total_label)
         layout.addWidget(self.totals_group)
 
-        btn_layout = QHBoxLayout()
         checkout_btn = QPushButton("Complete Sale")
         checkout_btn.setObjectName("successBtn")
+        checkout_btn.setToolTip("Finalize the sale, print invoice, and update stock")
         checkout_btn.clicked.connect(self._checkout)
+        checkout_btn.setMinimumHeight(40)
+        layout.addWidget(checkout_btn)
+
+        btn_row = QHBoxLayout()
         clear_btn = QPushButton("Clear Cart")
         clear_btn.setObjectName("dangerBtn")
+        clear_btn.setToolTip("Remove all items from the cart")
         clear_btn.clicked.connect(self._clear_cart)
         self.print_btn = QPushButton("Print Invoice")
         self.print_btn.setObjectName("warningBtn")
+        self.print_btn.setToolTip("Re-print the last invoice")
         self.print_btn.clicked.connect(self._print_invoice)
         self.print_btn.setVisible(False)
-        btn_layout.addStretch()
-        btn_layout.addWidget(self.print_btn)
-        btn_layout.addWidget(clear_btn)
-        btn_layout.addWidget(checkout_btn)
-        layout.addLayout(btn_layout)
+        btn_row.addWidget(self.print_btn)
+        btn_row.addWidget(clear_btn)
+        layout.addLayout(btn_row)
 
         self._last_sale_id = None
         self._last_inv_no = None
 
-        return tab
+        return panel
 
     def _add_fuel_to_cart(self, pump, opening_spin, closing_spin, qty_label):
         qty = max(0, closing_spin.value() - opening_spin.value())

@@ -83,8 +83,12 @@ class DashboardWidget(QWidget):
         layout.setSpacing(0)
 
         title = QLabel("Dashboard")
-        title.setStyleSheet("font-size: 22px; font-weight: 700; color: #f0f6fc; padding: 0 0 16px 0;")
+        title.setStyleSheet("font-size: 22px; font-weight: 700; color: #f0f6fc; padding: 0 0 4px 0;")
         layout.addWidget(title)
+
+        subtitle = QLabel("Real-time overview of sales, profit, stock, and staff")
+        subtitle.setStyleSheet("color: #8b949e; font-size: 12px; padding: 0 0 16px 0;")
+        layout.addWidget(subtitle)
 
         self.cards_grid = QGridLayout()
         self.cards_grid.setSpacing(12)

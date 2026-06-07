@@ -67,6 +67,7 @@ class MainWindow(QMainWindow):
         backup_btn = QPushButton(" Backup Now")
         backup_btn.setObjectName("headerBackupBtn")
         backup_btn.setCursor(Qt.PointingHandCursor)
+        backup_btn.setToolTip("Create a manual backup of the database")
         backup_btn.clicked.connect(self._do_backup)
         header_layout.addWidget(backup_btn)
 
@@ -123,8 +124,22 @@ class MainWindow(QMainWindow):
         sidebar_layout.addSpacing(4)
 
         self.btn_group = []
+        tooltips = {
+            "dashboard": "Home screen with KPIs and charts",
+            "inventory": "Manage tanks, pumps, and lubricants",
+            "purchases": "Record stock from suppliers",
+            "pos": "Ring up fuel and lubricant sales",
+            "customers": "Manage customer accounts and credit",
+            "expenses": "Track daily business expenses",
+            "staff": "Manage employees and attendance",
+            "payroll": "Calculate salaries and print payslips",
+            "reports": "View summaries and export to Excel",
+            "reconciliation": "Compare pump readings with sales",
+            "settings": "Configure business info, rates, and backup",
+        }
         for key, icon, label in nav_items:
             btn = SidebarButton(label, icon)
+            btn.setToolTip(tooltips.get(key, ""))
             self.nav_buttons[key] = btn
             self.btn_group.append(btn)
             sidebar_layout.addWidget(btn)
