@@ -17,6 +17,7 @@ from ui.staff.employee_list import EmployeeListWidget
 from ui.staff.attendance_widget import AttendanceWidget
 from ui.payroll.payroll_widget import PayrollWidget
 from ui.reports.report_widget import ReportWidget
+from ui.reports.shift_reconciliation import ShiftReconciliationWidget
 from ui.settings_dialog import SettingsDialog
 from database.settings import settings
 from database.backup import manual_backup
@@ -110,6 +111,7 @@ class MainWindow(QMainWindow):
             ("staff", "👨‍💼", "Staff"),
             ("payroll", "💵", "Payroll"),
             ("reports", "📈", "Reports"),
+            ("reconciliation", "🔄", "Shift Recon"),
             ("settings", "⚙️", "Settings"),
         ]
 
@@ -171,6 +173,7 @@ class MainWindow(QMainWindow):
         self._pages["staff"] = self._make_tabbed_staff()
         self._pages["payroll"] = PayrollWidget()
         self._pages["reports"] = ReportWidget()
+        self._pages["reconciliation"] = ShiftReconciliationWidget()
         self._pages["settings"] = SettingsDialog(self)
 
         for page in self._pages.values():

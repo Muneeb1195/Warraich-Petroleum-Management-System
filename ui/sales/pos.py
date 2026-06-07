@@ -3,6 +3,8 @@ from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
                                QDialog, QFormLayout, QLineEdit, QDoubleSpinBox,
                                QComboBox, QMessageBox, QHeaderView, QTabWidget,
                                QGroupBox, QTextEdit, QSpinBox)
+from PySide6.QtCore import QUrl
+from PySide6.QtGui import QDesktopServices
 from database.settings import settings
 from models.sale import Sale
 from models.customer import Customer
@@ -10,6 +12,7 @@ from models.fuel import Pump, FuelType
 from models.lube import LubeProduct
 from database.connection import get_connection
 from utils.formatting import curr, CURRENCY_SYMBOL_RAW
+from ui.sales.invoice_pdf import generate_invoice
 
 
 
@@ -186,10 +189,18 @@ class PosWidget(QWidget):
         clear_btn = QPushButton("Clear Cart")
         clear_btn.setObjectName("dangerBtn")
         clear_btn.clicked.connect(self._clear_cart)
+        self.print_btn = QPushButton("Print Invoice")
+        self.print_btn.setObjectName("warningBtn")
+        self.print_btn.clicked.connect(self._print_invoice)
+        self.print_btn.setVisible(False)
         btn_layout.addStretch()
+        btn_layout.addWidget(self.print_btn)
         btn_layout.addWidget(clear_btn)
         btn_layout.addWidget(checkout_btn)
         layout.addLayout(btn_layout)
+
+        self._last_sale_id = None
+        self._last_inv_no = None
 
         return tab
 
@@ -295,17 +306,38 @@ class PosWidget(QWidget):
         if self.payment_combo.currentText() == "Credit" and self.customer_combo.currentData():
             Customer.update_balance(self.customer_combo.currentData(), totals["grand_total"])
 
-        QMessageBox.information(
+        self._last_sale_id = sale_id
+        self._last_inv_no = inv_no
+
+        reply = QMessageBox.question(
             self, "Sale Complete",
             f"Invoice: {inv_no}\n"
             f"Taxable: {curr(totals['taxable'])}\n"
             f"CGST: {curr(totals['cgst'])}\n"
             f"SGST: {curr(totals['sgst'])}\n"
             f"Grand Total: {curr(totals['grand_total'])}\n"
-            f"Payment: {self.payment_combo.currentText()}"
+            f"Payment: {self.payment_combo.currentText()}\n\n"
+            f"Print Invoice?",
+            QMessageBox.Yes | QMessageBox.No,
         )
+        if reply == QMessageBox.Yes:
+            self._generate_and_open_invoice()
 
         self._clear_cart()
+
+    def _generate_and_open_invoice(self):
+        if not self._last_sale_id:
+            return
+        sale = Sale.get_with_details(self._last_sale_id)
+        if not sale:
+            return
+        path = generate_invoice(sale, sale["items"])
+        if path:
+            QDesktopServices.openUrl(QUrl.fromLocalFile(path))
+            QMessageBox.information(self, "Invoice Saved", f"Invoice saved to:\n{path}")
+
+    def _print_invoice(self):
+        self._generate_and_open_invoice()
 
     def refresh(self):
         pass

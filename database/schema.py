@@ -161,6 +161,18 @@ CREATE TABLE IF NOT EXISTS audit_log (
     timestamp TEXT NOT NULL DEFAULT (datetime('now','localtime'))
 );
 
+CREATE TABLE IF NOT EXISTS shift_readings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    date TEXT NOT NULL,
+    shift TEXT NOT NULL,
+    pump_id INTEGER NOT NULL REFERENCES pumps(id),
+    opening_reading REAL NOT NULL DEFAULT 0,
+    closing_reading REAL NOT NULL DEFAULT 0,
+    is_closed INTEGER NOT NULL DEFAULT 0,
+    reconciled_at TEXT,
+    UNIQUE(date, shift, pump_id)
+);
+
 INSERT OR IGNORE INTO fuel_types (name, unit, hsn_code, gst_rate) VALUES
     ('Petrol', 'Litre', '271012', 18),
     ('Diesel', 'Litre', '271019', 18);
