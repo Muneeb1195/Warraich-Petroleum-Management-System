@@ -16,11 +16,14 @@ def get_auth_url():
     if not CLIENT_SECRETS_PATH.exists():
         raise FileNotFoundError(
             f"client_secrets.json not found.\n\n"
+            f"Set up Google Drive API:\n"
             f"1. Go to https://console.cloud.google.com/\n"
-            f"2. Enable Google Drive API for your project\n"
+            f"2. Enable Google Drive API\n"
             f"3. Create OAuth credentials (Desktop app type)\n"
-            f"4. Download the JSON\n"
-            f"5. Save it as:\n   {CLIENT_SECRETS_PATH}"
+            f"4. Download JSON → save as:\n"
+            f"   {CLIENT_SECRETS_PATH}\n\n"
+            f"5. In Google Cloud Console → OAuth consent screen →\n"
+            f"   Add your email as a Test user"
         )
 
     TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)
@@ -40,11 +43,14 @@ def _get_drive():
     if not CLIENT_SECRETS_PATH.exists():
         raise FileNotFoundError(
             f"client_secrets.json not found.\n\n"
+            f"Set up Google Drive API:\n"
             f"1. Go to https://console.cloud.google.com/\n"
-            f"2. Enable Google Drive API for your project\n"
+            f"2. Enable Google Drive API\n"
             f"3. Create OAuth credentials (Desktop app type)\n"
-            f"4. Download the JSON\n"
-            f"5. Save it as:\n   {CLIENT_SECRETS_PATH}"
+            f"4. Download JSON → save as:\n"
+            f"   {CLIENT_SECRETS_PATH}\n\n"
+            f"5. In Google Cloud Console → OAuth consent screen →\n"
+            f"   Add your email as a Test user"
         )
 
     TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)

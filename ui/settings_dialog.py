@@ -160,12 +160,14 @@ class SettingsDialog(QDialog):
                 QMessageBox.critical(
                     self, "Not Set Up",
                     f"client_secrets.json not found.\n\n"
-                    f"To set up cloud backup:\n"
+                    f"Set up Google Drive API:\n"
                     f"1. Go to https://console.cloud.google.com/\n"
                     f"2. Enable Google Drive API\n"
                     f"3. Create OAuth credentials (Desktop app)\n"
-                    f"4. Download JSON and save as:\n"
-                    f"   {CLIENT_SECRETS_PATH}"
+                    f"4. Download JSON → save as:\n"
+                    f"   {CLIENT_SECRETS_PATH}\n\n"
+                    f"5. In Google Cloud Console → OAuth consent screen →\n"
+                    f"   Add your email as a Test user"
                 )
                 return
             try:
@@ -221,6 +223,14 @@ class AuthDialog(QDialog):
         layout.addWidget(title)
 
         layout.addWidget(QLabel("Step 1: Open this URL in your browser:"))
+        note = QLabel(
+            "If you see 'Access blocked' or 'App not verified', "
+            "go to Google Cloud Console → OAuth consent screen\n"
+            "→ add your email as a Test user, then try again."
+        )
+        note.setStyleSheet("color: #f0883e; font-size: 11px; padding: 2px 0;")
+        note.setWordWrap(True)
+        layout.addWidget(note)
 
         url_field = QTextEdit()
         url_field.setPlainText(url)
