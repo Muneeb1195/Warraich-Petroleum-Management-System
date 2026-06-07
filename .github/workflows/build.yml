@@ -55,6 +55,7 @@ jobs:
           pip install PySide6 reportlab openpyxl pyinstaller pydrive2
 
       - name: Build with PyInstaller
+        shell: bash
         run: |
           pyinstaller --onefile --windowed \
             --add-data "settings.ini:." \
