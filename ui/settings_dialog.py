@@ -2,7 +2,7 @@ from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                                QLineEdit, QPushButton, QFormLayout, QGroupBox,
                                QDoubleSpinBox, QMessageBox, QTabWidget, QWidget,
                                QComboBox, QCheckBox, QTextEdit, QApplication)
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, QTimer
 from database.settings import settings
 from database.cloud_backup import is_connected, disconnect, has_secrets
 from utils.formatting import curr, CURRENCY_SYMBOL_RAW
@@ -171,9 +171,9 @@ class SettingsDialog(QDialog):
                 )
                 return
             try:
-                from database.cloud_backup import get_auth_url, authenticate
-                gauth, url = get_auth_url()
-                dlg = AuthDialog(url, self)
+                from database.cloud_backup import start_auth_flow, authenticate
+                gauth, url, server = start_auth_flow()
+                dlg = AuthDialog(url, server, self)
                 if dlg.exec() == QDialog.Accepted:
                     code = dlg.auth_code()
                     if not code:
@@ -181,6 +181,8 @@ class SettingsDialog(QDialog):
                     authenticate(gauth, code.strip())
                     self._update_cloud_ui()
                     QMessageBox.information(self, "Connected", "Google Drive connected successfully!")
+                else:
+                    server.shutdown()
             except Exception as e:
                 QMessageBox.critical(self, "Connection Failed",
                                      f"Could not connect to Google Drive.\n\n{str(e)}")
@@ -210,11 +212,13 @@ class SettingsDialog(QDialog):
 
 
 class AuthDialog(QDialog):
-    def __init__(self, url, parent=None):
+    def __init__(self, url, server, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Google Drive Authorization")
-        self.setMinimumSize(600, 350)
+        self.setMinimumSize(600, 380)
         self.setModal(True)
+        self._server = server
+        self._code = None
 
         layout = QVBoxLayout(self)
 
@@ -247,18 +251,22 @@ class AuthDialog(QDialog):
         ))
         layout.addWidget(copy_btn)
 
+        self._status = QLabel("Waiting for authorization...")
+        self._status.setStyleSheet("color: #8b949e; font-size: 12px; padding: 4px 0;")
+        layout.addWidget(self._status)
+
         layout.addSpacing(8)
-        layout.addWidget(QLabel("Step 2: Sign in and grant access, then paste the authorization code below:"))
+        layout.addWidget(QLabel("Or paste the authorization code manually:"))
 
         self.code_input = QLineEdit()
         self.code_input.setPlaceholderText("Paste authorization code here")
-        self.code_input.setToolTip("The code shown in your browser after granting access")
+        self.code_input.setToolTip("The code from the URL after granting access, or from the browser page")
         layout.addWidget(self.code_input)
 
         btn_layout = QHBoxLayout()
         ok_btn = QPushButton("Authorize")
         ok_btn.setToolTip("Complete the authentication with the entered code")
-        ok_btn.clicked.connect(self.accept)
+        ok_btn.clicked.connect(self._manual_accept)
         cancel_btn = QPushButton("Cancel")
         cancel_btn.setToolTip("Cancel Google Drive setup")
         cancel_btn.clicked.connect(self.reject)
@@ -267,8 +275,33 @@ class AuthDialog(QDialog):
         btn_layout.addWidget(cancel_btn)
         layout.addLayout(btn_layout)
 
+        self._timer = QTimer(self)
+        self._timer.timeout.connect(self._check_server)
+        self._timer.start(300)
+
+    def _check_server(self):
+        if self._server.auth_code:
+            self._code = self._server.auth_code
+            self._timer.stop()
+            self._status.setText("Authorization received! Completing setup...")
+            self._status.setStyleSheet("color: #3fb950; font-size: 12px; padding: 4px 0;")
+            self._server.shutdown()
+            QApplication.processEvents()
+            self.accept()
+
+    def _manual_accept(self):
+        code = self.code_input.text().strip()
+        if code:
+            self._code = code
+            self._timer.stop()
+            self._server.shutdown()
+            self.accept()
+        else:
+            self._status.setText("Please paste the authorization code or wait for the browser redirect.")
+            self._status.setStyleSheet("color: #f85149; font-size: 12px; padding: 4px 0;")
+
     def auth_code(self):
-        return self.code_input.text().strip()
+        return self._code
 
     def _copy_to_clipboard(self, text):
         QApplication.clipboard().setText(text)
