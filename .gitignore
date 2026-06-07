@@ -12,3 +12,4 @@ dist/
 build/
 client_secrets.json
 cloud_token.json
+PROGRESS_REPORT.md

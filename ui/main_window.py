@@ -22,6 +22,7 @@ from ui.settings_dialog import SettingsDialog
 from database.settings import settings
 from database.backup import manual_backup
 from database.cloud_backup import is_connected
+from database.connection import get_connection
 
 
 class SidebarButton(QPushButton):
@@ -78,6 +79,11 @@ class MainWindow(QMainWindow):
         self._clock_timer.timeout.connect(self._update_clock)
         self._clock_timer.start(1000)
         self._update_clock()
+
+        # stock alerts timer
+        self._stock_timer = QTimer(self)
+        self._stock_timer.timeout.connect(self._update_stock_alerts)
+        self._stock_timer.start(60000)
 
         # === BODY (sidebar + content) ===
         body = QWidget()
@@ -179,6 +185,27 @@ class MainWindow(QMainWindow):
         status.addWidget(status_label)
 
         self._navigate("dashboard")
+        self._check_first_run()
+
+    def _check_first_run(self):
+        first_run = settings.get("General", "first_run", "true")
+        if first_run != "true":
+            return
+        conn = get_connection()
+        has_data = conn.execute(
+            "SELECT (SELECT COUNT(*) FROM tanks) + (SELECT COUNT(*) FROM sales) as c"
+        ).fetchone()["c"]
+        conn.close()
+        if has_data > 0:
+            settings.set("General", "first_run", "false")
+            settings.save()
+            return
+        from ui.welcome_dialog import WelcomeDialog
+        dlg = WelcomeDialog(self)
+        if dlg.exec():
+            if dlg.dont_show_again():
+                settings.set("General", "first_run", "false")
+                settings.save()
 
     def _update_clock(self):
         now = datetime.now()
@@ -226,6 +253,8 @@ class MainWindow(QMainWindow):
         if not hasattr(self, "_pages"):
             self._load_pages()
 
+        self._update_stock_alerts()
+
         page = self._pages.get(page_key)
         if page:
             if isinstance(page, SettingsDialog):
@@ -237,6 +266,33 @@ class MainWindow(QMainWindow):
                 self._content_stack.setCurrentIndex(idx)
             if hasattr(page, "refresh"):
                 page.refresh()
+
+    def _update_stock_alerts(self):
+        from database.connection import get_connection
+        conn = get_connection()
+        low_tanks = conn.execute(
+            "SELECT name, current_level, capacity FROM tanks WHERE current_level < capacity * 0.2"
+        ).fetchall()
+        out_lube = conn.execute(
+            "SELECT product_name FROM lube_products WHERE stock_qty <= 0"
+        ).fetchall()
+        conn.close()
+
+        btn = self.nav_buttons["inventory"]
+        if low_tanks or out_lube:
+            warnings = []
+            for t in low_tanks:
+                pct = t["current_level"] / t["capacity"] * 100 if t["capacity"] > 0 else 0
+                warnings.append(f"⚠ {t['name']}: only {pct:.0f}% full")
+            for l in out_lube:
+                warnings.append(f"⚠ {l['product_name']}: out of stock")
+            btn.setText(f"  ⛽  Inventory ⚠️")
+            btn.setToolTip("Low stock alerts:\n" + "\n".join(warnings))
+            btn.setStyleSheet("color: #f85149;")
+        else:
+            btn.setText(f"  ⛽  Inventory")
+            btn.setToolTip("Manage tanks, pumps, and lubricants")
+            btn.setStyleSheet("")
 
     def _do_backup(self):
         try:

@@ -64,7 +64,7 @@ def generate_invoice(sale_data, items):
     # Items table header
     data = [["#", "Item", "Qty", "Rate", "Amount"]]
     for i, item in enumerate(items, 1):
-        name = item.get("fuel_name") or f"{item.get('brand', '')} {item.get('lube_name', '')}".strip()
+        name = item.get("fuel_name") or f"{item.get('brand', '')} {item.get('lube_name', '')}".strip() or "Quick Sale"
         pump = item.get("pump_no")
         if pump:
             name = f"{name} - {pump}"

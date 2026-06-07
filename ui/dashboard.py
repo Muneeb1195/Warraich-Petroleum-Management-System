@@ -1,7 +1,7 @@
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel,
-                               QGridLayout, QFrame)
-from PySide6.QtCore import Qt, QTimer
-from PySide6.QtGui import QFont, QPainter
+                               QGridLayout, QFrame, QPushButton)
+from PySide6.QtCore import Qt, QTimer, QUrl
+from PySide6.QtGui import QFont, QPainter, QDesktopServices
 from PySide6.QtCharts import (QChart, QChartView, QLineSeries, QPieSeries,
                                QBarSeries, QBarSet, QBarCategoryAxis,
                                QValueAxis, QPieSlice)
@@ -111,6 +111,36 @@ class DashboardWidget(QWidget):
         for card, (r, c) in zip(cards, positions):
             self.cards_grid.addWidget(card, r, c)
 
+        # Action buttons
+        actions_layout = QHBoxLayout()
+        actions_layout.setSpacing(12)
+
+        quick_sale_btn = QPushButton(" Quick Sale")
+        quick_sale_btn.setObjectName("successBtn")
+        quick_sale_btn.setMinimumHeight(50)
+        quick_sale_btn.setStyleSheet(
+            "font-size: 15px; font-weight: bold; background-color: #238636; "
+            "color: white; border-radius: 8px; padding: 10px 24px;"
+        )
+        quick_sale_btn.setToolTip("Record a cash sale quickly without meter readings or items")
+        quick_sale_btn.clicked.connect(self._quick_sale)
+        actions_layout.addWidget(quick_sale_btn)
+
+        close_day_btn = QPushButton(" Close Day")
+        close_day_btn.setObjectName("warningBtn")
+        close_day_btn.setMinimumHeight(50)
+        close_day_btn.setStyleSheet(
+            "font-size: 15px; font-weight: bold; background-color: #d29922; "
+            "color: #0d1117; border-radius: 8px; padding: 10px 24px;"
+        )
+        close_day_btn.setToolTip("View end-of-day summary with totals and print report")
+        close_day_btn.clicked.connect(self._close_day)
+        actions_layout.addWidget(close_day_btn)
+
+        actions_layout.addStretch()
+        layout.addSpacing(8)
+        layout.addLayout(actions_layout)
+
         # Charts row
         charts_layout = QHBoxLayout()
         charts_layout.setSpacing(12)
@@ -128,6 +158,18 @@ class DashboardWidget(QWidget):
         layout.addStretch()
 
         self.refresh()
+
+        self._refresh_timer = QTimer(self)
+        self._refresh_timer.setInterval(30000)
+        self._refresh_timer.timeout.connect(self.refresh)
+
+    def showEvent(self, event):
+        super().showEvent(event)
+        self._refresh_timer.start()
+
+    def hideEvent(self, event):
+        super().hideEvent(event)
+        self._refresh_timer.stop()
 
     def refresh(self):
         conn = get_connection()
@@ -310,3 +352,109 @@ class DashboardWidget(QWidget):
         series.attachAxis(axis_y)
 
         self.top_chart.chart_view.setChart(chart)
+
+    def _quick_sale(self):
+        from ui.sales.quick_sale import QuickSaleDialog
+        dlg = QuickSaleDialog(self)
+        if dlg.exec():
+            self.refresh()
+
+    def _close_day(self):
+        conn = get_connection()
+        today = conn.execute(
+            "SELECT COALESCE(SUM(grand_total),0) as sales, COUNT(*) as invoices FROM sales WHERE sale_date=date('now')"
+        ).fetchone()
+        expenses = conn.execute(
+            "SELECT COALESCE(SUM(amount),0) as t FROM expenses WHERE expense_date=date('now')"
+        ).fetchone()["t"]
+        payment_split = conn.execute("""
+            SELECT payment_mode, COALESCE(SUM(grand_total),0) as total
+            FROM sales WHERE sale_date=date('now')
+            GROUP BY payment_mode
+        """).fetchall()
+        profit = today["sales"] - expenses
+        conn.close()
+
+        lines = [
+            f"Date: {datetime.now().strftime('%d/%m/%Y')}",
+            "",
+            f"Total Sales:     {curr(today['sales'])}",
+            f"Total Expenses:  {curr(expenses)}",
+            f"Today's Profit:  {curr(profit)}",
+            f"Invoices:        {today['invoices']}",
+            "",
+            "Payment Split:",
+        ]
+        for r in payment_split:
+            lines.append(f"  {r['payment_mode']}: {curr(r['total'])}")
+
+        from PySide6.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QPushButton, QHBoxLayout
+        dlg = QDialog(self)
+        dlg.setWindowTitle("Day Closing Summary")
+        dlg.setMinimumSize(400, 450)
+        dlg.setModal(True)
+        dl = QVBoxLayout(dlg)
+
+        text = QTextEdit()
+        text.setReadOnly(True)
+        text.setPlainText("\n".join(lines))
+        text.setStyleSheet("font-size: 14px; padding: 16px; background-color: #161b22; color: #c9d1d9; border: none;")
+        dl.addWidget(text)
+
+        btn_row = QHBoxLayout()
+        print_btn = QPushButton("Print Report")
+        print_btn.clicked.connect(lambda: self._print_day_close(today, expenses, profit, payment_split))
+        btn_row.addWidget(print_btn)
+        close_btn = QPushButton("Close")
+        close_btn.clicked.connect(dlg.accept)
+        btn_row.addWidget(close_btn)
+        dl.addLayout(btn_row)
+        dlg.exec()
+
+    def _print_day_close(self, today, expenses, profit, payment_split):
+        from reportlab.lib.pagesizes import A4
+        from reportlab.pdfgen import canvas
+        from pathlib import Path
+
+        filename = f"reports/dayclose_{datetime.now().strftime('%Y%m%d')}.pdf"
+        filepath = Path(__file__).resolve().parent.parent.parent / filename
+        filepath.parent.mkdir(parents=True, exist_ok=True)
+
+        c = canvas.Canvas(str(filepath), pagesize=A4)
+        w, h = A4
+
+        c.setFont("Helvetica-Bold", 20)
+        c.drawString(50, h - 50, settings.business_name())
+        c.setFont("Helvetica", 12)
+        c.drawString(50, h - 75, "Day Closing Report")
+        c.drawString(50, h - 95, f"Date: {datetime.now().strftime('%d/%m/%Y')}")
+        c.line(50, h - 105, w - 50, h - 105)
+
+        y = h - 140
+        c.setFont("Helvetica-Bold", 14)
+        c.drawString(50, y, "Summary")
+        c.setFont("Helvetica", 13)
+        y -= 30
+        c.drawString(50, y, f"Total Sales:       {curr(today['sales'])}")
+        c.drawRightString(w - 50, y, f"Invoices: {today['invoices']}")
+        y -= 25
+        c.drawString(50, y, f"Total Expenses:    {curr(expenses)}")
+        y -= 25
+        c.drawString(50, y, f"Today's Profit:    {curr(profit)}")
+
+        y -= 50
+        c.setFont("Helvetica-Bold", 14)
+        c.drawString(50, y, "Payment Split")
+        c.line(50, y - 5, w - 50, y - 5)
+        c.setFont("Helvetica", 13)
+        y -= 30
+        for r in payment_split:
+            c.drawString(50, y, f"{r['payment_mode']}:")
+            c.drawRightString(w - 50, y, curr(r['total']))
+            y -= 25
+
+        c.save()
+        from PySide6.QtCore import QUrl
+        from PySide6.QtGui import QDesktopServices
+        QDesktopServices.openUrl(QUrl.fromLocalFile(str(filepath)))
+        QMessageBox.information(self, "Report Saved", f"Day close report saved to:\n{filename}")

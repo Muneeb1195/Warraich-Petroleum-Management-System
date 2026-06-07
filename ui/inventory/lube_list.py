@@ -119,6 +119,11 @@ class LubeListWidget(QWidget):
         subtitle.setStyleSheet("color: #8b949e; font-size: 12px; padding: 0 0 12px 0;")
         layout.addWidget(subtitle)
 
+        self.search_bar = QLineEdit()
+        self.search_bar.setPlaceholderText("Search products...")
+        self.search_bar.textChanged.connect(self._filter)
+        layout.addWidget(self.search_bar)
+
         self.table = QTableWidget()
         self.table.setColumnCount(8)
         self.table.setHorizontalHeaderLabels(
@@ -178,3 +183,13 @@ class LubeListWidget(QWidget):
         if reply == QMessageBox.Yes:
             LubeProduct.delete(pid)
             self.refresh()
+
+    def _filter(self, text):
+        for row in range(self.table.rowCount()):
+            match = False
+            for col in range(self.table.columnCount()):
+                item = self.table.item(row, col)
+                if item and text.lower() in item.text().lower():
+                    match = True
+                    break
+            self.table.setRowHidden(row, not match)

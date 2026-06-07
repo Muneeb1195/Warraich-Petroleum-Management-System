@@ -98,6 +98,11 @@ class TankListWidget(QWidget):
         subtitle.setStyleSheet("color: #8b949e; font-size: 12px; padding: 0 0 12px 0;")
         layout.addWidget(subtitle)
 
+        self.search_bar = QLineEdit()
+        self.search_bar.setPlaceholderText("Search tanks...")
+        self.search_bar.textChanged.connect(self._filter)
+        layout.addWidget(self.search_bar)
+
         self.table = QTableWidget()
         self.table.setColumnCount(5)
         self.table.setHorizontalHeaderLabels(["Name", "Fuel Type", "Capacity (L)", "Current Level (L)", "Actions"])
@@ -153,3 +158,13 @@ class TankListWidget(QWidget):
         if reply == QMessageBox.Yes:
             Tank.delete(tank_id)
             self.refresh()
+
+    def _filter(self, text):
+        for row in range(self.table.rowCount()):
+            match = False
+            for col in range(self.table.columnCount()):
+                item = self.table.item(row, col)
+                if item and text.lower() in item.text().lower():
+                    match = True
+                    break
+            self.table.setRowHidden(row, not match)
