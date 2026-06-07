@@ -7,7 +7,18 @@ def _is_frozen():
     return getattr(sys, "frozen", False)
 
 
+def _is_android():
+    return "ANDROID_ARGUMENT" in os.environ or "ANDROID_PRIVATE" in os.environ
+
+
 def _app_dir():
+    if _is_android():
+        private = os.environ.get("ANDROID_PRIVATE")
+        if private:
+            return Path(private)
+        argument = os.environ.get("ANDROID_ARGUMENT")
+        if argument:
+            return Path(argument)
     try:
         from jnius import autoclass
         PythonActivity = autoclass("org.kivy.android.PythonActivity")
