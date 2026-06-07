@@ -1,0 +1,114 @@
+from PySide6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
+                               QLineEdit, QPushButton, QFormLayout, QGroupBox,
+                               QDoubleSpinBox, QMessageBox, QTabWidget, QWidget,
+                               QComboBox)
+from PySide6.QtCore import Qt
+from database.settings import settings
+from utils.formatting import curr, CURRENCY_SYMBOL_RAW
+
+
+
+class SettingsDialog(QDialog):
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Settings")
+        self.setMinimumSize(500, 400)
+        self.setModal(True)
+
+        layout = QVBoxLayout(self)
+
+        title = QLabel("Business Settings")
+        title.setStyleSheet("font-size: 18px; font-weight: bold; padding: 10px 0;")
+        layout.addWidget(title)
+
+        tabs = QTabWidget()
+        layout.addWidget(tabs)
+
+        # Business info tab
+        biz_tab = QWidget()
+        biz_layout = QFormLayout(biz_tab)
+        self.biz_name = QLineEdit(settings.business_name())
+        self.biz_address = QLineEdit(settings.business_address())
+        self.biz_phone = QLineEdit(settings.business_phone())
+        self.biz_gstin = QLineEdit(settings.gstin())
+        biz_layout.addRow("Business Name:", self.biz_name)
+        biz_layout.addRow("Address:", self.biz_address)
+        biz_layout.addRow("Phone:", self.biz_phone)
+        biz_layout.addRow("GSTIN:", self.biz_gstin)
+        tabs.addTab(biz_tab, "Business")
+
+        # Fuel rates tab
+        fuel_tab = QWidget()
+        fuel_layout = QFormLayout(fuel_tab)
+        self.petrol_rate = QDoubleSpinBox()
+        self.petrol_rate.setRange(0, 9999)
+        self.petrol_rate.setDecimals(2)
+        self.petrol_rate.setValue(settings.fuel_rate("petrol"))
+        self.diesel_rate = QDoubleSpinBox()
+        self.diesel_rate.setRange(0, 9999)
+        self.diesel_rate.setDecimals(2)
+        self.diesel_rate.setValue(settings.fuel_rate("diesel"))
+        fuel_layout.addRow(f"Petrol Rate ({CURRENCY_SYMBOL_RAW}/L):", self.petrol_rate)
+        fuel_layout.addRow(f"Diesel Rate ({CURRENCY_SYMBOL_RAW}/L):", self.diesel_rate)
+        tabs.addTab(fuel_tab, "Fuel Rates")
+
+        # GST tab
+        gst_tab = QWidget()
+        gst_layout = QFormLayout(gst_tab)
+        self.default_gst = QDoubleSpinBox()
+        self.default_gst.setRange(0, 100)
+        self.default_gst.setDecimals(2)
+        self.default_gst.setValue(settings.default_gst_rate())
+        self.hsn_petrol = QLineEdit(settings.hsn_code("petrol"))
+        self.hsn_diesel = QLineEdit(settings.hsn_code("diesel"))
+        self.hsn_lube = QLineEdit(settings.hsn_code("lube"))
+        gst_layout.addRow("Default GST Rate (%):", self.default_gst)
+        gst_layout.addRow("HSN Code - Petrol:", self.hsn_petrol)
+        gst_layout.addRow("HSN Code - Diesel:", self.hsn_diesel)
+        gst_layout.addRow("HSN Code - Lubricants:", self.hsn_lube)
+        tabs.addTab(gst_tab, "GST")
+
+        # Regional tab
+        reg_tab = QWidget()
+        reg_layout = QFormLayout(reg_tab)
+        self.currency_symbol = QLineEdit(settings.currency_symbol())
+        self.date_format_combo = QComboBox()
+        self.date_format_combo.addItems(["DD/MM/YYYY", "MM/DD/YYYY", "YYYY-MM-DD"])
+        idx = self.date_format_combo.findText(settings.date_format())
+        if idx >= 0:
+            self.date_format_combo.setCurrentIndex(idx)
+        reg_layout.addRow("Currency Symbol:", self.currency_symbol)
+        reg_layout.addRow("Date Format:", self.date_format_combo)
+        tabs.addTab(reg_tab, "Regional")
+
+        btn_layout = QHBoxLayout()
+        save_btn = QPushButton("Save")
+        save_btn.clicked.connect(self._save)
+        cancel_btn = QPushButton("Cancel")
+        cancel_btn.clicked.connect(self.reject)
+        btn_layout.addStretch()
+        btn_layout.addWidget(save_btn)
+        btn_layout.addWidget(cancel_btn)
+        layout.addLayout(btn_layout)
+
+    def _save(self):
+        settings.set_business_info(
+            self.biz_name.text(),
+            self.biz_address.text(),
+            self.biz_phone.text(),
+            self.biz_gstin.text(),
+        )
+        settings.set_fuel_rate("petrol", self.petrol_rate.value())
+        settings.set_fuel_rate("diesel", self.diesel_rate.value())
+        settings.set("GST", "default_rate", str(self.default_gst.value()))
+        settings.set("GST", "hsn_petrol", self.hsn_petrol.text())
+        settings.set("GST", "hsn_diesel", self.hsn_diesel.text())
+        settings.set("GST", "hsn_lube", self.hsn_lube.text())
+        settings.set("Regional", "currency_symbol", self.currency_symbol.text())
+        settings.set("Regional", "date_format", self.date_format_combo.currentText())
+        settings.save()
+        QMessageBox.information(self, "Saved", "Settings saved successfully.\nRestart the app for some changes to take effect.")
+        self.accept()
+
+    def refresh(self):
+        pass

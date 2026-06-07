@@ -1,0 +1,12 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.db
+reports/*
+backup/*
+!reports/.gitkeep
+!backup/.gitkeep
+*.spec
+dist/
+build/
