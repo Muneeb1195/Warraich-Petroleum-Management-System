@@ -1,0 +1,29 @@
+name: Release Desktop
+
+on:
+  push:
+    tags:
+      - 'v*'
+      - '!v*-android'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref }}
+          body: |
+            Desktop release ${{ github.ref_name }}.
+            Run `pip install -r requirements.txt && python main.py` to start.
+          draft: false
+          prerelease: false
