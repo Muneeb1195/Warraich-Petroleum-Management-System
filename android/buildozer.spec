@@ -11,7 +11,7 @@ source.exclude_dirs = tests, venv, __pycache__, .git
 
 version = 1.0.0
 
-requirements = python3,kivy,reportlab,openpyxl,pydrive2,google-auth-oauthlib
+requirements = python3,kivy,pyjnius,reportlab,openpyxl,requests
 
 presplash.filename = assets/splash.png
 icon.filename = assets/icon.png
