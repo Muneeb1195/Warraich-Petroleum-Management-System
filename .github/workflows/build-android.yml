@@ -12,7 +12,7 @@ permissions:
 jobs:
   build-android:
     timeout-minutes: 120
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
