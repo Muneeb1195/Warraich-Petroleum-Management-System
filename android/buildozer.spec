@@ -16,7 +16,7 @@ requirements = python3,kivy==2.3.1,openpyxl,requests
 presplash.filename = assets/splash.png
 icon.filename = assets/icon.png
 
-orientation = auto
+orientation = sensor
 osx.package_name = WarraichPetroleum
 
 android.permissions = INTERNET
