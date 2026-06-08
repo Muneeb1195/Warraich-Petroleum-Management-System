@@ -35,10 +35,11 @@ class PumpCard(BoxLayout):
         rate = settings.fuel_rate(fuel_name.lower())
 
         name_lbl = Label(
-            text=f"Pump {pump['pump_no']} - {fuel_name}",
-            size_hint_x=0.3,
+            text=f"P{pump['pump_no']}-{fuel_name}",
+            size_hint_x=0.28,
             halign="left",
             color=(1, 1, 1, 1),
+            font_size="12sp",
             text_size=(None, None),
         )
         name_lbl.bind(size=lambda s, ws: setattr(s, "text_size", (s.width, None)))
@@ -48,6 +49,7 @@ class PumpCard(BoxLayout):
             text=f"{curr(rate)}/L",
             size_hint_x=0.12,
             color=(0.6, 0.6, 0.6, 1),
+            font_size="11sp",
         )
         self.add_widget(rate_lbl)
 
@@ -55,8 +57,9 @@ class PumpCard(BoxLayout):
             text="0",
             input_filter="float",
             multiline=False,
-            size_hint_x=0.15,
+            size_hint_x=0.14,
             hint_text="Open",
+            font_size="11sp",
             foreground_color=(1, 1, 1, 1),
             background_color=(0.15, 0.15, 0.18, 1),
         )
@@ -66,8 +69,9 @@ class PumpCard(BoxLayout):
             text="0",
             input_filter="float",
             multiline=False,
-            size_hint_x=0.15,
+            size_hint_x=0.14,
             hint_text="Close",
+            font_size="11sp",
             foreground_color=(1, 1, 1, 1),
             background_color=(0.15, 0.15, 0.18, 1),
         )
@@ -77,15 +81,17 @@ class PumpCard(BoxLayout):
             text="0.00 L",
             size_hint_x=0.1,
             color=(0.6, 1, 0.6, 1),
+            font_size="11sp",
         )
         self.add_widget(self.qty_label)
 
         add_btn = Button(
             text="Add",
-            size_hint_x=0.12,
+            size_hint_x=0.14,
             background_normal="",
             background_color=(0.15, 0.5, 0.15, 1),
             color=(1, 1, 1, 1),
+            font_size="11sp",
         )
         add_btn.bind(on_press=self._on_add)
         self.add_widget(add_btn)
@@ -262,26 +268,26 @@ class CartItem(BoxLayout):
 
         name_lbl = Label(
             text=item["name"],
-            size_hint_x=0.35,
+            size_hint_x=0.32,
             halign="left",
             color=(1, 1, 1, 1),
-            font_size="12sp",
+            font_size="10sp",
         )
         self.add_widget(name_lbl)
 
         qty_lbl = Label(
             text=f"{item['qty']:,.2f}",
-            size_hint_x=0.15,
+            size_hint_x=0.16,
             color=(0.8, 0.8, 0.8, 1),
-            font_size="12sp",
+            font_size="10sp",
         )
         self.add_widget(qty_lbl)
 
         rate_lbl = Label(
             text=curr(item["rate"]),
-            size_hint_x=0.15,
+            size_hint_x=0.16,
             color=(0.8, 0.8, 0.8, 1),
-            font_size="12sp",
+            font_size="10sp",
         )
         self.add_widget(rate_lbl)
 
@@ -289,17 +295,17 @@ class CartItem(BoxLayout):
             text=curr(item["amount"]),
             size_hint_x=0.2,
             color=(0.6, 1, 0.6, 1),
-            font_size="12sp",
+            font_size="10sp",
         )
         self.add_widget(amt_lbl)
 
         del_btn = Button(
             text="X",
-            size_hint_x=0.1,
+            size_hint_x=0.12,
             background_normal="",
             background_color=(0.6, 0.15, 0.15, 1),
             color=(1, 1, 1, 1),
-            font_size="12sp",
+            font_size="10sp",
         )
         del_btn.bind(on_press=self._on_delete)
         self.add_widget(del_btn)

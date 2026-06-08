@@ -20,6 +20,9 @@ from ui.expenses_screen import ExpenseScreen
 from ui.reports_screen import ReportScreen
 from ui.staff_screen import StaffScreen
 from ui.dashboard_screen import DashboardScreen
+from ui.settings_screen import SettingsScreen
+from ui.purchases_screen import PurchasesScreen
+from ui.reconciliation_screen import ReconciliationScreen
 
 Builder.load_file("ui/main_screen.kv")
 Builder.load_file("ui/dashboard_screen.kv")
@@ -29,6 +32,9 @@ Builder.load_file("ui/customers_screen.kv")
 Builder.load_file("ui/expenses_screen.kv")
 Builder.load_file("ui/reports_screen.kv")
 Builder.load_file("ui/staff_screen.kv")
+Builder.load_file("ui/settings_screen.kv")
+Builder.load_file("ui/purchases_screen.kv")
+Builder.load_file("ui/reconciliation_screen.kv")
 
 
 class MainScreen(Screen):
@@ -49,6 +55,9 @@ class WarraichPetroleumApp(App):
         sm.add_widget(ReportScreen(name="reports"))
         sm.add_widget(StaffScreen(name="staff"))
         sm.add_widget(DashboardScreen(name="dashboard"))
+        sm.add_widget(SettingsScreen(name="settings"))
+        sm.add_widget(PurchasesScreen(name="purchases"))
+        sm.add_widget(ReconciliationScreen(name="reconciliation"))
         sm.current = "dashboard"
         return sm
 
