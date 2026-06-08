@@ -135,22 +135,30 @@ class ReconciliationScreen(Screen):
     def start_shift(self):
         sdate = self.ids.date_input.text.strip()
         shift = self.ids.shift_spinner.text
-        conn = get_connection()
-        pumps = Pump.get_with_tank()
-        count = 0
-        for p in pumps:
-            existing = conn.execute(
-                "SELECT id FROM shift_readings WHERE date=? AND shift=? AND pump_id=?",
-                (sdate, shift, p["id"]),
-            ).fetchone()
-            if not existing:
-                conn.execute(
-                    "INSERT INTO shift_readings (date, shift, pump_id, opening_reading) VALUES (?,?,?,?)",
-                    (sdate, shift, p["id"], 0),
-                )
-                count += 1
-        conn.commit()
-        conn.close()
+        try:
+            conn = get_connection()
+            pumps = Pump.get_with_tank()
+            count = 0
+            for p in pumps:
+                existing = conn.execute(
+                    "SELECT id FROM shift_readings WHERE date=? AND shift=? AND pump_id=?",
+                    (sdate, shift, p["id"]),
+                ).fetchone()
+                if not existing:
+                    conn.execute(
+                        "INSERT INTO shift_readings (date, shift, pump_id, opening_reading) VALUES (?,?,?,?)",
+                        (sdate, shift, p["id"], 0),
+                    )
+                    count += 1
+            conn.commit()
+            conn.close()
+        except Exception as e:
+            Popup(
+                title="Error",
+                content=Label(text=f"Failed to start shift: {e}", color=(1, 0.3, 0.3, 1)),
+                size_hint=(0.7, 0.25),
+            ).open()
+            return
         Popup(
             title="Shift Started",
             content=Label(text=f"Shift '{shift}' initialized for {count} pumps.", color=(1, 1, 1, 1)),
@@ -161,29 +169,60 @@ class ReconciliationScreen(Screen):
     def close_shift(self):
         sdate = self.ids.date_input.text.strip()
         shift = self.ids.shift_spinner.text
-        conn = get_connection()
-        for row in self.reading_rows:
-            try:
-                op = float(row.opening_input.text or "0")
-                cl = float(row.closing_input.text or "0")
-            except ValueError:
-                continue
-            existing = conn.execute(
-                "SELECT id FROM shift_readings WHERE date=? AND shift=? AND pump_id=?",
-                (sdate, shift, row.pump_id),
-            ).fetchone()
-            if existing:
-                conn.execute(
-                    "UPDATE shift_readings SET opening_reading=?, closing_reading=?, is_closed=1 WHERE id=?",
-                    (op, cl, existing["id"]),
-                )
-            else:
-                conn.execute(
-                    "INSERT INTO shift_readings (date, shift, pump_id, opening_reading, closing_reading, is_closed) VALUES (?,?,?,?,?,1)",
-                    (sdate, shift, row.pump_id, op, cl),
-                )
-        conn.commit()
-        conn.close()
+
+        confirm = Popup(
+            title="Close Shift",
+            content=BoxLayout(orientation="vertical", spacing=dp(8)),
+            size_hint=(0.7, 0.3),
+        )
+        confirm.content.add_widget(Label(
+            text=f"Close {shift} shift for {sdate}?\nThis will finalize all pump readings.",
+            color=(1, 1, 1, 1), font_size="12sp",
+        ))
+        btn_row = BoxLayout(orientation="horizontal", spacing=dp(12), size_hint_y=None, height=dp(40))
+        btn_row.add_widget(Button(
+            text="Cancel", background_normal="", background_color=(0.3, 0.3, 0.35, 1), color=(1, 1, 1, 1),
+            on_press=confirm.dismiss,
+        ))
+        btn_row.add_widget(Button(
+            text="Close", background_normal="", background_color=(0.4, 0.15, 0.15, 1), color=(1, 1, 1, 1),
+            on_press=lambda *a: (confirm.dismiss(), self._do_close_shift(sdate, shift)),
+        ))
+        confirm.content.add_widget(btn_row)
+        confirm.open()
+
+    def _do_close_shift(self, sdate, shift):
+        try:
+            conn = get_connection()
+            for row in self.reading_rows:
+                try:
+                    op = float(row.opening_input.text or "0")
+                    cl = float(row.closing_input.text or "0")
+                except ValueError:
+                    continue
+                existing = conn.execute(
+                    "SELECT id FROM shift_readings WHERE date=? AND shift=? AND pump_id=?",
+                    (sdate, shift, row.pump_id),
+                ).fetchone()
+                if existing:
+                    conn.execute(
+                        "UPDATE shift_readings SET opening_reading=?, closing_reading=?, is_closed=1 WHERE id=?",
+                        (op, cl, existing["id"]),
+                    )
+                else:
+                    conn.execute(
+                        "INSERT INTO shift_readings (date, shift, pump_id, opening_reading, closing_reading, is_closed) VALUES (?,?,?,?,?,1)",
+                        (sdate, shift, row.pump_id, op, cl),
+                    )
+            conn.commit()
+            conn.close()
+        except Exception as e:
+            Popup(
+                title="Error",
+                content=Label(text=f"Failed to close shift: {e}", color=(1, 0.3, 0.3, 1)),
+                size_hint=(0.7, 0.25),
+            ).open()
+            return
         Popup(
             title="Shift Closed",
             content=Label(text=f"Shift '{shift}' readings saved.", color=(1, 1, 1, 1)),

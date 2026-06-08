@@ -87,10 +87,10 @@ class PurchasesScreen(Screen):
             font_size="16sp", bold=True, color=(1, 1, 1, 1),
         ))
 
-        suppliers = Supplier.get_all("name")
+        suppliers = Supplier.get_all("name") or []
         supplier_spinner = Spinner(
             text="Select Supplier" if not suppliers else suppliers[0]["name"],
-            values=[s["name"] for s in suppliers],
+            values=[s["name"] for s in suppliers] or ["No suppliers"],
             size_hint_y=None, height=dp(36),
             background_color=(0.18, 0.18, 0.22, 1), color=(1, 1, 1, 1),
         )
@@ -187,7 +187,11 @@ class PurchasesScreen(Screen):
             if qty <= 0 or rate <= 0:
                 return
             amount = qty * rate
-            added_items.append({"type": itype, "id": int(iid), "name": iname, "qty": qty, "rate": rate, "amount": amount})
+            try:
+                item_id = int(iid)
+            except ValueError:
+                return
+            added_items.append({"type": itype, "id": item_id, "name": iname, "qty": qty, "rate": rate, "amount": amount})
             added_items_container.clear_widgets()
             total = 0
             for ai in added_items:

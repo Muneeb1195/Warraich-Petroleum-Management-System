@@ -241,13 +241,17 @@ class ExpenseForm(BoxLayout):
             expense_date = date.today().isoformat()
 
         if self.expense:
-            conn = get_connection()
-            conn.execute(
-                "UPDATE expenses SET category_id=?, amount=?, description=?, expense_date=? WHERE id=?",
-                (category_id, amount, self.desc_input.text, expense_date, self.expense["id"]),
-            )
-            conn.commit()
-            conn.close()
+            try:
+                conn = get_connection()
+                conn.execute(
+                    "UPDATE expenses SET category_id=?, amount=?, description=?, expense_date=? WHERE id=?",
+                    (category_id, amount, self.desc_input.text, expense_date, self.expense["id"]),
+                )
+                conn.commit()
+                conn.close()
+            except Exception as e:
+                self.screen.show_error(f"DB error: {e}")
+                return
         else:
             Expense.create(category_id, amount, self.desc_input.text, expense_date)
 

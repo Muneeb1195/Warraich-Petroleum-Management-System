@@ -47,45 +47,48 @@ class DashboardScreen(Screen):
         self.refresh()
 
     def refresh(self):
-        conn = get_connection()
+        try:
+            conn = get_connection()
 
-        today = conn.execute(
-            "SELECT COALESCE(SUM(grand_total),0) FROM sales WHERE sale_date=date('now')"
-        ).fetchone()[0]
-        self.ids.today_sales_card.card_value = curr(today)
+            today = conn.execute(
+                "SELECT COALESCE(SUM(grand_total),0) FROM sales WHERE sale_date=date('now')"
+            ).fetchone()[0]
+            self.ids.today_sales_card.card_value = curr(today)
 
-        month = conn.execute(
-            "SELECT COALESCE(SUM(grand_total),0) FROM sales WHERE strftime('%Y-%m', sale_date)=strftime('%Y-%m', 'now')"
-        ).fetchone()[0]
-        self.ids.month_sales_card.card_value = curr(month)
+            month = conn.execute(
+                "SELECT COALESCE(SUM(grand_total),0) FROM sales WHERE strftime('%Y-%m', sale_date)=strftime('%Y-%m', 'now')"
+            ).fetchone()[0]
+            self.ids.month_sales_card.card_value = curr(month)
 
-        today_exp = conn.execute(
-            "SELECT COALESCE(SUM(amount),0) FROM expenses WHERE expense_date=date('now')"
-        ).fetchone()[0]
-        self.ids.expenses_card.card_value = curr(today_exp)
+            today_exp = conn.execute(
+                "SELECT COALESCE(SUM(amount),0) FROM expenses WHERE expense_date=date('now')"
+            ).fetchone()[0]
+            self.ids.expenses_card.card_value = curr(today_exp)
 
-        tank_count = conn.execute("SELECT COUNT(*) FROM tanks").fetchone()[0]
-        self.ids.tank_card.card_value = str(tank_count)
+            tank_count = conn.execute("SELECT COUNT(*) FROM tanks").fetchone()[0]
+            self.ids.tank_card.card_value = str(tank_count)
 
-        lube_count = conn.execute("SELECT COUNT(*) FROM lube_products").fetchone()[0]
-        self.ids.lube_card.card_value = str(lube_count)
+            lube_count = conn.execute("SELECT COUNT(*) FROM lube_products").fetchone()[0]
+            self.ids.lube_card.card_value = str(lube_count)
 
-        staff_count = conn.execute(
-            "SELECT COUNT(*) FROM employees WHERE is_active=1"
-        ).fetchone()[0]
-        self.ids.staff_card.card_value = str(staff_count)
+            staff_count = conn.execute(
+                "SELECT COUNT(*) FROM employees WHERE is_active=1"
+            ).fetchone()[0]
+            self.ids.staff_card.card_value = str(staff_count)
 
-        pending = conn.execute(
-            "SELECT COALESCE(SUM(net_salary),0) FROM payroll WHERE paid=0"
-        ).fetchone()[0]
-        self.ids.payroll_card.card_value = curr(pending)
+            pending = conn.execute(
+                "SELECT COALESCE(SUM(net_salary),0) FROM payroll WHERE paid=0"
+            ).fetchone()[0]
+            self.ids.payroll_card.card_value = curr(pending)
 
-        profit = today - today_exp
-        profit_color = [0.25, 0.73, 0.32, 1] if profit >= 0 else [0.97, 0.32, 0.29, 1]
-        self.ids.profit_card.card_value = curr(profit)
-        self.ids.profit_card.value_color = profit_color
+            profit = today - today_exp
+            profit_color = [0.25, 0.73, 0.32, 1] if profit >= 0 else [0.97, 0.32, 0.29, 1]
+            self.ids.profit_card.card_value = curr(profit)
+            self.ids.profit_card.value_color = profit_color
 
-        conn.close()
+            conn.close()
+        except Exception:
+            pass
 
     def quick_sale(self):
         self.manager.current = "pos"

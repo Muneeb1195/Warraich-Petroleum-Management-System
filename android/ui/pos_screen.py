@@ -375,6 +375,13 @@ class PosScreen(Screen):
             )
             header.add_widget(h)
         container.add_widget(header)
+        if not lubes:
+            container.add_widget(Label(
+                text="No lubricants available. Add them in Inventory first.",
+                color=(0.8, 0.6, 0.2, 1), size_hint_y=None, height=dp(40),
+            ))
+            container.add_widget(Widget(size_hint_y=1))
+            return
         for l in lubes:
             container.add_widget(LubeCard(l))
         container.add_widget(Widget(size_hint_y=1))
@@ -429,7 +436,30 @@ class PosScreen(Screen):
     def on_gst_change(self):
         self._refresh_cart()
 
-    def _clear_cart(self):
+    def _clear_cart(self, silent=False):
+        if not silent and self.cart_items:
+            confirm = Popup(
+                title="Clear Cart",
+                content=Label(text="Clear entire cart?", color=(1, 1, 1, 1)),
+                size_hint=(0.6, 0.3),
+            )
+            btn_row = BoxLayout(orientation="horizontal", spacing=dp(12), size_hint_y=None, height=dp(40))
+            btn_row.add_widget(Button(
+                text="Cancel", background_normal="", background_color=(0.3, 0.3, 0.35, 1), color=(1, 1, 1, 1),
+                on_press=confirm.dismiss,
+            ))
+            btn_row.add_widget(Button(
+                text="Clear", background_normal="", background_color=(0.5, 0.15, 0.15, 1), color=(1, 1, 1, 1),
+                on_press=lambda *a: (confirm.dismiss(), self._do_clear_cart()),
+            ))
+            confirm.content = BoxLayout(orientation="vertical", spacing=dp(8))
+            confirm.content.add_widget(Label(text="Clear entire cart?", color=(1, 1, 1, 1)))
+            confirm.content.add_widget(btn_row)
+            confirm.open()
+        else:
+            self._do_clear_cart()
+
+    def _do_clear_cart(self):
         self.cart_items.clear()
         self._refresh_cart()
 
@@ -480,6 +510,9 @@ class PosScreen(Screen):
                 LubeProduct.adjust_stock(item["lube_id"], -item["qty"])
 
         totals = Sale.calculate_totals(sale_id)
+        if not totals:
+            self.show_error("Sale was created but totals could not be calculated.")
+            return
 
         if payment_mode == "Credit" and customer_id:
             Customer.update_balance(customer_id, totals["grand_total"])
@@ -503,7 +536,7 @@ class PosScreen(Screen):
         )
         popup.open()
 
-        self._clear_cart()
+        self._clear_cart(silent=True)
 
     def go_back(self):
         self.manager.current = "main"

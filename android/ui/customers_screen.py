@@ -189,14 +189,18 @@ class CustomerForm(BoxLayout):
             credit = 0
 
         if self.customer:
-            conn = get_connection()
-            conn.execute(
-                "UPDATE customers SET name=?, phone=?, address=?, gstin=?, credit_limit=? WHERE id=?",
-                (name, self.phone_input.text, self.address_input.text,
-                 self.gstin_input.text, credit, self.customer["id"]),
-            )
-            conn.commit()
-            conn.close()
+            try:
+                conn = get_connection()
+                conn.execute(
+                    "UPDATE customers SET name=?, phone=?, address=?, gstin=?, credit_limit=? WHERE id=?",
+                    (name, self.phone_input.text, self.address_input.text,
+                     self.gstin_input.text, credit, self.customer["id"]),
+                )
+                conn.commit()
+                conn.close()
+            except Exception as e:
+                self.screen.show_error(f"DB error: {e}")
+                return
         else:
             Customer.create(name, self.phone_input.text, self.address_input.text,
                             self.gstin_input.text, credit)

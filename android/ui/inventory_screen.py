@@ -352,13 +352,17 @@ class TankForm(BoxLayout):
             return
 
         if self.tank:
-            conn = get_connection()
-            conn.execute(
-                "UPDATE tanks SET name=?, fuel_type_id=?, capacity=?, current_level=? WHERE id=?",
-                (name, fuel_type_id, capacity, level, self.tank["id"]),
-            )
-            conn.commit()
-            conn.close()
+            try:
+                conn = get_connection()
+                conn.execute(
+                    "UPDATE tanks SET name=?, fuel_type_id=?, capacity=?, current_level=? WHERE id=?",
+                    (name, fuel_type_id, capacity, level, self.tank["id"]),
+                )
+                conn.commit()
+                conn.close()
+            except Exception as e:
+                self.screen.show_error(f"DB error: {e}")
+                return
         else:
             Tank.create(name, fuel_type_id, capacity, level)
 
@@ -436,13 +440,17 @@ class PumpForm(BoxLayout):
             return
 
         if self.pump:
-            conn = get_connection()
-            conn.execute(
-                "UPDATE pumps SET pump_no=?, tank_id=?, description=? WHERE id=?",
-                (pump_no, tank_id, self.desc_input.text, self.pump["id"]),
-            )
-            conn.commit()
-            conn.close()
+            try:
+                conn = get_connection()
+                conn.execute(
+                    "UPDATE pumps SET pump_no=?, tank_id=?, description=? WHERE id=?",
+                    (pump_no, tank_id, self.desc_input.text, self.pump["id"]),
+                )
+                conn.commit()
+                conn.close()
+            except Exception as e:
+                self.screen.show_error(f"DB error: {e}")
+                return
         else:
             Pump.create(pump_no, tank_id, self.desc_input.text)
 

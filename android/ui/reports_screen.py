@@ -32,18 +32,21 @@ class ReportScreen(Screen):
         from_d = self.ids.from_input.text.strip()
         to_d = self.ids.to_input.text.strip()
 
-        if report_type == "Daily Summary":
-            self._daily_summary(from_d, to_d)
-        elif report_type == "Profit & Loss":
-            self._profit_loss(from_d, to_d)
-        elif report_type == "Sales Report":
-            self._sales_report(from_d, to_d)
-        elif report_type == "Stock Report":
-            self._stock_report()
-        elif report_type == "Expense Report":
-            self._expense_report(from_d, to_d)
-        elif report_type == "Payroll Report":
-            self._payroll_report()
+        try:
+            if report_type == "Daily Summary":
+                self._daily_summary(from_d, to_d)
+            elif report_type == "Profit & Loss":
+                self._profit_loss(from_d, to_d)
+            elif report_type == "Sales Report":
+                self._sales_report(from_d, to_d)
+            elif report_type == "Stock Report":
+                self._stock_report()
+            elif report_type == "Expense Report":
+                self._expense_report(from_d, to_d)
+            elif report_type == "Payroll Report":
+                self._payroll_report()
+        except Exception as e:
+            self._display_results([], [], f"Error: {e}")
 
     def _display_results(self, headers, rows, summary=""):
         self.ids.summary_label.text = summary

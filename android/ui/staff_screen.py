@@ -93,6 +93,33 @@ class StaffScreen(Screen):
         date_val = self.ids.attendance_date.text.strip() or date.today().isoformat()
         shift = self.ids.attendance_shift.text
         employees = Employee.get_active()
+        if not employees:
+            return
+
+        confirm = Popup(
+            title="Mark All Present",
+            content=BoxLayout(orientation="vertical", spacing=dp(8)),
+            size_hint=(0.7, 0.35),
+        )
+        lbl = Label(
+            text=f"Mark ALL {len(employees)} employees as Present for {date_val} ({shift})?\n"
+                 "Existing marks (Absent, Half Day, etc.) will be overwritten.",
+            color=(1, 1, 1, 1), font_size="12sp",
+        )
+        confirm.content.add_widget(lbl)
+        btn_row = BoxLayout(orientation="horizontal", spacing=dp(12), size_hint_y=None, height=dp(40))
+        btn_row.add_widget(Button(
+            text="Cancel", background_normal="", background_color=(0.3, 0.3, 0.35, 1), color=(1, 1, 1, 1),
+            on_press=confirm.dismiss,
+        ))
+        btn_row.add_widget(Button(
+            text="Mark All", background_normal="", background_color=(0.15, 0.4, 0.15, 1), color=(1, 1, 1, 1),
+            on_press=lambda *a: (confirm.dismiss(), self._do_mark_all_present(date_val, shift, employees)),
+        ))
+        confirm.content.add_widget(btn_row)
+        confirm.open()
+
+    def _do_mark_all_present(self, date_val, shift, employees):
         for emp in employees:
             Attendance.mark(emp["id"], date_val, shift, "Present")
         self._rebuild_attendance()
