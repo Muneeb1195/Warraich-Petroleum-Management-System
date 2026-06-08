@@ -29,7 +29,7 @@ android.archs = arm64-v8a
 android.accept_sdk_license = True
 android.install_from_store = True
 android.enable_p4a = True
-android.gradle_dependencies = ''
+# android.gradle_dependencies =
 
 ios.codesign.debug = auto
 ios.codesign.release = auto
