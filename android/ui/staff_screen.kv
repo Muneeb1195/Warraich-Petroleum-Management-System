@@ -1,4 +1,5 @@
 #:import Theme libs.utils.theme
+#:import RefreshableScrollView libs.utils.refresh_scroll.RefreshableScrollView
 <StaffScreen>:
     BoxLayout:
         orientation: "vertical"
@@ -71,7 +72,8 @@
                         background_color: 0.15, 0.15, 0.18, 1
                         on_text: root.filter_employees(self.text)
 
-                    ScrollView:
+                    RefreshableScrollView:
+                        refresh_callback: root._rebuild_employees
                         GridLayout:
                             id: employee_container
                             cols: 1
@@ -174,7 +176,8 @@
                             text: ""
                             size_hint_x: 0.45
 
-                    ScrollView:
+                    RefreshableScrollView:
+                        refresh_callback: root._rebuild_attendance
                         GridLayout:
                             id: attendance_container
                             cols: 1
@@ -293,7 +296,8 @@
                             text: ""
                             size_hint_x: 0.2
 
-                    ScrollView:
+                    RefreshableScrollView:
+                        refresh_callback: root._rebuild_payroll
                         GridLayout:
                             id: payroll_container
                             cols: 1

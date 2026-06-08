@@ -1,4 +1,5 @@
 #:import Theme libs.utils.theme
+#:import RefreshableScrollView libs.utils.refresh_scroll.RefreshableScrollView
 <SalesHistoryScreen>:
     BoxLayout:
         orientation: "vertical"
@@ -61,7 +62,8 @@
                     color: Theme.TEXT_BLUE_HEADER
                     size_hint_x: 0.1
 
-            ScrollView:
+            RefreshableScrollView:
+                refresh_callback: root.on_enter
                 GridLayout:
                     id: sales_container
                     cols: 1

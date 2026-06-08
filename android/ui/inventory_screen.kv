@@ -1,4 +1,5 @@
 #:import Theme libs.utils.theme
+#:import RefreshableScrollView libs.utils.refresh_scroll.RefreshableScrollView
 <InventoryScreen>:
     BoxLayout:
         orientation: "vertical"
@@ -80,7 +81,8 @@
                             on_text: root.filter_tanks(self.text)
 
                         # Scrollable tank cards
-                        ScrollView:
+                        RefreshableScrollView:
+                            refresh_callback: root._rebuild_tanks
                             GridLayout:
                                 id: tank_container
                                 cols: 1
@@ -129,7 +131,8 @@
                             on_text: root.filter_pumps(self.text)
 
                         # Scrollable pump cards
-                        ScrollView:
+                        RefreshableScrollView:
+                            refresh_callback: root._rebuild_pumps
                             GridLayout:
                                 id: pump_container
                                 cols: 1
@@ -178,7 +181,8 @@
                             on_text: root.filter_lubes(self.text)
 
                         # Scrollable lube cards
-                        ScrollView:
+                        RefreshableScrollView:
+                            refresh_callback: root._rebuild_lubes
                             GridLayout:
                                 id: lube_container
                                 cols: 1
