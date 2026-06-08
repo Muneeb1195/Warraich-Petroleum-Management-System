@@ -31,7 +31,30 @@ def manual_backup():
         shutil.copy2(DB_PATH, backup_file)
     if settings.cloud_backup_enabled():
         _try_cloud_upload(backup_file)
+    old = sorted(BACKUP_DIR.glob("backup_*.db"))
+    while len(old) > 10:
+        old[0].unlink()
+        old.pop(0)
     return backup_file
+
+
+def list_local_backups():
+    """Return sorted list of backup Paths, newest first."""
+    BACKUP_DIR.mkdir(parents=True, exist_ok=True)
+    files = sorted(BACKUP_DIR.glob("backup_*.db"), key=lambda p: p.stat().st_mtime, reverse=True)
+    return files
+
+
+def restore_from_local(backup_path):
+    """Replace current DB with a local backup. Returns (ok, msg)."""
+    p = Path(backup_path)
+    if not p.exists():
+        return False, "Backup file not found."
+    try:
+        shutil.copy2(str(p), str(DB_PATH))
+        return True, "Local backup restored."
+    except Exception as e:
+        return False, str(e)
 
 
 def _auto_backup_worker():

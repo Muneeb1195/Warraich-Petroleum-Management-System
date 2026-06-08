@@ -194,11 +194,8 @@
                             background_color: 0.15, 0.15, 0.18, 1
                             font_size: "12sp"
 
-                    BoxLayout:
-                        orientation: "horizontal"
-                        size_hint_y: None
-                        height: dp(36)
-                        Label:
+                # GST Settings
+                Label:
                     text: "GST Settings"
                     size_hint_y: None
                     height: dp(28)
@@ -351,9 +348,9 @@
                             background_color: 0.15, 0.15, 0.18, 1
                             font_size: "12sp"
 
-                # Cloud Backup
+                # Google Drive Backup
                 Label:
-                    text: "Cloud Backup (HTTP POST)"
+                    text: "Google Drive Backup"
                     size_hint_y: None
                     height: dp(28)
                     font_size: "15sp"
@@ -365,7 +362,7 @@
                 BoxLayout:
                     orientation: "vertical"
                     size_hint_y: None
-                    height: dp(140)
+                    height: dp(120)
                     spacing: dp(6)
                     padding: [dp(8), dp(8)]
                     canvas.before:
@@ -380,17 +377,15 @@
                         size_hint_y: None
                         height: dp(36)
                         Label:
-                            text: "Backup URL:"
-                            size_hint_x: 0.3
+                            text: "Status:"
+                            size_hint_x: 0.25
                             color: Theme.TEXT_FIELD_LABEL
                             font_size: "12sp"
-                        TextInput:
-                            id: backup_url
-                            size_hint_x: 0.7
-                            multiline: False
-                            hint_text: "https://example.com/upload"
-                            foreground_color: Theme.TEXT_PRIMARY
-                            background_color: 0.15, 0.15, 0.18, 1
+                        Label:
+                            id: drive_status
+                            text: "Not connected"
+                            size_hint_x: 0.75
+                            color: Theme.TEXT_SECONDARY
                             font_size: "12sp"
 
                     BoxLayout:
@@ -398,11 +393,13 @@
                         size_hint_y: None
                         height: dp(40)
                         spacing: dp(8)
-                        Label:
-                            id: backup_status
-                            text: "Last: Never"
+                        Button:
+                            id: connect_btn
+                            text: "Connect to Drive"
                             size_hint_x: 0.5
-                            color: Theme.TEXT_SECONDARY
+                            background_normal: ""
+                            background_color: Theme.BTN_PRIMARY
+                            color: Theme.TEXT_PRIMARY
                             font_size: "12sp"
                         Button:
                             text: "Backup Now"
@@ -411,7 +408,53 @@
                             background_color: Theme.BTN_SECONDARY
                             color: Theme.TEXT_PRIMARY
                             font_size: "12sp"
-                            on_press: root.backup_now()
+                            on_press: root.drive_backup_now()
+
+                # Restore
+                Label:
+                    text: "Restore"
+                    size_hint_y: None
+                    height: dp(28)
+                    font_size: "15sp"
+                    bold: True
+                    color: Theme.TEXT_BLUE_HEADER
+                    halign: "left"
+                    text_size: self.width, None
+
+                BoxLayout:
+                    orientation: "vertical"
+                    size_hint_y: None
+                    height: dp(60)
+                    spacing: dp(6)
+                    padding: [dp(8), dp(8)]
+                    canvas.before:
+                        Color:
+                            rgba: Theme.BG_PANEL
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                    BoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: dp(40)
+                        spacing: dp(8)
+                        Button:
+                            text: "Restore from Cloud"
+                            size_hint_x: 0.5
+                            background_normal: ""
+                            background_color: Theme.BTN_INFO
+                            color: Theme.TEXT_PRIMARY
+                            font_size: "12sp"
+                            on_press: root.show_cloud_restore()
+                        Button:
+                            text: "Restore from Local"
+                            size_hint_x: 0.45
+                            background_normal: ""
+                            background_color: Theme.BTN_SECONDARY
+                            color: Theme.TEXT_PRIMARY
+                            font_size: "12sp"
+                            on_press: root.show_local_restore()
 
                 # Printer (Network ESC/POS)
                 Label:

@@ -165,3 +165,24 @@ def disconnect():
         TOKEN_PATH.unlink()
     settings.set("Cloud", "last_cloud_backup", "")
     settings.save()
+
+
+def list_drive_backups():
+    """Return [(filename, file_id), ...] from Drive folder, newest first."""
+    drive = _get_drive()
+    folder_id = _ensure_backup_folder(drive)
+    query = f"'{folder_id}' in parents and trashed=false"
+    files = drive.ListFile({"q": query}).GetList()
+    files.sort(key=lambda f: f.get("modifiedDate", ""), reverse=True)
+    return [(f["title"], f["id"]) for f in files]
+
+
+def download_from_drive(file_id, local_path):
+    """Download a Drive backup file to local_path. Returns (ok, msg)."""
+    try:
+        drive = _get_drive()
+        f = drive.CreateFile({"id": file_id})
+        f.GetContentFile(str(local_path))
+        return True, "Restored from cloud."
+    except Exception as e:
+        return False, str(e)

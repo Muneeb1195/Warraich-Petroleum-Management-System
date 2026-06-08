@@ -9,6 +9,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.properties import NumericProperty, ObjectProperty, StringProperty
 from kivy.metrics import dp
 from kivy.clock import Clock
+import threading
 
 from libs.utils.theme import *
 from libs.models.sale import Sale
@@ -18,6 +19,7 @@ from libs.utils.printer import NetworkPrinter
 from libs.models.fuel import Pump
 from libs.models.lube import LubeProduct
 from libs.database.settings import settings
+from libs.database.backup import manual_backup
 from libs.utils.formatting import curr
 
 
@@ -769,6 +771,7 @@ class PosScreen(Screen):
         popup.open()
 
         self._clear_cart(silent=True)
+        threading.Thread(target=manual_backup, daemon=True).start()
 
     def _print_receipt(self, inv_no, totals, payment_mode, customer_id):
         host = settings.printer_host()
