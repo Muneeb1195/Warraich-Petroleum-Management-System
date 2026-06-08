@@ -45,6 +45,10 @@ jobs:
 
       - name: Build APK
         working-directory: ./android
+        env:
+          ANDROID_NDK_HOME: ""
+          ANDROID_HOME: ""
+          ANDROID_SDK_ROOT: ""
         run: |
           buildozer android debug
 
