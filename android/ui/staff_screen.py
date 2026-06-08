@@ -196,10 +196,10 @@ class EmployeeRow(BoxLayout):
         for txt, sx, clr in [
             (emp["name"], 0.18, (1, 1, 1, 1)),
             (emp.get("role", ""), 0.12, (1, 1, 1, 1)),
-            (emp.get("phone", ""), 0.12, (1, 1, 1, 1)),
-            (emp["salary_type"], 0.08, (1, 1, 1, 1)),
-            (curr(emp["salary_amount"]), 0.1, (0.6, 1, 0.6, 1)),
-            (status_text, 0.08, status_color),
+            (emp.get("phone", ""), 0.14, (1, 1, 1, 1)),
+            (emp["salary_type"], 0.12, (1, 1, 1, 1)),
+            (curr(emp["salary_amount"]), 0.12, (0.6, 1, 0.6, 1)),
+            (status_text, 0.1, status_color),
         ]:
             lbl = Label(text=txt, size_hint_x=sx, halign="left", color=clr, font_size="11sp")
             self.add_widget(lbl)
@@ -394,10 +394,10 @@ class PayrollRow(BoxLayout):
         for txt, sx, clr in [
             (record.get("employee_name", ""), 0.18, (1, 1, 1, 1)),
             (record.get("role", ""), 0.1, (1, 1, 1, 1)),
-            (str(record["working_days"]), 0.06, (1, 1, 1, 1)),
-            (curr(record["gross_salary"]), 0.1, (1, 1, 1, 1)),
-            (curr(record["net_salary"]), 0.1, (0.6, 1, 0.6, 1)),
-            (paid_text, 0.08, paid_color),
+            (str(record["working_days"]), 0.08, (1, 1, 1, 1)),
+            (curr(record["gross_salary"]), 0.12, (1, 1, 1, 1)),
+            (curr(record["net_salary"]), 0.12, (0.6, 1, 0.6, 1)),
+            (paid_text, 0.12, paid_color),
         ]:
             lbl = Label(text=txt, size_hint_x=sx, halign="left", color=clr, font_size="11sp")
             self.add_widget(lbl)
@@ -405,11 +405,11 @@ class PayrollRow(BoxLayout):
         if not record["paid"]:
             pay_btn = Button(
                 text="Mark Paid", font_size="10sp",
-                size_hint_x=0.15, background_normal="",
+                size_hint_x=0.2, background_normal="",
                 background_color=(0.15, 0.5, 0.15, 1), color=(1,1,1,1),
             )
             pay_btn.bind(on_press=lambda *a: screen.mark_paid(record["id"]))
             self.add_widget(pay_btn)
         else:
-            spacer = Widget(size_hint_x=0.15)
+            spacer = Widget(size_hint_x=0.2)
             self.add_widget(spacer)

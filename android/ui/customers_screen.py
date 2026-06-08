@@ -95,16 +95,16 @@ class CustomerRow(BoxLayout):
         balance_color = (1, 0.4, 0.4, 1) if balance > 0 else (0.6, 1, 0.6, 1)
 
         for txt, sx, color in [
-            (cust["name"], 0.2, (1, 1, 1, 1)),
-            (cust.get("phone", ""), 0.15, (1, 1, 1, 1)),
-            (cust.get("gstin", ""), 0.15, (1, 1, 1, 1)),
-            (curr(cust["credit_limit"]), 0.12, (1, 1, 1, 1)),
-            (curr(balance), 0.1, balance_color),
+            (cust["name"], 0.18, (1, 1, 1, 1)),
+            (cust.get("phone", ""), 0.18, (1, 1, 1, 1)),
+            (cust.get("gstin", ""), 0.2, (1, 1, 1, 1)),
+            (curr(cust["credit_limit"]), 0.15, (1, 1, 1, 1)),
+            (curr(balance), 0.15, balance_color),
         ]:
             lbl = Label(text=txt, size_hint_x=sx, halign="left", color=color, font_size="12sp")
             self.add_widget(lbl)
 
-        btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.2, spacing=dp(4))
+        btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.14, spacing=dp(4))
         edit_btn = Button(text="Edit", font_size="11sp", background_normal="",
                           background_color=(0.2, 0.3, 0.5, 1), color=(1,1,1,1))
         edit_btn.bind(on_press=lambda *a: screen.show_form(cust))

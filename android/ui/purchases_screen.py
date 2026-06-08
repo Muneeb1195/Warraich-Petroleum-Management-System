@@ -29,23 +29,23 @@ class PurchaseRow(BoxLayout):
         self.padding = [dp(6), dp(4)]
         self.add_widget(Label(
             text=purchase["purchase_date"] or "",
-            size_hint_x=0.22, color=(0.8, 0.8, 0.8, 1), font_size="11sp",
+            size_hint_x=0.2, color=(0.8, 0.8, 0.8, 1), font_size="11sp",
         ))
         self.add_widget(Label(
             text=purchase["supplier_name"],
-            size_hint_x=0.28, halign="left", color=(1, 1, 1, 1), font_size="11sp",
+            size_hint_x=0.24, halign="left", color=(1, 1, 1, 1), font_size="11sp",
         ))
         inv = purchase.get("invoice_no", "") or ""
         self.add_widget(Label(
-            text=inv, size_hint_x=0.25, halign="left",
+            text=inv, size_hint_x=0.22, halign="left",
             color=(0.8, 0.8, 0.8, 1), font_size="11sp",
         ))
         self.add_widget(Label(
             text=curr(purchase.get("total_amount", 0)),
-            size_hint_x=0.15, color=(0.6, 1, 0.6, 1), font_size="11sp",
+            size_hint_x=0.2, color=(0.6, 1, 0.6, 1), font_size="11sp",
         ))
         btn = Button(
-            text="View", size_hint_x=0.1, font_size="10sp",
+            text="View", size_hint_x=0.14, font_size="10sp",
             background_normal="", background_color=(0.2, 0.2, 0.25, 1), color=(1, 1, 1, 1),
         )
         btn.bind(on_press=lambda *a: screen._view_purchase(purchase["id"]))
@@ -63,7 +63,7 @@ class PurchasesScreen(Screen):
             orientation="horizontal", size_hint_y=None, height=dp(28),
             spacing=dp(4), padding=[dp(6), 0],
         )
-        for txt, sx in [("Date", 0.22), ("Supplier", 0.28), ("Invoice", 0.25), ("Total", 0.15), ("", 0.1)]:
+        for txt, sx in [("Date", 0.2), ("Supplier", 0.24), ("Invoice", 0.22), ("Total", 0.2), ("", 0.14)]:
             header.add_widget(Label(
                 text=txt, size_hint_x=sx, bold=True,
                 color=(0.6, 0.6, 0.6, 1), font_size="10sp",

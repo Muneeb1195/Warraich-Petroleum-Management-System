@@ -45,7 +45,7 @@
                 font_size: "12sp"
             TextInput:
                 id: date_input
-                size_hint_x: 0.25
+                size_hint_x: 0.22
                 multiline: False
                 font_size: "11sp"
                 foreground_color: 1, 1, 1, 1
@@ -53,7 +53,7 @@
                 on_text: root.on_date_shift_change()
             Label:
                 text: "Shift:"
-                size_hint_x: 0.1
+                size_hint_x: 0.08
                 color: 0.8, 0.8, 0.8, 1
                 font_size: "12sp"
             Spinner:
@@ -67,7 +67,7 @@
                 on_text: root.on_date_shift_change()
             Button:
                 text: "Start"
-                size_hint_x: 0.1
+                size_hint_x: 0.14
                 background_normal: ""
                 background_color: 0.15, 0.4, 0.15, 1
                 color: 1, 1, 1, 1
@@ -75,7 +75,7 @@
                 on_press: root.start_shift()
             Button:
                 text: "Close"
-                size_hint_x: 0.1
+                size_hint_x: 0.14
                 background_normal: ""
                 background_color: 0.4, 0.15, 0.15, 1
                 color: 1, 1, 1, 1

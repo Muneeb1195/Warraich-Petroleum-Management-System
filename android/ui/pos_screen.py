@@ -36,7 +36,7 @@ class PumpCard(BoxLayout):
 
         name_lbl = Label(
             text=f"P{pump['pump_no']}-{fuel_name}",
-            size_hint_x=0.28,
+            size_hint_x=0.26,
             halign="left",
             color=(1, 1, 1, 1),
             font_size="12sp",
@@ -79,7 +79,7 @@ class PumpCard(BoxLayout):
 
         self.qty_label = Label(
             text="0.00 L",
-            size_hint_x=0.1,
+            size_hint_x=0.14,
             color=(0.6, 1, 0.6, 1),
             font_size="11sp",
         )
@@ -190,7 +190,7 @@ class LubeCard(BoxLayout):
 
         stock_lbl = Label(
             text=f"{lube['stock_qty']:,.2f} {lube['unit']}",
-            size_hint_x=0.15,
+            size_hint_x=0.18,
             color=(0.6, 0.6, 0.6, 1),
         )
         self.add_widget(stock_lbl)

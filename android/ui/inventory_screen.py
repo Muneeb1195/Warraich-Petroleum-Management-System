@@ -247,13 +247,12 @@ class LubeRow(BoxLayout):
         self.spacing = dp(4)
         self.padding = [dp(4), dp(2)]
 
+        info_text = f"{lube['stock_qty']:,.0f} {lube['unit']} | GST {lube.get('gst_rate', 18)}%"
         for txt, sx in [
-            (lube["brand"], 0.12),
-            (lube["product_name"], 0.18),
-            (lube["unit"], 0.08),
-            (f"{lube['stock_qty']:,.0f}", 0.08),
-            (curr(lube["selling_price"]), 0.1),
-            (f"{lube.get('gst_rate', 18)}%", 0.06),
+            (lube["brand"], 0.18),
+            (lube["product_name"], 0.22),
+            (info_text, 0.22),
+            (curr(lube["selling_price"]), 0.12),
         ]:
             lbl = Label(text=txt, size_hint_x=sx, halign="left", color=(1,1,1,1), font_size="11sp")
             self.add_widget(lbl)

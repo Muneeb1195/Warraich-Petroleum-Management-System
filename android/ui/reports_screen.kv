@@ -31,65 +31,79 @@
             padding: [dp(8), dp(4)]
             spacing: dp(4)
 
-            # Controls row
+            # Controls — split into 2 rows for portrait
             BoxLayout:
-                orientation: "horizontal"
+                orientation: "vertical"
                 size_hint_y: None
-                height: dp(36)
-                spacing: dp(6)
-                Label:
-                    text: "From:"
-                    size_hint_x: 0.08
-                    color: 0.8, 0.8, 0.8, 1
-                    font_size: "12sp"
-                TextInput:
-                    id: from_input
-                    size_hint_x: 0.15
-                    hint_text: "YYYY-MM-DD"
-                    multiline: False
-                    foreground_color: 1, 1, 1, 1
-                    background_color: 0.15, 0.15, 0.18, 1
-                    font_size: "12sp"
-                Label:
-                    text: "To:"
-                    size_hint_x: 0.06
-                    color: 0.8, 0.8, 0.8, 1
-                    font_size: "12sp"
-                TextInput:
-                    id: to_input
-                    size_hint_x: 0.15
-                    hint_text: "YYYY-MM-DD"
-                    multiline: False
-                    foreground_color: 1, 1, 1, 1
-                    background_color: 0.15, 0.15, 0.18, 1
-                    font_size: "12sp"
-                Label:
-                    text: "Report:"
-                    size_hint_x: 0.08
-                    color: 0.8, 0.8, 0.8, 1
-                    font_size: "12sp"
-                Spinner:
-                    id: report_spinner
-                    size_hint_x: 0.25
-                    text: "Daily Summary"
-                    values: ["Daily Summary", "Profit & Loss", "Sales Report", "Stock Report", "Expense Report", "Payroll Report"]
-                    background_color: 0.18, 0.18, 0.22, 1
-                    color: 1, 1, 1, 1
-                    font_size: "12sp"
-                Button:
-                    text: "Generate"
-                    size_hint_x: 0.12
-                    background_normal: ""
-                    background_color: 0.15, 0.5, 0.15, 1
-                    color: 1, 1, 1, 1
-                    on_press: root.generate()
-                Button:
-                    text: "Export Excel"
-                    size_hint_x: 0.15
-                    background_normal: ""
-                    background_color: 0.2, 0.3, 0.5, 1
-                    color: 1, 1, 1, 1
-                    on_press: root.export_excel()
+                height: dp(72)
+                spacing: dp(4)
+
+                # Row 1: Date range
+                BoxLayout:
+                    orientation: "horizontal"
+                    size_hint_y: None
+                    height: dp(34)
+                    spacing: dp(6)
+                    Label:
+                        text: "From:"
+                        size_hint_x: 0.12
+                        color: 0.8, 0.8, 0.8, 1
+                        font_size: "12sp"
+                    TextInput:
+                        id: from_input
+                        size_hint_x: 0.38
+                        hint_text: "YYYY-MM-DD"
+                        multiline: False
+                        foreground_color: 1, 1, 1, 1
+                        background_color: 0.15, 0.15, 0.18, 1
+                        font_size: "12sp"
+                    Label:
+                        text: "To:"
+                        size_hint_x: 0.08
+                        color: 0.8, 0.8, 0.8, 1
+                        font_size: "12sp"
+                    TextInput:
+                        id: to_input
+                        size_hint_x: 0.38
+                        hint_text: "YYYY-MM-DD"
+                        multiline: False
+                        foreground_color: 1, 1, 1, 1
+                        background_color: 0.15, 0.15, 0.18, 1
+                        font_size: "12sp"
+
+                # Row 2: Report type + actions
+                BoxLayout:
+                    orientation: "horizontal"
+                    size_hint_y: None
+                    height: dp(34)
+                    spacing: dp(6)
+                    Label:
+                        text: "Report:"
+                        size_hint_x: 0.12
+                        color: 0.8, 0.8, 0.8, 1
+                        font_size: "12sp"
+                    Spinner:
+                        id: report_spinner
+                        size_hint_x: 0.38
+                        text: "Daily Summary"
+                        values: ["Daily Summary", "Profit & Loss", "Sales Report", "Stock Report", "Expense Report", "Payroll Report"]
+                        background_color: 0.18, 0.18, 0.22, 1
+                        color: 1, 1, 1, 1
+                        font_size: "12sp"
+                    Button:
+                        text: "Generate"
+                        size_hint_x: 0.22
+                        background_normal: ""
+                        background_color: 0.15, 0.5, 0.15, 1
+                        color: 1, 1, 1, 1
+                        on_press: root.generate()
+                    Button:
+                        text: "Export"
+                        size_hint_x: 0.22
+                        background_normal: ""
+                        background_color: 0.2, 0.3, 0.5, 1
+                        color: 1, 1, 1, 1
+                        on_press: root.export_excel()
 
             # Summary label
             Label:

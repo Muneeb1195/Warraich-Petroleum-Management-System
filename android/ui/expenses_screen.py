@@ -96,14 +96,14 @@ class ExpenseRow(BoxLayout):
 
         for txt, sx in [
             (expense.get("expense_date", ""), 0.15),
-            (expense.get("category_name", ""), 0.2),
-            (curr(expense["amount"]), 0.12),
-            (expense.get("description", ""), 0.3),
+            (expense.get("category_name", ""), 0.18),
+            (curr(expense["amount"]), 0.15),
+            (expense.get("description", ""), 0.24),
         ]:
             lbl = Label(text=txt, size_hint_x=sx, halign="left", color=(1,1,1,1), font_size="12sp")
             self.add_widget(lbl)
 
-        btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.18, spacing=dp(4))
+        btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.28, spacing=dp(4))
         edit_btn = Button(text="Edit", font_size="11sp", background_normal="",
                           background_color=(0.2, 0.3, 0.5, 1), color=(1,1,1,1))
         edit_btn.bind(on_press=lambda *a: screen.show_form(expense))
