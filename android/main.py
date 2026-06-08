@@ -4,7 +4,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent / "libs"))
 
 import kivy
-kivy.require("2.2.0")
+kivy.require("2.3.1")
 
 from kivy.app import App
 from kivy.core.window import Window

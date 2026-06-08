@@ -22,13 +22,14 @@ class StatCard(BoxLayout):
     accent_rgba = ListProperty([0.35, 0.65, 1, 1])
     value_color = ListProperty([1, 1, 1, 1])
 
-    def __init__(self, icon, title, value, accent, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.icon = icon
-        self.card_title = title
-        self.card_value = value
-        self.accent = accent
-        self.accent_rgba = self._color_for_accent(accent)
+        self.orientation = "horizontal"
+        self.size_hint_y = None
+        self.height = dp(80)
+        self.padding = [dp(12), dp(8)]
+        self.spacing = dp(12)
+        self.accent_rgba = self._color_for_accent(self.accent)
 
     @staticmethod
     def _color_for_accent(accent):
@@ -39,11 +40,6 @@ class StatCard(BoxLayout):
             "#f85149": [0.97, 0.32, 0.29, 1],
         }
         return colors.get(accent, [0.35, 0.65, 1, 1])
-        self.orientation = "horizontal"
-        self.size_hint_y = None
-        self.height = dp(80)
-        self.padding = [dp(12), dp(8)]
-        self.spacing = dp(12)
 
 
 class DashboardScreen(Screen):
