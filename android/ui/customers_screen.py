@@ -30,7 +30,7 @@ class CustomerScreen(Screen):
             ))
         else:
             for c in customers:
-                container.add_widget(CustomerRow(c, self))
+                container.add_widget(CustomerCard(c, self))
         container.add_widget(Widget(size_hint_y=1))
 
     def filter(self, text):
@@ -81,40 +81,58 @@ class CustomerScreen(Screen):
         self.manager.current = "main"
 
 
-class CustomerRow(BoxLayout):
+class CustomerCard(BoxLayout):
     def __init__(self, cust, screen, **kwargs):
         super().__init__(**kwargs)
         self.cust_data = cust
         self.screen = screen
-        self.orientation = "horizontal"
+        self.orientation = "vertical"
         self.size_hint_y = None
-        self.height = dp(40)
-        self.spacing = dp(4)
-        self.padding = [dp(4), dp(2)]
+        self.height = dp(64)
+        self.spacing = dp(2)
+        self.padding = [dp(10), dp(6)]
 
         balance = cust.get("balance", 0)
-        balance_color = (1, 0.4, 0.4, 1) if balance > 0 else (0.6, 1, 0.6, 1)
+        bal_color = VAL_NEGATIVE if balance > 0 else VAL_POSITIVE
 
-        for txt, sx, color in [
-            (cust["name"], 0.18, (1, 1, 1, 1)),
-            (cust.get("phone", ""), 0.18, (1, 1, 1, 1)),
-            (cust.get("gstin", ""), 0.2, (1, 1, 1, 1)),
-            (curr(cust["credit_limit"]), 0.15, (1, 1, 1, 1)),
-            (curr(balance), 0.15, balance_color),
-        ]:
-            lbl = Label(text=txt, size_hint_x=sx, halign="left", color=color, font_size="12sp")
-            self.add_widget(lbl)
+        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
+        top.add_widget(Label(
+            text=cust["name"], bold=True, color=TEXT_PRIMARY,
+            font_size="14sp", halign="left",
+        ))
+        top.add_widget(Label(
+            text=curr(balance), color=bal_color,
+            font_size="13sp", halign="right", size_hint_x=0.3,
+        ))
+        self.add_widget(top)
 
-        btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.14, spacing=dp(4))
-        edit_btn = Button(text="Edit", font_size="11sp", background_normal="",
-                          background_color=BTN_INFO, color=(1,1,1,1))
+        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(22))
+        phone = cust.get("phone", "")
+        gstin = cust.get("gstin", "")
+        limit = cust["credit_limit"]
+        bot.add_widget(Label(
+            text=f"Ph: {phone}" if phone else "",
+            color=TEXT_SECONDARY, font_size="11sp", halign="left", size_hint_x=0.3,
+        ))
+        bot.add_widget(Label(
+            text=f"GST: {gstin}" if gstin else "",
+            color=TEXT_SECONDARY, font_size="11sp", halign="left", size_hint_x=0.3,
+        ))
+        bot.add_widget(Label(
+            text=f"Limit: {curr(limit)}", color=TEXT_DIM,
+            font_size="11sp", halign="left", size_hint_x=0.2,
+        ))
+        btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.2, spacing=dp(4))
+        edit_btn = Button(text="Edit", font_size="10sp", background_normal="",
+                          background_color=BTN_INFO, color=TEXT_PRIMARY)
         edit_btn.bind(on_press=lambda *a: screen.show_form(cust))
-        del_btn = Button(text="Del", font_size="11sp", background_normal="",
-                         background_color=BTN_DANGER_VARIANT, color=(1,1,1,1))
+        del_btn = Button(text="Del", font_size="10sp", background_normal="",
+                         background_color=BTN_DANGER_VARIANT, color=TEXT_PRIMARY)
         del_btn.bind(on_press=lambda *a: screen.confirm_delete(cust["id"]))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(del_btn)
-        self.add_widget(btn_row)
+        bot.add_widget(btn_row)
+        self.add_widget(bot)
 
 
 class CustomerForm(BoxLayout):

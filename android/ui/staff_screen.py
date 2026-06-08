@@ -36,7 +36,7 @@ class StaffScreen(Screen):
             ))
         else:
             for e in employees:
-                container.add_widget(EmployeeRow(e, self))
+                container.add_widget(EmployeeCard(e, self))
         container.add_widget(Widget(size_hint_y=1))
 
     def filter_employees(self, text):
@@ -208,44 +208,67 @@ class StaffScreen(Screen):
 
 
 # ==================== EMPLOYEE WIDGETS ====================
-class EmployeeRow(BoxLayout):
+class EmployeeCard(BoxLayout):
     def __init__(self, emp, screen, **kwargs):
         super().__init__(**kwargs)
         self.emp_data = emp
-        self.orientation = "horizontal"
+        self.screen = screen
+        self.orientation = "vertical"
         self.size_hint_y = None
-        self.height = dp(40)
-        self.spacing = dp(4)
-        self.padding = [dp(4), dp(2)]
+        self.height = dp(64)
+        self.spacing = dp(2)
+        self.padding = [dp(10), dp(6)]
 
-        status_text = "Active" if emp["is_active"] else "Inactive"
-        status_color = (0.4, 1, 0.4, 1) if emp["is_active"] else (0.6, 0.6, 0.6, 1)
+        is_active = emp["is_active"]
+        status_text = "Active" if is_active else "Inactive"
+        status_color = VAL_POSITIVE if is_active else TEXT_DIM
 
-        for txt, sx, clr in [
-            (emp["name"], 0.18, (1, 1, 1, 1)),
-            (emp.get("role", ""), 0.12, (1, 1, 1, 1)),
-            (emp.get("phone", ""), 0.14, (1, 1, 1, 1)),
-            (emp["salary_type"], 0.12, (1, 1, 1, 1)),
-            (curr(emp["salary_amount"]), 0.12, (0.6, 1, 0.6, 1)),
-            (status_text, 0.1, status_color),
-        ]:
-            lbl = Label(text=txt, size_hint_x=sx, halign="left", color=clr, font_size="11sp")
-            self.add_widget(lbl)
-
-        btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.22, spacing=dp(4))
-        edit_btn = Button(text="Edit", font_size="11sp", background_normal="",
-                          background_color=BTN_INFO, color=(1,1,1,1))
+        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
+        top.add_widget(Label(
+            text=emp["name"], bold=True, color=TEXT_PRIMARY,
+            font_size="14sp", halign="left",
+        ))
+        top.add_widget(Label(
+            text=curr(emp["salary_amount"]), color=VAL_POSITIVE,
+            font_size="13sp", halign="right", size_hint_x=0.2,
+        ))
+        top.add_widget(Label(
+            text=status_text, color=status_color,
+            font_size="12sp", halign="center", size_hint_x=0.15,
+        ))
+        btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.2, spacing=dp(4))
+        edit_btn = Button(text="Edit", font_size="10sp", background_normal="",
+                          background_color=BTN_INFO, color=TEXT_PRIMARY)
         edit_btn.bind(on_press=lambda *a: screen.show_employee_form(emp))
         toggle_btn = Button(
-            text="Deact" if emp["is_active"] else "Act",
+            text="Deact" if is_active else "Act",
             font_size="10sp", background_normal="",
-            background_color=(0.5, 0.4, 0.15, 1) if emp["is_active"] else (0.15, 0.4, 0.15, 1),
-            color=(1,1,1,1),
+            background_color=BTN_STAFF_TOGGLE if is_active else BTN_SECONDARY,
+            color=TEXT_PRIMARY,
         )
-        toggle_btn.bind(on_press=lambda *a: screen.toggle_employee(emp["id"], emp["is_active"]))
+        toggle_btn.bind(on_press=lambda *a: screen.toggle_employee(emp["id"], is_active))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(toggle_btn)
-        self.add_widget(btn_row)
+        top.add_widget(btn_row)
+        self.add_widget(top)
+
+        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(22))
+        role = emp.get("role", "")
+        phone = emp.get("phone", "")
+        sal_type = emp["salary_type"]
+        bot.add_widget(Label(
+            text=f"Role: {role}" if role else "",
+            color=TEXT_SECONDARY, font_size="11sp", halign="left", size_hint_x=0.3,
+        ))
+        bot.add_widget(Label(
+            text=f"Ph: {phone}" if phone else "",
+            color=TEXT_SECONDARY, font_size="11sp", halign="left", size_hint_x=0.3,
+        ))
+        bot.add_widget(Label(
+            text=sal_type, color=TEXT_DIM,
+            font_size="11sp", halign="left", size_hint_x=0.2,
+        ))
+        self.add_widget(bot)
 
 
 class EmployeeForm(BoxLayout):

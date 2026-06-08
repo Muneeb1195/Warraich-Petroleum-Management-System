@@ -64,48 +64,7 @@
                 background_color: 0.15, 0.15, 0.18, 1
                 on_text: root.filter(self.text)
 
-            # Column headers
-            BoxLayout:
-                orientation: "horizontal"
-                size_hint_y: None
-                height: dp(24)
-                spacing: dp(4)
-                padding: [dp(4), 0]
-                Label:
-                    text: "Name"
-                    size_hint_x: 0.18
-                    bold: True
-                    color: Theme.TEXT_SECONDARY
-                    font_size: "12sp"
-                Label:
-                    text: "Phone"
-                    size_hint_x: 0.18
-                    bold: True
-                    color: Theme.TEXT_SECONDARY
-                    font_size: "12sp"
-                Label:
-                    text: "GSTIN"
-                    size_hint_x: 0.2
-                    bold: True
-                    color: Theme.TEXT_SECONDARY
-                    font_size: "12sp"
-                Label:
-                    text: "Credit Limit"
-                    size_hint_x: 0.15
-                    bold: True
-                    color: Theme.TEXT_SECONDARY
-                    font_size: "12sp"
-                Label:
-                    text: "Balance"
-                    size_hint_x: 0.15
-                    bold: True
-                    color: Theme.TEXT_SECONDARY
-                    font_size: "12sp"
-                Label:
-                    text: ""
-                    size_hint_x: 0.14
-
-            # Scrollable customer rows
+            # Scrollable customer cards
             ScrollView:
                 GridLayout:
                     id: customer_container

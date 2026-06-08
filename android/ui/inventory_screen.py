@@ -37,7 +37,7 @@ class InventoryScreen(Screen):
             ))
         else:
             for t in tanks:
-                self.ids.tank_container.add_widget(TankRow(t, self))
+                self.ids.tank_container.add_widget(TankCard(t, self))
         self.ids.tank_container.add_widget(Widget(size_hint_y=1))
 
     def _rebuild_pumps(self):
@@ -51,7 +51,7 @@ class InventoryScreen(Screen):
             ))
         else:
             for p in pumps:
-                self.ids.pump_container.add_widget(PumpRow(p, self))
+                self.ids.pump_container.add_widget(PumpCard(p, self))
         self.ids.pump_container.add_widget(Widget(size_hint_y=1))
 
     def _rebuild_lubes(self, load_more=False):
@@ -86,7 +86,7 @@ class InventoryScreen(Screen):
             ))
         else:
             for l in lubes:
-                self.ids.lube_container.add_widget(LubeRow(l, self))
+                self.ids.lube_container.add_widget(LubeCard(l, self))
 
         # Remove old Load More button
         for child in list(self.ids.lube_container.children):
@@ -204,101 +204,145 @@ class InventoryScreen(Screen):
         self.manager.current = "main"
 
 
-class TankRow(BoxLayout):
+class TankCard(BoxLayout):
     def __init__(self, tank, screen, **kwargs):
         super().__init__(**kwargs)
         self.tank_data = tank
         self.screen = screen
-        self.orientation = "horizontal"
+        self.orientation = "vertical"
         self.size_hint_y = None
-        self.height = dp(40)
-        self.spacing = dp(4)
-        self.padding = [dp(4), dp(2)]
+        self.height = dp(64)
+        self.spacing = dp(2)
+        self.padding = [dp(10), dp(6)]
 
-        for txt, sx in [
-            (tank["name"], 0.2),
-            (tank["fuel_name"], 0.15),
-            (f"{tank['capacity']:,.0f} L", 0.15),
-            (f"{tank['current_level']:,.0f} L", 0.15),
-        ]:
-            lbl = Label(text=txt, size_hint_x=sx, halign="left", color=(1,1,1,1), font_size="12sp")
-            self.add_widget(lbl)
-
-        btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.25, spacing=dp(4))
-        edit_btn = Button(text="Edit", font_size="11sp", background_normal="",
-                          background_color=BTN_INFO, color=(1,1,1,1))
+        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
+        top.add_widget(Label(
+            text=tank["name"], bold=True, color=TEXT_PRIMARY,
+            font_size="14sp", halign="left",
+        ))
+        cap = tank["capacity"]
+        lvl = tank["current_level"]
+        pct = (lvl / cap * 100) if cap > 0 else 0
+        pct_color = VAL_POSITIVE if pct > 30 else (VAL_NEGATIVE if pct < 10 else TEXT_AMBER)
+        top.add_widget(Label(
+            text=f"{lvl:,.0f} / {cap:,.0f} L ({pct:.0f}%)",
+            color=pct_color, font_size="12sp", halign="right", size_hint_x=0.4,
+        ))
+        btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.2, spacing=dp(4))
+        edit_btn = Button(text="Edit", font_size="10sp", background_normal="",
+                          background_color=BTN_INFO, color=TEXT_PRIMARY)
         edit_btn.bind(on_press=lambda *a: screen.show_tank_form(tank))
-        del_btn = Button(text="Del", font_size="11sp", background_normal="",
-                         background_color=BTN_DANGER_VARIANT, color=(1,1,1,1))
+        del_btn = Button(text="Del", font_size="10sp", background_normal="",
+                         background_color=BTN_DANGER_VARIANT, color=TEXT_PRIMARY)
         del_btn.bind(on_press=lambda *a: screen.confirm_delete_tank(tank["id"]))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(del_btn)
-        self.add_widget(btn_row)
+        top.add_widget(btn_row)
+        self.add_widget(top)
+
+        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(22))
+        bot.add_widget(Label(
+            text=f"Fuel: {tank['fuel_name']}", color=TEXT_SECONDARY,
+            font_size="11sp", halign="left", size_hint_x=0.5,
+        ))
+        self.add_widget(bot)
 
 
-class PumpRow(BoxLayout):
+class PumpCard(BoxLayout):
     def __init__(self, pump, screen, **kwargs):
         super().__init__(**kwargs)
         self.pump_data = pump
         self.screen = screen
-        self.orientation = "horizontal"
+        self.orientation = "vertical"
         self.size_hint_y = None
-        self.height = dp(40)
-        self.spacing = dp(4)
-        self.padding = [dp(4), dp(2)]
+        self.height = dp(64)
+        self.spacing = dp(2)
+        self.padding = [dp(10), dp(6)]
 
-        for txt, sx in [
-            (pump["pump_no"], 0.15),
-            (pump.get("tank_name", ""), 0.15),
-            (pump["fuel_name"], 0.15),
-            (pump.get("description", ""), 0.25),
-        ]:
-            lbl = Label(text=txt, size_hint_x=sx, halign="left", color=(1,1,1,1), font_size="12sp")
-            self.add_widget(lbl)
-
-        btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.2, spacing=dp(4))
-        edit_btn = Button(text="Edit", font_size="11sp", background_normal="",
-                          background_color=BTN_INFO, color=(1,1,1,1))
+        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
+        top.add_widget(Label(
+            text=f"Pump #{pump['pump_no']}", bold=True, color=TEXT_PRIMARY,
+            font_size="14sp", halign="left", size_hint_x=0.35,
+        ))
+        top.add_widget(Label(
+            text=pump["fuel_name"], color=TEXT_BLUE_HEADER,
+            font_size="12sp", halign="left", size_hint_x=0.25,
+        ))
+        btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.25, spacing=dp(4))
+        edit_btn = Button(text="Edit", font_size="10sp", background_normal="",
+                          background_color=BTN_INFO, color=TEXT_PRIMARY)
         edit_btn.bind(on_press=lambda *a: screen.show_pump_form(pump))
-        del_btn = Button(text="Del", font_size="11sp", background_normal="",
-                         background_color=BTN_DANGER_VARIANT, color=(1,1,1,1))
+        del_btn = Button(text="Del", font_size="10sp", background_normal="",
+                         background_color=BTN_DANGER_VARIANT, color=TEXT_PRIMARY)
         del_btn.bind(on_press=lambda *a: screen.confirm_delete_pump(pump["id"]))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(del_btn)
-        self.add_widget(btn_row)
+        top.add_widget(btn_row)
+        self.add_widget(top)
+
+        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(22))
+        desc = pump.get("description", "")
+        bot.add_widget(Label(
+            text=f"Tank: {pump.get('tank_name', '—')}", color=TEXT_SECONDARY,
+            font_size="11sp", halign="left", size_hint_x=0.4,
+        ))
+        bot.add_widget(Label(
+            text=desc if desc else "", color=TEXT_DIM if desc else TEXT_VERSION,
+            font_size="11sp", halign="left",
+        ))
+        self.add_widget(bot)
 
 
-class LubeRow(BoxLayout):
+class LubeCard(BoxLayout):
     def __init__(self, lube, screen, **kwargs):
         super().__init__(**kwargs)
         self.lube_data = lube
         self.screen = screen
-        self.orientation = "horizontal"
+        self.orientation = "vertical"
         self.size_hint_y = None
-        self.height = dp(40)
-        self.spacing = dp(4)
-        self.padding = [dp(4), dp(2)]
+        self.height = dp(64)
+        self.spacing = dp(2)
+        self.padding = [dp(10), dp(6)]
 
-        info_text = f"{lube['stock_qty']:,.0f} {lube['unit']} | GST {lube.get('gst_rate', 18)}%"
-        for txt, sx in [
-            (lube["brand"], 0.18),
-            (lube["product_name"], 0.22),
-            (info_text, 0.22),
-            (curr(lube["selling_price"]), 0.12),
-        ]:
-            lbl = Label(text=txt, size_hint_x=sx, halign="left", color=(1,1,1,1), font_size="11sp")
-            self.add_widget(lbl)
-
+        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
+        top.add_widget(Label(
+            text=lube["brand"], bold=True, color=TEXT_PRIMARY,
+            font_size="14sp", halign="left", size_hint_x=0.3,
+        ))
+        top.add_widget(Label(
+            text=lube["product_name"], color=TEXT_PRIMARY,
+            font_size="13sp", halign="left",
+        ))
+        top.add_widget(Label(
+            text=curr(lube["selling_price"]), color=VAL_POSITIVE,
+            font_size="13sp", halign="right", size_hint_x=0.2,
+        ))
         btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.2, spacing=dp(4))
-        edit_btn = Button(text="Edit", font_size="11sp", background_normal="",
-                          background_color=BTN_INFO, color=(1,1,1,1))
+        edit_btn = Button(text="Edit", font_size="10sp", background_normal="",
+                          background_color=BTN_INFO, color=TEXT_PRIMARY)
         edit_btn.bind(on_press=lambda *a: screen.show_lube_form(lube))
-        del_btn = Button(text="Del", font_size="11sp", background_normal="",
-                         background_color=BTN_DANGER_VARIANT, color=(1,1,1,1))
+        del_btn = Button(text="Del", font_size="10sp", background_normal="",
+                         background_color=BTN_DANGER_VARIANT, color=TEXT_PRIMARY)
         del_btn.bind(on_press=lambda *a: screen.confirm_delete_lube(lube["id"]))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(del_btn)
-        self.add_widget(btn_row)
+        top.add_widget(btn_row)
+        self.add_widget(top)
+
+        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(22))
+        stock = lube['stock_qty']
+        unit = lube['unit']
+        gst = lube.get('gst_rate', 18)
+        bot.add_widget(Label(
+            text=f"Stock: {stock:,.2f} {unit}",
+            color=VAL_POSITIVE if stock > 0 else VAL_NEGATIVE,
+            font_size="11sp", halign="left", size_hint_x=0.4,
+        ))
+        bot.add_widget(Label(
+            text=f"GST: {gst}%", color=TEXT_SECONDARY,
+            font_size="11sp", halign="left", size_hint_x=0.3,
+        ))
+        self.add_widget(bot)
 
 
 class TankForm(BoxLayout):

@@ -64,42 +64,7 @@
                 background_color: 0.15, 0.15, 0.18, 1
                 on_text: root.filter(self.text)
 
-            # Column headers
-            BoxLayout:
-                orientation: "horizontal"
-                size_hint_y: None
-                height: dp(24)
-                spacing: dp(4)
-                padding: [dp(4), 0]
-                Label:
-                    text: "Date"
-                    size_hint_x: 0.15
-                    bold: True
-                    color: Theme.TEXT_SECONDARY
-                    font_size: "12sp"
-                Label:
-                    text: "Category"
-                    size_hint_x: 0.18
-                    bold: True
-                    color: Theme.TEXT_SECONDARY
-                    font_size: "12sp"
-                Label:
-                    text: "Amount"
-                    size_hint_x: 0.15
-                    bold: True
-                    color: Theme.TEXT_SECONDARY
-                    font_size: "12sp"
-                Label:
-                    text: "Description"
-                    size_hint_x: 0.24
-                    bold: True
-                    color: Theme.TEXT_SECONDARY
-                    font_size: "12sp"
-                Label:
-                    text: ""
-                    size_hint_x: 0.28
-
-            # Scrollable expense rows
+            # Scrollable expense cards
             ScrollView:
                 GridLayout:
                     id: expense_container

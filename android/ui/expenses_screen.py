@@ -33,7 +33,7 @@ class ExpenseScreen(Screen):
             ))
         else:
             for e in expenses:
-                container.add_widget(ExpenseRow(e, self))
+                container.add_widget(ExpenseCard(e, self))
         container.add_widget(Widget(size_hint_y=1))
 
     def filter(self, text):
@@ -84,36 +84,50 @@ class ExpenseScreen(Screen):
         self.manager.current = "main"
 
 
-class ExpenseRow(BoxLayout):
+class ExpenseCard(BoxLayout):
     def __init__(self, expense, screen, **kwargs):
         super().__init__(**kwargs)
         self.expense_data = expense
         self.screen = screen
-        self.orientation = "horizontal"
+        self.orientation = "vertical"
         self.size_hint_y = None
-        self.height = dp(40)
-        self.spacing = dp(4)
-        self.padding = [dp(4), dp(2)]
+        self.height = dp(64)
+        self.spacing = dp(2)
+        self.padding = [dp(10), dp(6)]
 
-        for txt, sx in [
-            (expense.get("expense_date", ""), 0.15),
-            (expense.get("category_name", ""), 0.18),
-            (curr(expense["amount"]), 0.15),
-            (expense.get("description", ""), 0.24),
-        ]:
-            lbl = Label(text=txt, size_hint_x=sx, halign="left", color=(1,1,1,1), font_size="12sp")
-            self.add_widget(lbl)
-
-        btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.28, spacing=dp(4))
-        edit_btn = Button(text="Edit", font_size="11sp", background_normal="",
-                          background_color=BTN_INFO, color=(1,1,1,1))
+        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
+        top.add_widget(Label(
+            text=curr(expense["amount"]), bold=True, color=VAL_NEGATIVE,
+            font_size="14sp", halign="left", size_hint_x=0.25,
+        ))
+        top.add_widget(Label(
+            text=expense.get("expense_date", ""), color=TEXT_SECONDARY,
+            font_size="12sp", halign="left", size_hint_x=0.3,
+        ))
+        top.add_widget(Label(
+            text=expense.get("category_name", ""), color=TEXT_BLUE_HEADER,
+            font_size="12sp", halign="right", size_hint_x=0.25,
+        ))
+        btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.2, spacing=dp(4))
+        edit_btn = Button(text="Edit", font_size="10sp", background_normal="",
+                          background_color=BTN_INFO, color=TEXT_PRIMARY)
         edit_btn.bind(on_press=lambda *a: screen.show_form(expense))
-        del_btn = Button(text="Del", font_size="11sp", background_normal="",
-                         background_color=BTN_DANGER_VARIANT, color=(1,1,1,1))
+        del_btn = Button(text="Del", font_size="10sp", background_normal="",
+                         background_color=BTN_DANGER_VARIANT, color=TEXT_PRIMARY)
         del_btn.bind(on_press=lambda *a: screen.confirm_delete(expense["id"]))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(del_btn)
-        self.add_widget(btn_row)
+        top.add_widget(btn_row)
+        self.add_widget(top)
+
+        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(22))
+        desc = expense.get("description", "")
+        bot.add_widget(Label(
+            text=desc if desc else "No description",
+            color=TEXT_DIM if desc else TEXT_VERSION,
+            font_size="11sp", halign="left", italic=not desc,
+        ))
+        self.add_widget(bot)
 
 
 class ExpenseForm(BoxLayout):

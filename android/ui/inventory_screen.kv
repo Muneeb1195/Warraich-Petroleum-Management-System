@@ -79,42 +79,7 @@
                             background_color: 0.15, 0.15, 0.18, 1
                             on_text: root.filter_tanks(self.text)
 
-                        # Column headers
-                        BoxLayout:
-                            orientation: "horizontal"
-                            size_hint_y: None
-                            height: dp(24)
-                            spacing: dp(4)
-                            padding: [dp(4), 0]
-                            Label:
-                                text: "Name"
-                                size_hint_x: 0.2
-                                bold: True
-                                color: Theme.TEXT_SECONDARY
-                                font_size: "12sp"
-                            Label:
-                                text: "Fuel"
-                                size_hint_x: 0.15
-                                bold: True
-                                color: Theme.TEXT_SECONDARY
-                                font_size: "12sp"
-                            Label:
-                                text: "Capacity"
-                                size_hint_x: 0.15
-                                bold: True
-                                color: Theme.TEXT_SECONDARY
-                                font_size: "12sp"
-                            Label:
-                                text: "Level"
-                                size_hint_x: 0.15
-                                bold: True
-                                color: Theme.TEXT_SECONDARY
-                                font_size: "12sp"
-                            Label:
-                                text: ""
-                                size_hint_x: 0.25
-
-                        # Scrollable tank rows
+                        # Scrollable tank cards
                         ScrollView:
                             GridLayout:
                                 id: tank_container
@@ -163,42 +128,7 @@
                             background_color: 0.15, 0.15, 0.18, 1
                             on_text: root.filter_pumps(self.text)
 
-                        # Column headers
-                        BoxLayout:
-                            orientation: "horizontal"
-                            size_hint_y: None
-                            height: dp(24)
-                            spacing: dp(4)
-                            padding: [dp(4), 0]
-                            Label:
-                                text: "Pump No"
-                                size_hint_x: 0.15
-                                bold: True
-                                color: Theme.TEXT_SECONDARY
-                                font_size: "12sp"
-                            Label:
-                                text: "Tank"
-                                size_hint_x: 0.15
-                                bold: True
-                                color: Theme.TEXT_SECONDARY
-                                font_size: "12sp"
-                            Label:
-                                text: "Fuel"
-                                size_hint_x: 0.15
-                                bold: True
-                                color: Theme.TEXT_SECONDARY
-                                font_size: "12sp"
-                            Label:
-                                text: "Description"
-                                size_hint_x: 0.25
-                                bold: True
-                                color: Theme.TEXT_SECONDARY
-                                font_size: "12sp"
-                            Label:
-                                text: ""
-                                size_hint_x: 0.2
-
-                        # Scrollable pump rows
+                        # Scrollable pump cards
                         ScrollView:
                             GridLayout:
                                 id: pump_container
@@ -247,42 +177,7 @@
                             background_color: 0.15, 0.15, 0.18, 1
                             on_text: root.filter_lubes(self.text)
 
-                        # Column headers
-                        BoxLayout:
-                            orientation: "horizontal"
-                            size_hint_y: None
-                            height: dp(24)
-                            spacing: dp(4)
-                            padding: [dp(4), 0]
-                        Label:
-                            text: "Brand"
-                            size_hint_x: 0.18
-                            bold: True
-                            color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
-                        Label:
-                            text: "Product"
-                            size_hint_x: 0.22
-                            bold: True
-                            color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
-                        Label:
-                            text: "Info"
-                            size_hint_x: 0.22
-                            bold: True
-                            color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
-                        Label:
-                            text: "Price"
-                            size_hint_x: 0.12
-                            bold: True
-                            color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
-                        Label:
-                            text: ""
-                            size_hint_x: 0.2
-
-                        # Scrollable lube rows
+                        # Scrollable lube cards
                         ScrollView:
                             GridLayout:
                                 id: lube_container

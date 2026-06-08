@@ -71,52 +71,6 @@
                         background_color: 0.15, 0.15, 0.18, 1
                         on_text: root.filter_employees(self.text)
 
-                    BoxLayout:
-                        orientation: "horizontal"
-                        size_hint_y: None
-                        height: dp(24)
-                        spacing: dp(4)
-                        padding: [dp(4), 0]
-                        Label:
-                            text: "Name"
-                            size_hint_x: 0.18
-                            bold: True
-                            color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
-                        Label:
-                            text: "Role"
-                            size_hint_x: 0.12
-                            bold: True
-                            color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
-                        Label:
-                            text: "Phone"
-                            size_hint_x: 0.14
-                            bold: True
-                            color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
-                        Label:
-                            text: "Type"
-                            size_hint_x: 0.12
-                            bold: True
-                            color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
-                        Label:
-                            text: "Amount"
-                            size_hint_x: 0.12
-                            bold: True
-                            color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
-                        Label:
-                            text: "Status"
-                            size_hint_x: 0.1
-                            bold: True
-                            color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
-                        Label:
-                            text: ""
-                            size_hint_x: 0.22
-
                     ScrollView:
                         GridLayout:
                             id: employee_container
