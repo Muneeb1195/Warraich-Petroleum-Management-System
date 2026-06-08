@@ -113,7 +113,7 @@ class ExpenseCard(BoxLayout):
                           background_color=BTN_INFO, color=TEXT_PRIMARY)
         edit_btn.bind(on_press=lambda *a: screen.show_form(expense))
         del_btn = Button(text="Del", font_size="10sp", background_normal="",
-                         background_color=BTN_DANGER_VARIANT, color=TEXT_PRIMARY)
+                         background_color=BTN_DANGER, color=TEXT_PRIMARY)
         del_btn.bind(on_press=lambda *a: screen.confirm_delete(expense["id"]))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(del_btn)

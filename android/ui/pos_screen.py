@@ -642,7 +642,7 @@ class PosScreen(Screen):
                 on_press=confirm.dismiss,
             ))
             btn_row.add_widget(Button(
-                text="Clear", background_normal="", background_color=BTN_DANGER_VARIANT, color=TEXT_PRIMARY,
+                text="Clear", background_normal="", background_color=BTN_DANGER, color=TEXT_PRIMARY,
                 on_press=lambda *a: (confirm.dismiss(), self._do_clear_cart()),
             ))
             confirm.content = BoxLayout(orientation="vertical", spacing=dp(8))

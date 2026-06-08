@@ -19,6 +19,8 @@ class StatCard(BoxLayout):
     icon = StringProperty("")
     card_title = StringProperty("")
     card_value = StringProperty("")
+    trend_text = StringProperty("")
+    trend_color = ListProperty([0.6, 0.6, 0.6, 1])
     accent = StringProperty("#58a6ff")
     accent_rgba = ListProperty([0.35, 0.65, 1, 1])
     value_color = ListProperty([1, 1, 1, 1])
@@ -56,6 +58,11 @@ class DashboardScreen(Screen):
             ).fetchone()[0]
             self.ids.today_sales_card.card_value = curr(today)
 
+            yesterday = conn.execute(
+                "SELECT COALESCE(SUM(grand_total),0) FROM sales WHERE sale_date=date('now','-1 day')"
+            ).fetchone()[0]
+            self._set_trend(self.ids.today_sales_card, today, yesterday)
+
             month = conn.execute(
                 "SELECT COALESCE(SUM(grand_total),0) FROM sales WHERE strftime('%Y-%m', sale_date)=strftime('%Y-%m', 'now')"
             ).fetchone()[0]
@@ -83,13 +90,36 @@ class DashboardScreen(Screen):
             self.ids.payroll_card.card_value = curr(pending)
 
             profit = today - today_exp
-            profit_color = [0.25, 0.73, 0.32, 1] if profit >= 0 else [0.97, 0.32, 0.29, 1]
+            profit_color = VAL_PROFIT_GREEN if profit >= 0 else VAL_NEGATIVE
             self.ids.profit_card.card_value = curr(profit)
             self.ids.profit_card.value_color = profit_color
+
+            yesterday_exp = conn.execute(
+                "SELECT COALESCE(SUM(amount),0) FROM expenses WHERE expense_date=date('now','-1 day')"
+            ).fetchone()[0]
+            yesterday_profit = yesterday - yesterday_exp
+            self._set_trend(self.ids.profit_card, profit, yesterday_profit)
 
             conn.close()
         except Exception:
             pass
+
+    @staticmethod
+    def _set_trend(card, current, previous):
+        if previous <= 0 and current > 0:
+            card.trend_text = "↑ New"
+            card.trend_color = VAL_POSITIVE
+        elif current > previous:
+            diff = current - previous
+            card.trend_text = f"↑ {curr(diff)}"
+            card.trend_color = VAL_POSITIVE
+        elif current < previous:
+            diff = previous - current
+            card.trend_text = f"↓ {curr(diff)}"
+            card.trend_color = VAL_NEGATIVE
+        else:
+            card.trend_text = "— Same"
+            card.trend_color = TEXT_DIM
 
     def quick_sale(self):
         self.manager.current = "pos"

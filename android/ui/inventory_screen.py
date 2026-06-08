@@ -233,7 +233,7 @@ class TankCard(BoxLayout):
                           background_color=BTN_INFO, color=TEXT_PRIMARY)
         edit_btn.bind(on_press=lambda *a: screen.show_tank_form(tank))
         del_btn = Button(text="Del", font_size="10sp", background_normal="",
-                         background_color=BTN_DANGER_VARIANT, color=TEXT_PRIMARY)
+                         background_color=BTN_DANGER, color=TEXT_PRIMARY)
         del_btn.bind(on_press=lambda *a: screen.confirm_delete_tank(tank["id"]))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(del_btn)
@@ -273,7 +273,7 @@ class PumpCard(BoxLayout):
                           background_color=BTN_INFO, color=TEXT_PRIMARY)
         edit_btn.bind(on_press=lambda *a: screen.show_pump_form(pump))
         del_btn = Button(text="Del", font_size="10sp", background_normal="",
-                         background_color=BTN_DANGER_VARIANT, color=TEXT_PRIMARY)
+                         background_color=BTN_DANGER, color=TEXT_PRIMARY)
         del_btn.bind(on_press=lambda *a: screen.confirm_delete_pump(pump["id"]))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(del_btn)
@@ -322,7 +322,7 @@ class LubeCard(BoxLayout):
                           background_color=BTN_INFO, color=TEXT_PRIMARY)
         edit_btn.bind(on_press=lambda *a: screen.show_lube_form(lube))
         del_btn = Button(text="Del", font_size="10sp", background_normal="",
-                         background_color=BTN_DANGER_VARIANT, color=TEXT_PRIMARY)
+                         background_color=BTN_DANGER, color=TEXT_PRIMARY)
         del_btn.bind(on_press=lambda *a: screen.confirm_delete_lube(lube["id"]))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(del_btn)
