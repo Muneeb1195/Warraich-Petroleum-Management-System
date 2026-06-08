@@ -26,6 +26,8 @@ class SettingsScreen(Screen):
         self.ids.date_format.text = date_fmt
         self.ids.backup_url.text = settings.backup_url()
         self.ids.backup_status.text = f"Last: {settings.last_cloud_backup()}"
+        self.ids.printer_host.text = settings.printer_host()
+        self.ids.printer_port.text = str(settings.printer_port())
 
     def save(self):
         settings.set_business_info(
@@ -49,6 +51,9 @@ class SettingsScreen(Screen):
         settings.set("Regional", "currency_symbol", self.ids.currency_symbol.text.strip() or "Rs.")
         settings.set("Regional", "date_format", self.ids.date_format.text.strip() or "DD/MM/YYYY")
         settings.set("Cloud", "backup_url", self.ids.backup_url.text.strip())
+        host = self.ids.printer_host.text.strip()
+        port = self.ids.printer_port.text.strip() or "9100"
+        settings.set_printer(host, port)
         settings.save()
 
         popup = Popup(

@@ -10,6 +10,8 @@ from kivy.metrics import dp
 
 from libs.models.sale import Sale
 from libs.models.customer import Customer
+from libs.database.settings import settings
+from libs.utils.printer import NetworkPrinter
 from libs.models.fuel import Pump
 from libs.models.lube import LubeProduct
 from libs.database.settings import settings
@@ -529,14 +531,72 @@ class PosScreen(Screen):
             f"Payment: {payment_mode}"
         )
 
+        popup_content = BoxLayout(orientation="vertical", spacing=dp(8))
+        popup_content.add_widget(Label(text=msg, color=(1, 1, 1, 1)))
+        btn_row = BoxLayout(orientation="horizontal", spacing=dp(12), size_hint_y=None, height=dp(40))
+        btn_row.add_widget(Button(
+            text="OK", background_normal="", background_color=(0.3, 0.3, 0.35, 1), color=(1, 1, 1, 1),
+            on_press=lambda *a: popup.dismiss(),
+        ))
+        btn_row.add_widget(Button(
+            text="Print", background_normal="", background_color=(0.15, 0.4, 0.15, 1), color=(1, 1, 1, 1),
+            on_press=lambda *a: (
+                popup.dismiss(),
+                self._print_receipt(inv_no, totals, payment_mode, customer_id),
+            ),
+        ))
+        popup_content.add_widget(btn_row)
+
         popup = Popup(
             title="Sale Complete",
-            content=Label(text=msg, color=(1, 1, 1, 1)),
+            content=popup_content,
             size_hint=(0.8, 0.5),
         )
         popup.open()
 
         self._clear_cart(silent=True)
+
+    def _print_receipt(self, inv_no, totals, payment_mode, customer_id):
+        host = settings.printer_host()
+        if not host:
+            self.show_error("No printer IP configured. Set it in Settings.")
+            return
+        port = settings.printer_port()
+
+        from datetime import date
+        sale_data = {
+            "invoice": inv_no,
+            "date": date.today().isoformat(),
+            "payment_mode": payment_mode,
+            "items": [],
+            "taxable_display": f"Rs {totals['taxable']:,.2f}",
+            "cgst_display": f"Rs {totals['cgst']:,.2f}",
+            "sgst_display": f"Rs {totals['sgst']:,.2f}",
+            "grand_total_display": f"Rs {totals['grand_total']:,.2f}",
+        }
+        for item in self.cart_items:
+            sale_data["items"].append({
+                "name": item.get("name", ""),
+                "qty_display": f"{item.get('qty', 0):.1f}L" if item.get("type") == "fuel" else f"{item.get('qty', 0):.0f}",
+                "rate_display": f"Rs {item.get('rate', 0):,.2f}",
+                "amount_display": f"Rs {item.get('amount', 0):,.2f}",
+            })
+
+        business_info = {
+            "name": settings.business_name(),
+            "address": settings.business_address(),
+            "phone": settings.business_phone(),
+            "gstin": settings.gstin(),
+        }
+
+        try:
+            printer = NetworkPrinter(host, port)
+            printer.connect()
+            printer.print_receipt(sale_data, business_info)
+            printer.disconnect()
+            self.show_error("Receipt printed.")
+        except Exception as e:
+            self.show_error(f"Print failed: {e}")
 
     def go_back(self):
         self.manager.current = "main"

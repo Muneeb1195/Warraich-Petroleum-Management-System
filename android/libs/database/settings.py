@@ -94,6 +94,17 @@ class Settings:
         self.set("Cloud", "backup_url", url)
         self.save()
 
+    def printer_host(self):
+        return self.get("Printer", "host", "")
+
+    def printer_port(self):
+        return int(self.get("Printer", "port", "9100"))
+
+    def set_printer(self, host, port):
+        self.set("Printer", "host", host)
+        self.set("Printer", "port", str(port))
+        self.save()
+
     def last_cloud_backup(self):
         val = self.get("Cloud", "last_cloud_backup", "")
         if val:
