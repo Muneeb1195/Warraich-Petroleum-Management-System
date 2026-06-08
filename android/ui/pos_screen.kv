@@ -68,7 +68,7 @@
                     pos: self.pos
                     size: self.size
 
-            # Options: Customer, Payment, GST
+            # Options: Customer, Payment chips, GST
             BoxLayout:
                 orientation: "horizontal"
                 size_hint_y: None
@@ -76,38 +76,58 @@
                 spacing: dp(4)
                 Label:
                     text: "Customer:"
-                    size_hint_x: 0.22
+                    size_hint_x: 0.18
                     color: Theme.TEXT_FIELD_LABEL
                     font_size: "12sp"
                 Spinner:
                     id: customer_spinner
-                    size_hint_x: 0.28
+                    size_hint_x: 0.24
                     text: "Walk-in Customer"
                     values: ["Walk-in Customer"]
                     background_color: 0.18, 0.18, 0.22, 1
                     color: Theme.TEXT_PRIMARY
                     font_size: "12sp"
-                Label:
-                    text: "Pay:"
-                    size_hint_x: 0.1
-                    color: Theme.TEXT_FIELD_LABEL
-                    font_size: "12sp"
-                Spinner:
-                    id: payment_spinner
-                    size_hint_x: 0.18
+                # Payment mode as chips
+                Button:
                     text: "Cash"
-                    values: ["Cash", "Card", "UPI", "Credit"]
-                    background_color: 0.18, 0.18, 0.22, 1
+                    size_hint_x: 0.12
+                    font_size: "11sp"
+                    background_normal: ""
+                    background_color: Theme.BTN_PRIMARY if root._payment_mode == 'Cash' else Theme.BTN_NAV
                     color: Theme.TEXT_PRIMARY
-                    font_size: "12sp"
+                    on_press: root.set_payment_mode("Cash")
+                Button:
+                    text: "Card"
+                    size_hint_x: 0.12
+                    font_size: "11sp"
+                    background_normal: ""
+                    background_color: Theme.BTN_PRIMARY if root._payment_mode == 'Card' else Theme.BTN_NAV
+                    color: Theme.TEXT_PRIMARY
+                    on_press: root.set_payment_mode("Card")
+                Button:
+                    text: "UPI"
+                    size_hint_x: 0.1
+                    font_size: "11sp"
+                    background_normal: ""
+                    background_color: Theme.BTN_PRIMARY if root._payment_mode == 'UPI' else Theme.BTN_NAV
+                    color: Theme.TEXT_PRIMARY
+                    on_press: root.set_payment_mode("UPI")
+                Button:
+                    text: "Credit"
+                    size_hint_x: 0.12
+                    font_size: "11sp"
+                    background_normal: ""
+                    background_color: Theme.BTN_PRIMARY if root._payment_mode == 'Credit' else Theme.BTN_NAV
+                    color: Theme.TEXT_PRIMARY
+                    on_press: root.set_payment_mode("Credit")
                 Label:
                     text: "GST:"
-                    size_hint_x: 0.07
+                    size_hint_x: 0.06
                     color: Theme.TEXT_FIELD_LABEL
                     font_size: "12sp"
                 TextInput:
                     id: gst_input
-                    size_hint_x: 0.12
+                    size_hint_x: 0.1
                     multiline: False
                     input_filter: "float"
                     text: "18"
@@ -119,7 +139,7 @@
             # Cart items scrollable
             BoxLayout:
                 orientation: "vertical"
-                # Cart header row
+                # Cart header row with badge
                 BoxLayout:
                     orientation: "horizontal"
                     size_hint_y: None
@@ -127,11 +147,13 @@
                     spacing: dp(2)
                     padding: [dp(2), 0]
                     Label:
-                        text: "Item"
+                        id: cart_badge
+                        text: "Cart (0)"
                         size_hint_x: 0.32
                         bold: True
-                        color: Theme.TEXT_SECONDARY
-                        font_size: "9sp"
+                        color: Theme.TEXT_BLUE_HEADER
+                        font_size: "10sp"
+                        halign: "left"
                     Label:
                         text: "Qty"
                         size_hint_x: 0.16

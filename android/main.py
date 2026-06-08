@@ -11,6 +11,7 @@ from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.lang import Builder
+from kivy.properties import BooleanProperty, StringProperty
 
 from libs.database.connection import init_db
 from libs.database.backup import start_auto_backup
@@ -40,7 +41,18 @@ Builder.load_file("ui/reconciliation_screen.kv")
 
 
 class MainScreen(Screen):
-    pass
+    drawer_open = BooleanProperty(True)
+    active_screen = StringProperty("dashboard")
+
+    def toggle_drawer(self):
+        self.drawer_open = not self.drawer_open
+
+    def go_to(self, name):
+        self.active_screen = name
+        self.manager.current = name
+
+    def on_enter(self):
+        self.drawer_open = False
 
 
 class WarraichPetroleumApp(App):

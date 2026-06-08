@@ -5,8 +5,10 @@ from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
-from kivy.properties import NumericProperty, ObjectProperty
+from kivy.uix.gridlayout import GridLayout
+from kivy.properties import NumericProperty, ObjectProperty, StringProperty
 from kivy.metrics import dp
+from kivy.clock import Clock
 
 from libs.utils.theme import *
 from libs.models.sale import Sale
@@ -19,10 +21,92 @@ from libs.database.settings import settings
 from libs.utils.formatting import curr
 
 
+class NumberPadPopup(Popup):
+    def __init__(self, value="0", callback=None, **kwargs):
+        super().__init__(**kwargs)
+        self.callback = callback
+        self._value = value
+        self._build()
+
+    def _build(self):
+        self.title = "Enter value"
+        self.size_hint = (0.7, 0.6)
+        self.background = ""
+        self.background_color = (0.09, 0.09, 0.12, 1)
+        self.separator_height = 0
+
+        root = BoxLayout(orientation="vertical", spacing=dp(4), padding=[dp(8), dp(4)])
+        self.display = Label(
+            text=self._value,
+            size_hint_y=None, height=dp(48),
+            font_size="26sp", bold=True,
+            color=TEXT_PRIMARY, halign="center",
+        )
+        root.add_widget(self.display)
+
+        grid = GridLayout(cols=3, spacing=dp(4), size_hint_y=None, height=dp(220))
+        for row in [("7","8","9"), ("4","5","6"), ("1","2","3")]:
+            for ch in row:
+                btn = Button(
+                    text=ch, font_size="18sp",
+                    background_normal="", background_color=BTN_NAV, color=TEXT_PRIMARY,
+                )
+                btn.bind(on_press=lambda *a, c=ch: self._append(c))
+                grid.add_widget(btn)
+        # last row: 0, ., ⌫
+        for ch, cls in [("0", BTN_NAV), (".", BTN_NAV), ("⌫", BTN_DANGER)]:
+            btn = Button(
+                text=ch, font_size="18sp",
+                background_normal="", background_color=cls, color=TEXT_PRIMARY,
+            )
+            if ch == "⌫":
+                btn.bind(on_press=lambda *a: self._backspace())
+            else:
+                btn.bind(on_press=lambda *a, c=ch: self._append(c))
+            grid.add_widget(btn)
+        root.add_widget(grid)
+
+        btn_row = BoxLayout(size_hint_y=None, height=dp(40), spacing=dp(8))
+        btn_row.add_widget(Button(
+            text="Clear", font_size="14sp",
+            background_normal="", background_color=BTN_CANCEL, color=TEXT_PRIMARY,
+            on_press=lambda *a: self._clear(),
+        ))
+        btn_row.add_widget(Button(
+            text="OK", font_size="14sp",
+            background_normal="", background_color=BTN_PRIMARY, color=TEXT_PRIMARY,
+            on_press=lambda *a: self._confirm(),
+        ))
+        root.add_widget(btn_row)
+        self.content = root
+
+    def _append(self, char):
+        if char == "." and "." in self._value:
+            return
+        if self._value == "0" and char != ".":
+            self._value = char
+        else:
+            self._value += char
+        self.display.text = self._value
+
+    def _backspace(self):
+        self._value = self._value[:-1] or "0"
+        self.display.text = self._value
+
+    def _clear(self):
+        self._value = "0"
+        self.display.text = self._value
+
+    def _confirm(self):
+        if self.callback:
+            self.callback(self._value)
+        self.dismiss()
+
+
 class PumpCard(BoxLayout):
     pump_data = ObjectProperty(None)
-    opening_text = ObjectProperty(None)
-    closing_text = ObjectProperty(None)
+    opening_btn = ObjectProperty(None)
+    closing_btn = ObjectProperty(None)
     qty_label = ObjectProperty(None)
 
     def __init__(self, pump, **kwargs):
@@ -31,15 +115,15 @@ class PumpCard(BoxLayout):
         self.orientation = "horizontal"
         self.size_hint_y = None
         self.height = dp(60)
-        self.spacing = dp(8)
-        self.padding = [dp(8), dp(4)]
+        self.spacing = dp(6)
+        self.padding = [dp(6), dp(4)]
 
         fuel_name = pump["fuel_name"]
         rate = settings.fuel_rate(fuel_name.lower())
 
         name_lbl = Label(
             text=f"P{pump['pump_no']}-{fuel_name}",
-            size_hint_x=0.26,
+            size_hint_x=0.28,
             halign="left",
             color=TEXT_PRIMARY,
             font_size="12sp",
@@ -56,29 +140,30 @@ class PumpCard(BoxLayout):
         )
         self.add_widget(rate_lbl)
 
-        self.opening_text = TextInput(
-            text="0",
-            input_filter="float",
-            multiline=False,
-            size_hint_x=0.14,
-            hint_text="Open",
-            font_size="11sp",
-            foreground_color=TEXT_PRIMARY,
-            background_color=(0.15, 0.15, 0.18, 1),
-        )
-        self.add_widget(self.opening_text)
+        self._opening = 0.0
+        self._closing = 0.0
 
-        self.closing_text = TextInput(
-            text="0",
-            input_filter="float",
-            multiline=False,
-            size_hint_x=0.14,
-            hint_text="Close",
-            font_size="11sp",
-            foreground_color=TEXT_PRIMARY,
-            background_color=(0.15, 0.15, 0.18, 1),
+        self.opening_btn = Button(
+            text="Open",
+            size_hint_x=0.15,
+            background_normal="",
+            background_color=BTN_NAV,
+            color=TEXT_SECONDARY,
+            font_size="10sp",
         )
-        self.add_widget(self.closing_text)
+        self.opening_btn.bind(on_press=self._open_opening_pad)
+        self.add_widget(self.opening_btn)
+
+        self.closing_btn = Button(
+            text="Close",
+            size_hint_x=0.15,
+            background_normal="",
+            background_color=BTN_NAV,
+            color=TEXT_SECONDARY,
+            font_size="10sp",
+        )
+        self.closing_btn.bind(on_press=self._open_closing_pad)
+        self.add_widget(self.closing_btn)
 
         self.qty_label = Label(
             text="0.00 L",
@@ -90,7 +175,7 @@ class PumpCard(BoxLayout):
 
         add_btn = Button(
             text="Add",
-            size_hint_x=0.14,
+            size_hint_x=0.12,
             background_normal="",
             background_color=BTN_PRIMARY,
             color=TEXT_PRIMARY,
@@ -99,16 +184,38 @@ class PumpCard(BoxLayout):
         add_btn.bind(on_press=self._on_add)
         self.add_widget(add_btn)
 
-        self.opening_text.bind(text=self._update_qty)
-        self.closing_text.bind(text=self._update_qty)
+    def _open_opening_pad(self, *args):
+        pad = NumberPadPopup(
+            value=str(self._opening),
+            callback=self._set_opening,
+        )
+        pad.open()
+
+    def _set_opening(self, val):
+        v = float(val or "0")
+        self._opening = v
+        self.opening_btn.text = val
+        self.opening_btn.color = TEXT_PRIMARY
+        self.opening_btn.background_color = BTN_INFO
+        self._update_qty()
+
+    def _open_closing_pad(self, *args):
+        pad = NumberPadPopup(
+            value=str(self._closing),
+            callback=self._set_closing,
+        )
+        pad.open()
+
+    def _set_closing(self, val):
+        v = float(val or "0")
+        self._closing = v
+        self.closing_btn.text = val
+        self.closing_btn.color = TEXT_PRIMARY
+        self.closing_btn.background_color = BTN_INFO
+        self._update_qty()
 
     def _get_qty(self):
-        try:
-            op = float(self.opening_text.text or "0")
-            cl = float(self.closing_text.text or "0")
-            return max(0, cl - op)
-        except ValueError:
-            return 0
+        return max(0, self._closing - self._opening)
 
     def _update_qty(self, *args):
         qty = self._get_qty()
@@ -128,8 +235,8 @@ class PumpCard(BoxLayout):
             "type": "fuel",
             "pump_id": self.pump_data["id"],
             "name": f"{self.pump_data['fuel_name']} - Pump {self.pump_data['pump_no']}",
-            "opening": float(self.opening_text.text or "0"),
-            "closing": float(self.closing_text.text or "0"),
+            "opening": self._opening,
+            "closing": self._closing,
             "qty": qty,
             "rate": rate,
             "amount": amount,
@@ -138,8 +245,15 @@ class PumpCard(BoxLayout):
         if screen:
             screen.add_to_cart(item)
 
-        self.opening_text.text = "0"
-        self.closing_text.text = "0"
+        self._opening = 0.0
+        self._closing = 0.0
+        self.opening_btn.text = "Open"
+        self.opening_btn.color = TEXT_SECONDARY
+        self.opening_btn.background_color = BTN_NAV
+        self.closing_btn.text = "Close"
+        self.closing_btn.color = TEXT_SECONDARY
+        self.closing_btn.background_color = BTN_NAV
+        self._update_qty()
 
     def _show_error(self, msg):
         screen = self._get_pos_screen()
@@ -157,7 +271,7 @@ class PumpCard(BoxLayout):
 
 class LubeCard(BoxLayout):
     lube_data = ObjectProperty(None)
-    qty_input = ObjectProperty(None)
+    qty_btn = ObjectProperty(None)
 
     def __init__(self, lube, **kwargs):
         super().__init__(**kwargs)
@@ -166,13 +280,14 @@ class LubeCard(BoxLayout):
         self.size_hint_y = None
         self.height = dp(52)
         self.spacing = dp(6)
-        self.padding = [dp(8), dp(4)]
+        self.padding = [dp(6), dp(4)]
 
         brand_lbl = Label(
             text=lube["brand"],
             size_hint_x=0.18,
             halign="left",
             color=TEXT_PRIMARY,
+            font_size="11sp",
         )
         self.add_widget(brand_lbl)
 
@@ -181,6 +296,7 @@ class LubeCard(BoxLayout):
             size_hint_x=0.25,
             halign="left",
             color=TEXT_PRIMARY,
+            font_size="11sp",
         )
         self.add_widget(name_lbl)
 
@@ -188,25 +304,29 @@ class LubeCard(BoxLayout):
             text=curr(lube["selling_price"]),
             size_hint_x=0.12,
             color=VAL_POSITIVE,
+            font_size="11sp",
         )
         self.add_widget(price_lbl)
 
         stock_lbl = Label(
             text=f"{lube['stock_qty']:,.2f} {lube['unit']}",
-            size_hint_x=0.18,
+            size_hint_x=0.17,
             color=TEXT_SECONDARY,
+            font_size="11sp",
         )
         self.add_widget(stock_lbl)
 
-        self.qty_input = TextInput(
+        self._qty = 1.0
+        self.qty_btn = Button(
             text="1",
-            input_filter="float",
-            multiline=False,
             size_hint_x=0.12,
-            foreground_color=TEXT_PRIMARY,
-            background_color=(0.15, 0.15, 0.18, 1),
+            background_normal="",
+            background_color=BTN_NAV,
+            color=TEXT_SECONDARY,
+            font_size="12sp",
         )
-        self.add_widget(self.qty_input)
+        self.qty_btn.bind(on_press=self._open_qty_pad)
+        self.add_widget(self.qty_btn)
 
         add_btn = Button(
             text="Add",
@@ -214,15 +334,32 @@ class LubeCard(BoxLayout):
             background_normal="",
             background_color=BTN_PRIMARY,
             color=TEXT_PRIMARY,
+            font_size="11sp",
         )
         add_btn.bind(on_press=self._on_add)
         self.add_widget(add_btn)
 
-    def _on_add(self, *args):
+    def _open_qty_pad(self, *args):
+        pad = NumberPadPopup(
+            value=str(self._qty),
+            callback=self._set_qty,
+        )
+        pad.open()
+
+    def _set_qty(self, val):
         try:
-            qty = float(self.qty_input.text or "0")
+            v = float(val or "0")
         except ValueError:
-            qty = 0
+            v = 1
+        if v <= 0:
+            v = 1
+        self._qty = v
+        self.qty_btn.text = val
+        self.qty_btn.color = TEXT_PRIMARY
+        self.qty_btn.background_color = BTN_INFO
+
+    def _on_add(self, *args):
+        qty = self._qty
         if qty <= 0:
             return
         if qty > self.lube_data["stock_qty"]:
@@ -328,6 +465,8 @@ class CartItem(BoxLayout):
 
 
 class PosScreen(Screen):
+    _payment_mode = StringProperty("Cash")
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.cart_items = []
@@ -341,10 +480,60 @@ class PosScreen(Screen):
         self.ids.gst_input.text = str(settings.default_gst_rate())
         self._refresh_cart()
 
+    def set_payment_mode(self, mode):
+        self._payment_mode = mode
+
+    def _quick_sale(self, fuel_name, amount):
+        rate = settings.fuel_rate(fuel_name)
+        if rate <= 0:
+            self.show_error(f"Set {fuel_name.title()} rate in Settings first.")
+            return
+        qty = amount / rate
+        item = {
+            "type": "fuel",
+            "pump_id": 0,
+            "name": f"{fuel_name.title()} ₹{amount}",
+            "opening": 0,
+            "closing": 0,
+            "qty": round(qty, 2),
+            "rate": rate,
+            "amount": amount,
+        }
+        self.add_to_cart(item)
+
     def _rebuild_fuel_tab(self):
         container = self.ids.fuel_container
         container.clear_widgets()
         pumps = Pump.get_with_tank()
+
+        fuel_types = {}
+        for p in pumps:
+            ft = p["fuel_name"].lower()
+            if ft not in fuel_types:
+                fuel_types[ft] = settings.fuel_rate(ft)
+
+        if fuel_types:
+            quick_row = BoxLayout(
+                orientation="horizontal",
+                size_hint_y=None, height=dp(36),
+                spacing=dp(4), padding=[dp(4), 0],
+            )
+            for fuel_name in fuel_types:
+                rate = fuel_types[fuel_name]
+                if rate <= 0:
+                    continue
+                for amt in [200, 500, 1000]:
+                    btn = Button(
+                        text=f"{fuel_name.title()} ₹{amt}",
+                        font_size="10sp",
+                        background_normal="",
+                        background_color=BTN_QUICK_SALE,
+                        color=TEXT_PRIMARY,
+                    )
+                    btn.bind(on_press=lambda *a, fn=fuel_name, a2=amt: self._quick_sale(fn, a2))
+                    quick_row.add_widget(btn)
+            container.add_widget(quick_row)
+
         if not pumps:
             container.add_widget(Label(
                 text="No pumps configured. Add pumps in Inventory first.",
@@ -364,11 +553,11 @@ class PosScreen(Screen):
         header = BoxLayout(
             orientation="horizontal",
             size_hint_y=None,
-            height=dp(32),
+            height=dp(28),
             spacing=dp(6),
             padding=[dp(8), 0],
         )
-        for txt, sx in [("Brand", 0.18), ("Product", 0.25), ("Price", 0.12), ("Stock", 0.15), ("Qty", 0.12), ("", 0.12)]:
+        for txt, sx in [("Brand", 0.18), ("Product", 0.25), ("Price", 0.12), ("Stock", 0.17), ("Qty", 0.12), ("", 0.12)]:
             h = Label(
                 text=txt,
                 size_hint_x=sx,
@@ -412,6 +601,7 @@ class PosScreen(Screen):
     def _refresh_cart(self):
         container = self.ids.cart_container
         container.clear_widgets()
+        self.ids.cart_badge.text = f"Cart ({len(self.cart_items)})"
         taxable = 0
         for i, item in enumerate(self.cart_items):
             container.add_widget(CartItem(i, item))
@@ -482,6 +672,18 @@ class PosScreen(Screen):
         )
         popup.open()
 
+    def show_toast(self, msg):
+        toast = Popup(
+            title="",
+            content=Label(text=msg, color=VAL_POSITIVE, font_size="14sp"),
+            size_hint=(0.6, 0.15),
+            background="",
+            background_color=(0.09, 0.09, 0.12, 0.95),
+            auto_dismiss=False,
+        )
+        toast.open()
+        Clock.schedule_once(lambda *a: toast.dismiss(), 2)
+
     def _checkout(self):
         if not self.cart_items:
             self.show_error("Cart is empty.")
@@ -489,7 +691,7 @@ class PosScreen(Screen):
 
         customer_label = self.ids.customer_spinner.text
         customer_id = self._customer_map.get(customer_label)
-        payment_mode = self.ids.payment_spinner.text
+        payment_mode = self._payment_mode
 
         try:
             gst_rate = float(self.ids.gst_input.text or "0")

@@ -5,31 +5,36 @@
 
         # Header bar
         BoxLayout:
-            size_hint_y: 0.1
+            size_hint_y: 0.08
             canvas.before:
                 Color:
                     rgba: Theme.BG_HEADER
                 Rectangle:
                     pos: self.pos
                     size: self.size
-            Label:
-                text: "⛽ Warraich Petroleum"
+            Button:
+                text: "☰"
+                size_hint_x: 0.1
                 font_size: "20sp"
+                background_normal: ""
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
+                on_press: root.toggle_drawer()
+            Label:
+                text: "Warraich Petroleum"
+                font_size: "18sp"
                 bold: True
                 color: Theme.TEXT_PRIMARY
-            Label:
-                text: "Management System"
-                font_size: "12sp"
-                color: Theme.TEXT_SECONDARY
 
-        # Body with sidebar + content placeholder
+        # Body with collapsible sidebar + content placeholder
         BoxLayout:
             orientation: "horizontal"
 
-            # Sidebar
+            # Sidebar (collapsible)
             BoxLayout:
                 orientation: "vertical"
-                size_hint_x: 0.45
+                size_hint_x: 0.45 if root.drawer_open else 0
+                opacity: 1 if root.drawer_open else 0
                 canvas.before:
                     Color:
                         rgba: Theme.BG_SIDEBAR
@@ -50,81 +55,81 @@
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: Theme.BTN_NAV
+                            background_color: Theme.BTN_PRIMARY if root.active_screen == 'dashboard' else Theme.BTN_NAV
                             color: Theme.TEXT_PRIMARY
-                            on_press: root.manager.current = "dashboard"
+                            on_press: root.go_to("dashboard")
                         Button:
                             text: "⛽ Inventory"
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: Theme.BTN_NAV
+                            background_color: Theme.BTN_PRIMARY if root.active_screen == 'inventory' else Theme.BTN_NAV
                             color: Theme.TEXT_PRIMARY
-                            on_press: root.manager.current = "inventory"
+                            on_press: root.go_to("inventory")
                         Button:
                             text: "📦 Purchases"
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: Theme.BTN_NAV
+                            background_color: Theme.BTN_PRIMARY if root.active_screen == 'purchases' else Theme.BTN_NAV
                             color: Theme.TEXT_PRIMARY
-                            on_press: root.manager.current = "purchases"
+                            on_press: root.go_to("purchases")
                         Button:
                             text: "🧾 POS / Sales"
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: Theme.BTN_NAV
+                            background_color: Theme.BTN_PRIMARY if root.active_screen == 'pos' else Theme.BTN_NAV
                             color: Theme.TEXT_PRIMARY
-                            on_press: root.manager.current = "pos"
+                            on_press: root.go_to("pos")
                         Button:
                             text: "👥 Customers"
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: Theme.BTN_NAV
+                            background_color: Theme.BTN_PRIMARY if root.active_screen == 'customers' else Theme.BTN_NAV
                             color: Theme.TEXT_PRIMARY
-                            on_press: root.manager.current = "customers"
+                            on_press: root.go_to("customers")
                         Button:
                             text: "💰 Expenses"
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: Theme.BTN_NAV
+                            background_color: Theme.BTN_PRIMARY if root.active_screen == 'expenses' else Theme.BTN_NAV
                             color: Theme.TEXT_PRIMARY
-                            on_press: root.manager.current = "expenses"
+                            on_press: root.go_to("expenses")
                         Button:
                             text: "📈 Reports"
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: Theme.BTN_NAV
+                            background_color: Theme.BTN_PRIMARY if root.active_screen == 'reports' else Theme.BTN_NAV
                             color: Theme.TEXT_PRIMARY
-                            on_press: root.manager.current = "reports"
+                            on_press: root.go_to("reports")
                         Button:
                             text: "🔄 Shift Recon"
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: Theme.BTN_NAV
+                            background_color: Theme.BTN_PRIMARY if root.active_screen == 'reconciliation' else Theme.BTN_NAV
                             color: Theme.TEXT_PRIMARY
-                            on_press: root.manager.current = "reconciliation"
+                            on_press: root.go_to("reconciliation")
                         Button:
                             text: "👥 Staff"
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: Theme.BTN_NAV
+                            background_color: Theme.BTN_PRIMARY if root.active_screen == 'staff' else Theme.BTN_NAV
                             color: Theme.TEXT_PRIMARY
-                            on_press: root.manager.current = "staff"
+                            on_press: root.go_to("staff")
                         Button:
                             text: "⚙️ Settings"
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: Theme.BTN_NAV
+                            background_color: Theme.BTN_PRIMARY if root.active_screen == 'settings' else Theme.BTN_NAV
                             color: Theme.TEXT_PRIMARY
-                            on_press: root.manager.current = "settings"
+                            on_press: root.go_to("settings")
 
                         Label:
                             text: "v1.0"
