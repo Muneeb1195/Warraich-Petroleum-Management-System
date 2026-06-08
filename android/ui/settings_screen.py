@@ -1,6 +1,9 @@
 from kivy.uix.screenmanager import Screen
+from kivy.uix.popup import Popup
+from kivy.uix.label import Label
 from kivy.metrics import dp
 from libs.database.settings import settings
+from libs.database.simple_backup import upload_db_async
 
 
 class SettingsScreen(Screen):
@@ -21,6 +24,8 @@ class SettingsScreen(Screen):
         self.ids.currency_symbol.text = settings.currency_symbol()
         date_fmt = settings.date_format()
         self.ids.date_format.text = date_fmt
+        self.ids.backup_url.text = settings.backup_url()
+        self.ids.backup_status.text = f"Last: {settings.last_cloud_backup()}"
 
     def save(self):
         settings.set_business_info(
@@ -43,14 +48,26 @@ class SettingsScreen(Screen):
         settings.set("GST", "hsn_lube", self.ids.hsn_lube.text.strip())
         settings.set("Regional", "currency_symbol", self.ids.currency_symbol.text.strip() or "Rs.")
         settings.set("Regional", "date_format", self.ids.date_format.text.strip() or "DD/MM/YYYY")
+        settings.set("Cloud", "backup_url", self.ids.backup_url.text.strip())
         settings.save()
 
-        from kivy.uix.popup import Popup
-        from kivy.uix.label import Label
         popup = Popup(
             title="Saved",
             content=Label(text="Settings saved.", color=(1, 1, 1, 1)),
             size_hint=(0.6, 0.25),
+        )
+        popup.open()
+
+    def backup_now(self):
+        self.ids.backup_status.text = "Uploading..."
+        upload_db_async(callback=lambda ok, msg: self._on_backup_result(ok, msg))
+
+    def _on_backup_result(self, ok, msg):
+        self.ids.backup_status.text = f"Last: {settings.last_cloud_backup()}" if ok else f"Failed: {msg}"
+        popup = Popup(
+            title="Backup" if ok else "Backup Failed",
+            content=Label(text=msg, color=(1, 1, 1, 1)),
+            size_hint=(0.7, 0.25),
         )
         popup.open()
 

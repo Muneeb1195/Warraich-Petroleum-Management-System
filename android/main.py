@@ -7,12 +7,14 @@ import kivy
 kivy.require("2.3.1")
 
 from kivy.app import App
+from kivy.clock import Clock
 from kivy.core.window import Window
 from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.lang import Builder
 
 from libs.database.connection import init_db
 from libs.database.backup import start_auto_backup
+from libs.utils.logger import install_exception_hook, show_crash_dialog_if_needed
 from ui.pos_screen import PosScreen
 from ui.inventory_screen import InventoryScreen
 from ui.customers_screen import CustomerScreen
@@ -43,9 +45,11 @@ class MainScreen(Screen):
 
 class WarraichPetroleumApp(App):
     def build(self):
+        install_exception_hook()
         Window.softinput_mode = "below_target"
         init_db()
         start_auto_backup()
+        Clock.schedule_once(lambda *a: show_crash_dialog_if_needed(), 1)
         sm = ScreenManager()
         sm.add_widget(MainScreen(name="main"))
         sm.add_widget(PosScreen(name="pos"))

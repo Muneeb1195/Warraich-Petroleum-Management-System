@@ -13,6 +13,8 @@ from kivy.metrics import dp
 
 from libs.models.fuel import FuelType, Tank, Pump
 from libs.models.lube import LubeProduct
+
+PAGE_SIZE = 20
 from libs.database.connection import get_connection
 from libs.utils.formatting import curr
 
@@ -51,10 +53,31 @@ class InventoryScreen(Screen):
                 self.ids.pump_container.add_widget(PumpRow(p, self))
         self.ids.pump_container.add_widget(Widget(size_hint_y=1))
 
-    def _rebuild_lubes(self):
-        self.ids.lube_container.clear_widgets()
-        lubes = LubeProduct.get_all("brand")
-        if not lubes:
+    def _rebuild_lubes(self, load_more=False):
+        if not load_more:
+            self._lube_page = 0
+            self._lube_has_more = True
+            self.ids.lube_container.clear_widgets()
+
+        search = self.ids.lube_search.text.strip().lower()
+        offset = self._lube_page * PAGE_SIZE
+
+        where = ""
+        params = [PAGE_SIZE, offset]
+        if search:
+            where = "WHERE LOWER(brand) LIKE ? OR LOWER(product_name) LIKE ?"
+            params = [f"%{search}%", f"%{search}%", PAGE_SIZE, offset]
+
+        lubes = LubeProduct.fetch(
+            f"SELECT * FROM lube_products {where} ORDER BY brand LIMIT ? OFFSET ?",
+            tuple(params),
+        )
+        self._lube_has_more = len(lubes) == PAGE_SIZE
+
+        if not load_more:
+            self.ids.lube_container.clear_widgets()
+
+        if self._lube_page == 0 and not lubes:
             self.ids.lube_container.add_widget(Label(
                 text="No lubricants. Tap + to add one.",
                 color=(0.8, 0.6, 0.2, 1),
@@ -63,6 +86,21 @@ class InventoryScreen(Screen):
         else:
             for l in lubes:
                 self.ids.lube_container.add_widget(LubeRow(l, self))
+
+        # Remove old Load More button
+        for child in list(self.ids.lube_container.children):
+            if isinstance(child, Button) and child.text == "Load More":
+                self.ids.lube_container.remove_widget(child)
+
+        if self._lube_has_more and lubes:
+            self._lube_page += 1
+            more_btn = Button(
+                text="Load More", size_hint_y=None, height=dp(40),
+                background_normal="", background_color=(0.2, 0.3, 0.5, 1), color=(1, 1, 1, 1),
+                on_press=lambda *a: self._rebuild_lubes(load_more=True),
+            )
+            self.ids.lube_container.add_widget(more_btn)
+
         self.ids.lube_container.add_widget(Widget(size_hint_y=1))
 
     def filter_tanks(self, text):
@@ -86,14 +124,7 @@ class InventoryScreen(Screen):
                 child.disabled = not match
 
     def filter_lubes(self, text):
-        container = self.ids.lube_container
-        text = text.lower()
-        for child in container.children:
-            if hasattr(child, "lube_data"):
-                match = text in child.lube_data.get("brand", "").lower() or \
-                        text in child.lube_data.get("product_name", "").lower()
-                child.opacity = 1 if match else 0.3
-                child.disabled = not match
+        self._rebuild_lubes()
 
     def show_tank_form(self, tank=None):
         content = TankForm(tank, self)

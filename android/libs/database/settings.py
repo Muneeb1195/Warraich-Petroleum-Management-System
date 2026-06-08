@@ -87,6 +87,13 @@ class Settings:
         self.set("Cloud", "cloud_backup_enabled", "1" if enabled else "0")
         self.save()
 
+    def backup_url(self):
+        return self.get("Cloud", "backup_url", "")
+
+    def set_backup_url(self, url):
+        self.set("Cloud", "backup_url", url)
+        self.save()
+
     def last_cloud_backup(self):
         val = self.get("Cloud", "last_cloud_backup", "")
         if val:
