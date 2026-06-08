@@ -16,12 +16,16 @@ from libs.utils.formatting import curr
 
 class CustomerScreen(Screen):
     def on_enter(self):
-        self._rebuild()
+        self.ids.customer_search.text = ""
+        self._rebuild("")
 
-    def _rebuild(self):
+    def _rebuild(self, search_text=""):
         container = self.ids.customer_container
         container.clear_widgets()
-        customers = Customer.get_all("name")
+        if search_text.strip():
+            customers = Customer.search(search_text)
+        else:
+            customers = Customer.get_all("name")
         if not customers:
             container.add_widget(Label(
                 text="No customers yet. Tap + to add one.",
@@ -32,18 +36,6 @@ class CustomerScreen(Screen):
             for c in customers:
                 container.add_widget(CustomerCard(c, self))
         container.add_widget(Widget(size_hint_y=1))
-
-    def filter(self, text):
-        container = self.ids.customer_container
-        text = text.lower()
-        for child in container.children:
-            if hasattr(child, "cust_data"):
-                data = child.cust_data
-                match = text in data["name"].lower() or \
-                        text in data.get("phone", "").lower() or \
-                        text in data.get("gstin", "").lower()
-                child.opacity = 1 if match else 0.3
-                child.disabled = not match
 
     def show_form(self, customer=None):
         content = CustomerForm(customer, self)
@@ -65,7 +57,7 @@ class CustomerScreen(Screen):
         btn_row.add_widget(no_btn)
         content.add_widget(btn_row)
         popup = Popup(title="Confirm", content=content, size_hint=(0.6, 0.25))
-        yes_btn.bind(on_press=lambda *a: [Customer.delete(cid), self._rebuild(), popup.dismiss()])
+        yes_btn.bind(on_press=lambda *a: [Customer.delete(cid), self._rebuild(""), popup.dismiss()])
         no_btn.bind(on_press=lambda *a: popup.dismiss())
         popup.open()
 
@@ -225,4 +217,4 @@ class CustomerForm(BoxLayout):
                             self.gstin_input.text, credit)
 
         self.popup.dismiss()
-        self.screen._rebuild()
+        self.screen._rebuild("")

@@ -321,6 +321,33 @@ class ReportScreen(Screen):
         wb.save(str(filepath))
         self._show_info("Exported", f"Report saved to:\n{filename}")
 
+    def export_csv(self):
+        if not self._current_rows:
+            self._show_error("Generate a report first.")
+            return
+
+        import csv
+        from libs.utils.paths import docs_dir
+
+        report_type = self.ids.report_spinner.text
+        filename = f"{report_type}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+        filepath = docs_dir() / filename
+        filepath.parent.mkdir(parents=True, exist_ok=True)
+
+        with open(str(filepath), "w", newline="") as f:
+            writer = csv.writer(f)
+            container = self.ids.result_container
+            for child in container.children:
+                if isinstance(child, BoxLayout):
+                    header = [c.text for c in child.children if isinstance(c, Label)]
+                    if header:
+                        writer.writerow(header)
+                break
+            for row in self._current_rows:
+                writer.writerow(list(row))
+
+        self._show_info("Exported", f"CSV saved to:\n{filename}")
+
     def _show_error(self, msg):
         popup = Popup(
             title="Error",

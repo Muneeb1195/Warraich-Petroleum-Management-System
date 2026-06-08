@@ -135,12 +135,21 @@
                         color: Theme.TEXT_PRIMARY
                         on_press: root.generate()
                     Button:
-                        text: "Export"
-                        size_hint_x: 0.22
+                        text: "XLSX"
+                        size_hint_x: 0.11
+                        font_size: "10sp"
                         background_normal: ""
                         background_color: Theme.BTN_INFO
                         color: Theme.TEXT_PRIMARY
                         on_press: root.export_excel()
+                    Button:
+                        text: "CSV"
+                        size_hint_x: 0.11
+                        font_size: "10sp"
+                        background_normal: ""
+                        background_color: Theme.BTN_SECONDARY
+                        color: Theme.TEXT_PRIMARY
+                        on_press: root.export_csv()
 
             # Summary label
             Label:

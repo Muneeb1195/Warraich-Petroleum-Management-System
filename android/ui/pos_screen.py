@@ -700,6 +700,39 @@ class PosScreen(Screen):
         except ValueError:
             gst_rate = 0
 
+        if payment_mode == "Credit" and customer_id:
+            estimated = sum(i["amount"] for i in self.cart_items)
+            if gst_rate:
+                half = round(estimated * gst_rate / 100 / 2, 2)
+                estimated = round(estimated + half * 2)
+            c = Customer.get_by_id(customer_id)
+            if c and c.get("credit_limit", 0) > 0 and c["balance"] + estimated > c["credit_limit"]:
+                content = BoxLayout(orientation="vertical", spacing=dp(8), padding=dp(10))
+                content.add_widget(Label(
+                    text=(f"{c['name']} will exceed credit limit.\n"
+                          f"Balance: {curr(c['balance'])} / {curr(c['credit_limit'])}\n"
+                          f"This sale: {curr(estimated)}"),
+                    color=TEXT_AMBER, halign="center",
+                ))
+                btn_row = BoxLayout(orientation="horizontal", spacing=dp(12), size_hint_y=None, height=dp(40))
+                btn_row.add_widget(Button(
+                    text="Cancel",
+                    background_normal="", background_color=BTN_CANCEL, color=TEXT_PRIMARY,
+                    on_press=lambda *a: warn_popup.dismiss(),
+                ))
+                btn_row.add_widget(Button(
+                    text="Proceed",
+                    background_normal="", background_color=BTN_DANGER, color=TEXT_PRIMARY,
+                    on_press=lambda *a: (warn_popup.dismiss(), self._finish_checkout(customer_id, payment_mode, gst_rate)),
+                ))
+                content.add_widget(btn_row)
+                warn_popup = Popup(title="Credit Limit Warning", content=content, size_hint=(0.8, 0.4))
+                warn_popup.open()
+                return
+
+        self._finish_checkout(customer_id, payment_mode, gst_rate)
+
+    def _finish_checkout(self, customer_id, payment_mode, gst_rate):
         sale_id, inv_no = Sale.create(
             customer_id=customer_id,
             payment_mode=payment_mode,

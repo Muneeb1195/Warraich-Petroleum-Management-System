@@ -34,14 +34,24 @@ class Tank(BaseModel):
         return id
 
     @classmethod
-    def get_with_fuel_type(cls):
+    def get_with_fuel_type(cls, search_text=""):
         conn = get_connection()
-        rows = conn.execute("""
-            SELECT t.*, f.name as fuel_name, f.unit as fuel_unit
-            FROM tanks t
-            JOIN fuel_types f ON f.id = t.fuel_type_id
-            ORDER BY t.name
-        """).fetchall()
+        if search_text.strip():
+            like = f"%{search_text.strip()}%"
+            rows = conn.execute("""
+                SELECT t.*, f.name as fuel_name, f.unit as fuel_unit
+                FROM tanks t
+                JOIN fuel_types f ON f.id = t.fuel_type_id
+                WHERE t.name LIKE ? OR f.name LIKE ?
+                ORDER BY t.name
+            """, (like, like)).fetchall()
+        else:
+            rows = conn.execute("""
+                SELECT t.*, f.name as fuel_name, f.unit as fuel_unit
+                FROM tanks t
+                JOIN fuel_types f ON f.id = t.fuel_type_id
+                ORDER BY t.name
+            """).fetchall()
         conn.close()
         return [dict(r) for r in rows]
 
@@ -62,14 +72,25 @@ class Pump(BaseModel):
         return id
 
     @classmethod
-    def get_with_tank(cls):
+    def get_with_tank(cls, search_text=""):
         conn = get_connection()
-        rows = conn.execute("""
-            SELECT p.*, t.name as tank_name, f.name as fuel_name
-            FROM pumps p
-            JOIN tanks t ON t.id = p.tank_id
-            JOIN fuel_types f ON f.id = t.fuel_type_id
-            ORDER BY p.pump_no
-        """).fetchall()
+        if search_text.strip():
+            like = f"%{search_text.strip()}%"
+            rows = conn.execute("""
+                SELECT p.*, t.name as tank_name, f.name as fuel_name
+                FROM pumps p
+                JOIN tanks t ON t.id = p.tank_id
+                JOIN fuel_types f ON f.id = t.fuel_type_id
+                WHERE p.pump_no LIKE ? OR f.name LIKE ?
+                ORDER BY p.pump_no
+            """, (like, like)).fetchall()
+        else:
+            rows = conn.execute("""
+                SELECT p.*, t.name as tank_name, f.name as fuel_name
+                FROM pumps p
+                JOIN tanks t ON t.id = p.tank_id
+                JOIN fuel_types f ON f.id = t.fuel_type_id
+                ORDER BY p.pump_no
+            """).fetchall()
         conn.close()
         return [dict(r) for r in rows]

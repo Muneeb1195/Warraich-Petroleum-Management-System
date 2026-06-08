@@ -62,7 +62,7 @@
                 multiline: False
                 foreground_color: Theme.TEXT_PRIMARY
                 background_color: 0.15, 0.15, 0.18, 1
-                on_text: root.filter(self.text)
+                on_text: root._rebuild(self.text)
 
             # Scrollable customer cards
             ScrollView:

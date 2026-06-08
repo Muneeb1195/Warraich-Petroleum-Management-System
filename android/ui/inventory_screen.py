@@ -26,9 +26,9 @@ class InventoryScreen(Screen):
         self._rebuild_pumps()
         self._rebuild_lubes()
 
-    def _rebuild_tanks(self):
+    def _rebuild_tanks(self, search_text=""):
         self.ids.tank_container.clear_widgets()
-        tanks = Tank.get_with_fuel_type()
+        tanks = Tank.get_with_fuel_type(search_text)
         if not tanks:
             self.ids.tank_container.add_widget(Label(
                 text="No tanks configured. Tap + to add one.",
@@ -40,9 +40,9 @@ class InventoryScreen(Screen):
                 self.ids.tank_container.add_widget(TankCard(t, self))
         self.ids.tank_container.add_widget(Widget(size_hint_y=1))
 
-    def _rebuild_pumps(self):
+    def _rebuild_pumps(self, search_text=""):
         self.ids.pump_container.clear_widgets()
-        pumps = Pump.get_with_tank()
+        pumps = Pump.get_with_tank(search_text)
         if not pumps:
             self.ids.pump_container.add_widget(Label(
                 text="No pumps configured. Tap + to add one.",
@@ -105,24 +105,10 @@ class InventoryScreen(Screen):
         self.ids.lube_container.add_widget(Widget(size_hint_y=1))
 
     def filter_tanks(self, text):
-        container = self.ids.tank_container
-        text = text.lower()
-        for child in container.children:
-            if hasattr(child, "tank_data"):
-                match = text in child.tank_data.get("name", "").lower() or \
-                        text in child.tank_data.get("fuel_name", "").lower()
-                child.opacity = 1 if match else 0.3
-                child.disabled = not match
+        self._rebuild_tanks(text)
 
     def filter_pumps(self, text):
-        container = self.ids.pump_container
-        text = text.lower()
-        for child in container.children:
-            if hasattr(child, "pump_data"):
-                match = text in child.pump_data.get("pump_no", "").lower() or \
-                        text in child.pump_data.get("fuel_name", "").lower()
-                child.opacity = 1 if match else 0.3
-                child.disabled = not match
+        self._rebuild_pumps(text)
 
     def filter_lubes(self, text):
         self._rebuild_lubes()
