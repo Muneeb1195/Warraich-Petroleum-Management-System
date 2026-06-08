@@ -36,7 +36,7 @@
             BoxLayout:
                 orientation: "vertical"
                 size_hint_y: None
-                height: dp(72)
+                height: dp(100)
                 spacing: dp(4)
 
                 # Row 1: Date range
@@ -72,7 +72,43 @@
                         background_color: 0.15, 0.15, 0.18, 1
                         font_size: "12sp"
 
-                # Row 2: Report type + actions
+                # Row 2: Date presets
+                BoxLayout:
+                    orientation: "horizontal"
+                    size_hint_y: None
+                    height: dp(28)
+                    spacing: dp(4)
+                    Label:
+                        text: "Quick:"
+                        size_hint_x: 0.1
+                        color: Theme.TEXT_FIELD_LABEL
+                        font_size: "11sp"
+                    Button:
+                        text: "Today"
+                        size_hint_x: 0.2
+                        font_size: "11sp"
+                        background_normal: ""
+                        background_color: Theme.BTN_NAV
+                        color: Theme.TEXT_PRIMARY
+                        on_press: root._set_date_preset("today")
+                    Button:
+                        text: "Yesterday"
+                        size_hint_x: 0.25
+                        font_size: "11sp"
+                        background_normal: ""
+                        background_color: Theme.BTN_NAV
+                        color: Theme.TEXT_PRIMARY
+                        on_press: root._set_date_preset("yesterday")
+                    Button:
+                        text: "This Month"
+                        size_hint_x: 0.28
+                        font_size: "11sp"
+                        background_normal: ""
+                        background_color: Theme.BTN_NAV
+                        color: Theme.TEXT_PRIMARY
+                        on_press: root._set_date_preset("this_month")
+
+                # Row 3: Report type + actions
                 BoxLayout:
                     orientation: "horizontal"
                     size_hint_y: None

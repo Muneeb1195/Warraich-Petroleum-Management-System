@@ -41,17 +41,33 @@
                     size: self.size
             Label:
                 text: "Date:"
-                size_hint_x: 0.12
+                size_hint_x: 0.1
                 color: Theme.TEXT_FIELD_LABEL
                 font_size: "12sp"
             TextInput:
                 id: date_input
-                size_hint_x: 0.22
+                size_hint_x: 0.18
                 multiline: False
                 font_size: "12sp"
                 foreground_color: Theme.TEXT_PRIMARY
                 background_color: 0.15, 0.15, 0.18, 1
                 on_text: root.on_date_shift_change()
+            Button:
+                text: "Today"
+                size_hint_x: 0.12
+                font_size: "10sp"
+                background_normal: ""
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
+                on_press: root.set_date_today()
+            Button:
+                text: "Yest"
+                size_hint_x: 0.1
+                font_size: "10sp"
+                background_normal: ""
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
+                on_press: root.set_date_yesterday()
             Label:
                 text: "Shift:"
                 size_hint_x: 0.08

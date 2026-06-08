@@ -1,4 +1,4 @@
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 
 from kivy.uix.screenmanager import Screen
 from libs.utils.theme import *
@@ -89,6 +89,12 @@ class StaffScreen(Screen):
     def mark_attendance(self, employee_id, date_val, shift, status):
         Attendance.mark(employee_id, date_val, shift, status)
         self._rebuild_attendance()
+
+    def set_attendance_today(self):
+        self.ids.attendance_date.text = date.today().isoformat()
+
+    def set_attendance_yesterday(self):
+        self.ids.attendance_date.text = (date.today() - timedelta(days=1)).isoformat()
 
     def mark_all_present(self):
         date_val = self.ids.attendance_date.text.strip() or date.today().isoformat()

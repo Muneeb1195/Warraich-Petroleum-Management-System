@@ -91,15 +91,15 @@
                         orientation: "horizontal"
                         size_hint_y: None
                         height: dp(36)
-                        spacing: dp(6)
+                        spacing: dp(4)
                         Label:
                             text: "Date:"
-                            size_hint_x: 0.07
+                            size_hint_x: 0.06
                             color: Theme.TEXT_FIELD_LABEL
                             font_size: "12sp"
                         TextInput:
                             id: attendance_date
-                            size_hint_x: 0.15
+                            size_hint_x: 0.14
                             hint_text: "YYYY-MM-DD"
                             text: ""
                             multiline: False
@@ -107,14 +107,30 @@
                             background_color: 0.15, 0.15, 0.18, 1
                             font_size: "12sp"
                             on_text: root._rebuild_attendance()
+                        Button:
+                            text: "Today"
+                            size_hint_x: 0.1
+                            font_size: "10sp"
+                            background_normal: ""
+                            background_color: Theme.BTN_NAV
+                            color: Theme.TEXT_PRIMARY
+                            on_press: root.set_attendance_today()
+                        Button:
+                            text: "Yest"
+                            size_hint_x: 0.08
+                            font_size: "10sp"
+                            background_normal: ""
+                            background_color: Theme.BTN_NAV
+                            color: Theme.TEXT_PRIMARY
+                            on_press: root.set_attendance_yesterday()
                         Label:
                             text: "Shift:"
-                            size_hint_x: 0.07
+                            size_hint_x: 0.06
                             color: Theme.TEXT_FIELD_LABEL
                             font_size: "12sp"
                         Spinner:
                             id: attendance_shift
-                            size_hint_x: 0.15
+                            size_hint_x: 0.14
                             text: "Morning"
                             values: ["Morning", "Evening", "Night"]
                             background_color: 0.18, 0.18, 0.22, 1
@@ -191,6 +207,7 @@
                             hint_text: "MM"
                             multiline: False
                             input_filter: "int"
+                            input_type: "number"
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
                             font_size: "12sp"
@@ -207,6 +224,7 @@
                             hint_text: "YYYY"
                             multiline: False
                             input_filter: "int"
+                            input_type: "number"
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
                             font_size: "12sp"

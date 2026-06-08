@@ -170,6 +170,7 @@
                             size_hint_x: 0.6
                             multiline: False
                             input_filter: "float"
+                            input_type: "number"
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
                             font_size: "12sp"
@@ -188,12 +189,16 @@
                             size_hint_x: 0.6
                             multiline: False
                             input_filter: "float"
+                            input_type: "number"
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
                             font_size: "12sp"
 
-                # GST Settings
-                Label:
+                    BoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: dp(36)
+                        Label:
                     text: "GST Settings"
                     size_hint_y: None
                     height: dp(28)
@@ -230,6 +235,7 @@
                             size_hint_x: 0.65
                             multiline: False
                             input_filter: "float"
+                            input_type: "number"
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
                             font_size: "12sp"
@@ -464,6 +470,7 @@
                             multiline: False
                             text: "9100"
                             input_filter: "int"
+                            input_type: "number"
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
                             font_size: "12sp"

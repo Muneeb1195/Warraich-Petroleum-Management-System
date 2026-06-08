@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, timedelta
 
 from kivy.uix.screenmanager import Screen
 from libs.utils.theme import *
@@ -78,6 +78,15 @@ class ReconciliationScreen(Screen):
     def on_enter(self):
         self.ids.date_input.text = date.today().isoformat()
         self._rebuild()
+
+    def set_date_today(self):
+        self.ids.date_input.text = date.today().isoformat()
+        self.on_date_shift_change()
+
+    def set_date_yesterday(self):
+        from datetime import timedelta
+        self.ids.date_input.text = (date.today() - timedelta(days=1)).isoformat()
+        self.on_date_shift_change()
 
     def _rebuild(self):
         container = self.ids.readings_container

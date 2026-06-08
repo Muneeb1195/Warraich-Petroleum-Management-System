@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 
 from kivy.uix.screenmanager import Screen
 from libs.utils.theme import *
@@ -11,6 +11,7 @@ from kivy.uix.button import Button
 from kivy.uix.spinner import Spinner
 from kivy.uix.popup import Popup
 from kivy.metrics import dp
+from kivy.clock import Clock
 
 from libs.database.connection import get_connection
 from libs.models.sale import Sale
@@ -24,11 +25,33 @@ class ReportScreen(Screen):
         self._current_rows = []
 
     def on_enter(self):
-        today = datetime.now()
-        self.ids.from_input.text = (today - timedelta(days=30)).strftime("%Y-%m-%d")
-        self.ids.to_input.text = today.strftime("%Y-%m-%d")
+        self._set_date_preset("this_month")
+
+    def _set_date_preset(self, preset):
+        today = date.today()
+        if preset == "today":
+            self.ids.from_input.text = today.isoformat()
+            self.ids.to_input.text = today.isoformat()
+        elif preset == "yesterday":
+            yest = today - timedelta(days=1)
+            self.ids.from_input.text = yest.isoformat()
+            self.ids.to_input.text = yest.isoformat()
+        elif preset == "this_month":
+            self.ids.from_input.text = today.replace(day=1).isoformat()
+            self.ids.to_input.text = today.isoformat()
 
     def generate(self):
+        self._loading = Popup(
+            title="",
+            content=Label(text="Generating report...", color=TEXT_PRIMARY),
+            size_hint=(0.5, 0.15),
+            background="", background_color=(0.09, 0.09, 0.12, 0.95),
+            auto_dismiss=False,
+        )
+        self._loading.open()
+        Clock.schedule_once(lambda *a: self._do_generate(), 0.1)
+
+    def _do_generate(self):
         report_type = self.ids.report_spinner.text
         from_d = self.ids.from_input.text.strip()
         to_d = self.ids.to_input.text.strip()
@@ -48,6 +71,8 @@ class ReportScreen(Screen):
                 self._payroll_report()
         except Exception as e:
             self._display_results([], [], f"Error: {e}")
+        if hasattr(self, '_loading') and self._loading:
+            self._loading.dismiss()
 
     def _display_results(self, headers, rows, summary=""):
         self.ids.summary_label.text = summary
