@@ -36,9 +36,7 @@ jobs:
         with:
           path: |
             ~/.buildozer
-          key: buildozer-${{ runner.os }}-${{ hashFiles('android/buildozer.spec') }}
-          restore-keys: |
-            buildozer-${{ runner.os }}-
+          key: buildozer-v2-${{ runner.os }}-${{ hashFiles('android/buildozer.spec') }}
 
       - name: Install Buildozer
         run: |
