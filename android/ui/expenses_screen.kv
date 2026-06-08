@@ -1,3 +1,4 @@
+#:import Theme libs.utils.theme
 <ExpenseScreen>:
     BoxLayout:
         orientation: "vertical"
@@ -7,7 +8,7 @@
             size_hint_y: 0.07
             canvas.before:
                 Color:
-                    rgba: 0.1, 0.1, 0.12, 1
+                    rgba: Theme.BG_HEADER
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -15,14 +16,14 @@
                 text: "< Back"
                 size_hint_x: 0.15
                 background_normal: ""
-                background_color: 0.12, 0.12, 0.15, 1
-                color: 1, 1, 1, 1
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
                 on_press: root.go_back()
             Label:
                 text: "Expenses"
                 font_size: "18sp"
                 bold: True
-                color: 1, 1, 1, 1
+                color: Theme.TEXT_PRIMARY
             Label:
                 text: ""
 
@@ -39,17 +40,17 @@
                 spacing: dp(8)
                 Label:
                     text: "Business Expenses"
-                    font_size: "14sp"
+                    font_size: "15sp"
                     bold: True
-                    color: 1, 1, 1, 1
+                    color: Theme.TEXT_PRIMARY
                     halign: "left"
                 Widget:
                 Button:
                     text: "+ Add Expense"
                     size_hint_x: 0.35
                     background_normal: ""
-                    background_color: 0.15, 0.5, 0.15, 1
-                    color: 1, 1, 1, 1
+                    background_color: Theme.BTN_PRIMARY
+                    color: Theme.TEXT_PRIMARY
                     on_press: root.show_form()
 
             # Search bar
@@ -59,7 +60,7 @@
                 height: dp(32)
                 hint_text: "Search expenses..."
                 multiline: False
-                foreground_color: 1, 1, 1, 1
+                foreground_color: Theme.TEXT_PRIMARY
                 background_color: 0.15, 0.15, 0.18, 1
                 on_text: root.filter(self.text)
 
@@ -74,26 +75,26 @@
                     text: "Date"
                     size_hint_x: 0.15
                     bold: True
-                    color: 0.6, 0.6, 0.6, 1
-                    font_size: "11sp"
+                    color: Theme.TEXT_SECONDARY
+                    font_size: "12sp"
                 Label:
                     text: "Category"
                     size_hint_x: 0.18
                     bold: True
-                    color: 0.6, 0.6, 0.6, 1
-                    font_size: "11sp"
+                    color: Theme.TEXT_SECONDARY
+                    font_size: "12sp"
                 Label:
                     text: "Amount"
                     size_hint_x: 0.15
                     bold: True
-                    color: 0.6, 0.6, 0.6, 1
-                    font_size: "11sp"
+                    color: Theme.TEXT_SECONDARY
+                    font_size: "12sp"
                 Label:
                     text: "Description"
                     size_hint_x: 0.24
                     bold: True
-                    color: 0.6, 0.6, 0.6, 1
-                    font_size: "11sp"
+                    color: Theme.TEXT_SECONDARY
+                    font_size: "12sp"
                 Label:
                     text: ""
                     size_hint_x: 0.28

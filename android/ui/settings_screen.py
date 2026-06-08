@@ -1,4 +1,5 @@
 from kivy.uix.screenmanager import Screen
+from libs.utils.theme import *
 from kivy.uix.popup import Popup
 from kivy.uix.label import Label
 from kivy.metrics import dp
@@ -58,7 +59,7 @@ class SettingsScreen(Screen):
 
         popup = Popup(
             title="Saved",
-            content=Label(text="Settings saved.", color=(1, 1, 1, 1)),
+            content=Label(text="Settings saved.", color=TEXT_PRIMARY),
             size_hint=(0.6, 0.25),
         )
         popup.open()
@@ -71,7 +72,7 @@ class SettingsScreen(Screen):
         self.ids.backup_status.text = f"Last: {settings.last_cloud_backup()}" if ok else f"Failed: {msg}"
         popup = Popup(
             title="Backup" if ok else "Backup Failed",
-            content=Label(text=msg, color=(1, 1, 1, 1)),
+            content=Label(text=msg, color=TEXT_PRIMARY),
             size_hint=(0.7, 0.25),
         )
         popup.open()

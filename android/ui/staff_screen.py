@@ -1,6 +1,7 @@
 from datetime import datetime, date
 
 from kivy.uix.screenmanager import Screen
+from libs.utils.theme import *
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.widget import Widget
@@ -31,7 +32,7 @@ class StaffScreen(Screen):
         if not employees:
             container.add_widget(Label(
                 text="No employees yet. Tap + to add one.",
-                color=(0.8, 0.6, 0.2, 1), size_hint_y=None, height=dp(40),
+                color=TEXT_AMBER, size_hint_y=None, height=dp(40),
             ))
         else:
             for e in employees:
@@ -75,7 +76,7 @@ class StaffScreen(Screen):
         if not employees:
             container.add_widget(Label(
                 text="No active employees found.",
-                color=(0.8, 0.6, 0.2, 1), size_hint_y=None, height=dp(40),
+                color=TEXT_AMBER, size_hint_y=None, height=dp(40),
             ))
         else:
             for emp in employees:
@@ -104,16 +105,16 @@ class StaffScreen(Screen):
         lbl = Label(
             text=f"Mark ALL {len(employees)} employees as Present for {date_val} ({shift})?\n"
                  "Existing marks (Absent, Half Day, etc.) will be overwritten.",
-            color=(1, 1, 1, 1), font_size="12sp",
+            color=TEXT_PRIMARY, font_size="12sp",
         )
         confirm.content.add_widget(lbl)
         btn_row = BoxLayout(orientation="horizontal", spacing=dp(12), size_hint_y=None, height=dp(40))
         btn_row.add_widget(Button(
-            text="Cancel", background_normal="", background_color=(0.3, 0.3, 0.35, 1), color=(1, 1, 1, 1),
+            text="Cancel", background_normal="", background_color=BTN_CANCEL, color=TEXT_PRIMARY,
             on_press=confirm.dismiss,
         ))
         btn_row.add_widget(Button(
-            text="Mark All", background_normal="", background_color=(0.15, 0.4, 0.15, 1), color=(1, 1, 1, 1),
+            text="Mark All", background_normal="", background_color=BTN_SECONDARY, color=TEXT_PRIMARY,
             on_press=lambda *a: (confirm.dismiss(), self._do_mark_all_present(date_val, shift, employees)),
         ))
         confirm.content.add_widget(btn_row)
@@ -135,7 +136,7 @@ class StaffScreen(Screen):
         if not records:
             container.add_widget(Label(
                 text="No payroll records for this month. Tap Calculate to generate.",
-                color=(0.8, 0.6, 0.2, 1), size_hint_y=None, height=dp(40),
+                color=TEXT_AMBER, size_hint_y=None, height=dp(40),
             ))
         else:
             for r in records:
@@ -186,7 +187,7 @@ class StaffScreen(Screen):
     def show_error(self, msg):
         popup = Popup(
             title="Error",
-            content=Label(text=msg, color=(1, 0.3, 0.3, 1)),
+            content=Label(text=msg, color=TEXT_ERROR),
             size_hint=(0.7, 0.3),
         )
         popup.open()
@@ -197,7 +198,7 @@ class StaffScreen(Screen):
     def _show_info(self, title, msg):
         popup = Popup(
             title=title,
-            content=Label(text=msg, color=(1, 1, 1, 1)),
+            content=Label(text=msg, color=TEXT_PRIMARY),
             size_hint=(0.8, 0.4),
         )
         popup.open()
@@ -233,7 +234,7 @@ class EmployeeRow(BoxLayout):
 
         btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.22, spacing=dp(4))
         edit_btn = Button(text="Edit", font_size="11sp", background_normal="",
-                          background_color=(0.2, 0.3, 0.5, 1), color=(1,1,1,1))
+                          background_color=BTN_INFO, color=(1,1,1,1))
         edit_btn.bind(on_press=lambda *a: screen.show_employee_form(emp))
         toggle_btn = Button(
             text="Deact" if emp["is_active"] else "Act",
@@ -327,10 +328,10 @@ class EmployeeForm(BoxLayout):
         self.add_widget(Widget())
         btn_row = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(44), spacing=dp(10))
         save_btn = Button(text="Save", background_normal="",
-                          background_color=(0.15, 0.5, 0.15, 1), color=(1,1,1,1))
+                          background_color=BTN_PRIMARY, color=(1,1,1,1))
         save_btn.bind(on_press=self._save)
         cancel_btn = Button(text="Cancel", background_normal="",
-                            background_color=(0.3, 0.3, 0.35, 1), color=(1,1,1,1))
+                            background_color=BTN_CANCEL, color=(1,1,1,1))
         cancel_btn.bind(on_press=lambda *a: self.popup.dismiss())
         btn_row.add_widget(save_btn)
         btn_row.add_widget(cancel_btn)
@@ -392,11 +393,11 @@ class AttendanceRow(BoxLayout):
         for s in ["Present", "Absent", "Half Day", "Leave"]:
             b = Button(
                 text=s, font_size="10sp", background_normal="",
-                background_color=(0.15, 0.4, 0.15, 1) if s == "Present" else
+                background_color=BTN_SECONDARY if s == "Present" else
                                 (0.5, 0.15, 0.15, 1) if s == "Absent" else
                                 (0.5, 0.4, 0.15, 1) if s == "Half Day" else
                                 (0.3, 0.3, 0.35, 1),
-                color=(1, 1, 1, 1),
+                color=TEXT_PRIMARY,
             )
             if s == current_status:
                 b.background_color = (0.1, 0.3, 0.6, 1)
@@ -433,7 +434,7 @@ class PayrollRow(BoxLayout):
             pay_btn = Button(
                 text="Mark Paid", font_size="10sp",
                 size_hint_x=0.2, background_normal="",
-                background_color=(0.15, 0.5, 0.15, 1), color=(1,1,1,1),
+                background_color=BTN_PRIMARY, color=(1,1,1,1),
             )
             pay_btn.bind(on_press=lambda *a: screen.mark_paid(record["id"]))
             self.add_widget(pay_btn)

@@ -1,3 +1,4 @@
+#:import Theme libs.utils.theme
 <InventoryScreen>:
     BoxLayout:
         orientation: "vertical"
@@ -7,7 +8,7 @@
             size_hint_y: 0.07
             canvas.before:
                 Color:
-                    rgba: 0.1, 0.1, 0.12, 1
+                    rgba: Theme.BG_HEADER
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -15,14 +16,14 @@
                 text: "< Back"
                 size_hint_x: 0.15
                 background_normal: ""
-                background_color: 0.12, 0.12, 0.15, 1
-                color: 1, 1, 1, 1
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
                 on_press: root.go_back()
             Label:
                 text: "Inventory Management"
                 font_size: "18sp"
                 bold: True
-                color: 1, 1, 1, 1
+                color: Theme.TEXT_PRIMARY
             Label:
                 text: ""
 
@@ -35,7 +36,7 @@
             TabbedPanel:
                 do_default_tab: False
                 tab_width: self.width / 3
-                background_color: 0.12, 0.12, 0.15, 1
+                background_color: Theme.BTN_NAV
                 border: [0, 0, 0, 0]
 
                 # ======= TANKS TAB =======
@@ -54,17 +55,17 @@
                             spacing: dp(8)
                             Label:
                                 text: "Fuel Storage Tanks"
-                                font_size: "14sp"
+                                font_size: "15sp"
                                 bold: True
-                                color: 1, 1, 1, 1
+                                color: Theme.TEXT_PRIMARY
                                 halign: "left"
                             Widget:
                             Button:
                                 text: "+ Add Tank"
                                 size_hint_x: 0.3
                                 background_normal: ""
-                                background_color: 0.15, 0.5, 0.15, 1
-                                color: 1, 1, 1, 1
+                                background_color: Theme.BTN_PRIMARY
+                                color: Theme.TEXT_PRIMARY
                                 on_press: root.show_tank_form()
 
                         # Search bar
@@ -74,7 +75,7 @@
                             height: dp(32)
                             hint_text: "Search tanks..."
                             multiline: False
-                            foreground_color: 1, 1, 1, 1
+                            foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
                             on_text: root.filter_tanks(self.text)
 
@@ -89,26 +90,26 @@
                                 text: "Name"
                                 size_hint_x: 0.2
                                 bold: True
-                                color: 0.6, 0.6, 0.6, 1
-                                font_size: "11sp"
+                                color: Theme.TEXT_SECONDARY
+                                font_size: "12sp"
                             Label:
                                 text: "Fuel"
                                 size_hint_x: 0.15
                                 bold: True
-                                color: 0.6, 0.6, 0.6, 1
-                                font_size: "11sp"
+                                color: Theme.TEXT_SECONDARY
+                                font_size: "12sp"
                             Label:
                                 text: "Capacity"
                                 size_hint_x: 0.15
                                 bold: True
-                                color: 0.6, 0.6, 0.6, 1
-                                font_size: "11sp"
+                                color: Theme.TEXT_SECONDARY
+                                font_size: "12sp"
                             Label:
                                 text: "Level"
                                 size_hint_x: 0.15
                                 bold: True
-                                color: 0.6, 0.6, 0.6, 1
-                                font_size: "11sp"
+                                color: Theme.TEXT_SECONDARY
+                                font_size: "12sp"
                             Label:
                                 text: ""
                                 size_hint_x: 0.25
@@ -138,17 +139,17 @@
                             spacing: dp(8)
                             Label:
                                 text: "Dispensing Pumps"
-                                font_size: "14sp"
+                                font_size: "15sp"
                                 bold: True
-                                color: 1, 1, 1, 1
+                                color: Theme.TEXT_PRIMARY
                                 halign: "left"
                             Widget:
                             Button:
                                 text: "+ Add Pump"
                                 size_hint_x: 0.3
                                 background_normal: ""
-                                background_color: 0.15, 0.5, 0.15, 1
-                                color: 1, 1, 1, 1
+                                background_color: Theme.BTN_PRIMARY
+                                color: Theme.TEXT_PRIMARY
                                 on_press: root.show_pump_form()
 
                         # Search
@@ -158,7 +159,7 @@
                             height: dp(32)
                             hint_text: "Search pumps..."
                             multiline: False
-                            foreground_color: 1, 1, 1, 1
+                            foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
                             on_text: root.filter_pumps(self.text)
 
@@ -173,26 +174,26 @@
                                 text: "Pump No"
                                 size_hint_x: 0.15
                                 bold: True
-                                color: 0.6, 0.6, 0.6, 1
-                                font_size: "11sp"
+                                color: Theme.TEXT_SECONDARY
+                                font_size: "12sp"
                             Label:
                                 text: "Tank"
                                 size_hint_x: 0.15
                                 bold: True
-                                color: 0.6, 0.6, 0.6, 1
-                                font_size: "11sp"
+                                color: Theme.TEXT_SECONDARY
+                                font_size: "12sp"
                             Label:
                                 text: "Fuel"
                                 size_hint_x: 0.15
                                 bold: True
-                                color: 0.6, 0.6, 0.6, 1
-                                font_size: "11sp"
+                                color: Theme.TEXT_SECONDARY
+                                font_size: "12sp"
                             Label:
                                 text: "Description"
                                 size_hint_x: 0.25
                                 bold: True
-                                color: 0.6, 0.6, 0.6, 1
-                                font_size: "11sp"
+                                color: Theme.TEXT_SECONDARY
+                                font_size: "12sp"
                             Label:
                                 text: ""
                                 size_hint_x: 0.2
@@ -222,17 +223,17 @@
                             spacing: dp(8)
                             Label:
                                 text: "Lubricant Products"
-                                font_size: "14sp"
+                                font_size: "15sp"
                                 bold: True
-                                color: 1, 1, 1, 1
+                                color: Theme.TEXT_PRIMARY
                                 halign: "left"
                             Widget:
                             Button:
                                 text: "+ Add Product"
                                 size_hint_x: 0.3
                                 background_normal: ""
-                                background_color: 0.15, 0.5, 0.15, 1
-                                color: 1, 1, 1, 1
+                                background_color: Theme.BTN_PRIMARY
+                                color: Theme.TEXT_PRIMARY
                                 on_press: root.show_lube_form()
 
                         # Search
@@ -242,7 +243,7 @@
                             height: dp(32)
                             hint_text: "Search products..."
                             multiline: False
-                            foreground_color: 1, 1, 1, 1
+                            foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
                             on_text: root.filter_lubes(self.text)
 
@@ -257,26 +258,26 @@
                             text: "Brand"
                             size_hint_x: 0.18
                             bold: True
-                            color: 0.6, 0.6, 0.6, 1
-                            font_size: "11sp"
+                            color: Theme.TEXT_SECONDARY
+                            font_size: "12sp"
                         Label:
                             text: "Product"
                             size_hint_x: 0.22
                             bold: True
-                            color: 0.6, 0.6, 0.6, 1
-                            font_size: "11sp"
+                            color: Theme.TEXT_SECONDARY
+                            font_size: "12sp"
                         Label:
                             text: "Info"
                             size_hint_x: 0.22
                             bold: True
-                            color: 0.6, 0.6, 0.6, 1
-                            font_size: "11sp"
+                            color: Theme.TEXT_SECONDARY
+                            font_size: "12sp"
                         Label:
                             text: "Price"
                             size_hint_x: 0.12
                             bold: True
-                            color: 0.6, 0.6, 0.6, 1
-                            font_size: "11sp"
+                            color: Theme.TEXT_SECONDARY
+                            font_size: "12sp"
                         Label:
                             text: ""
                             size_hint_x: 0.2

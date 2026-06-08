@@ -1,6 +1,7 @@
 from datetime import date
 
 from kivy.uix.screenmanager import Screen
+from libs.utils.theme import *
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.widget import Widget
@@ -29,14 +30,14 @@ class PumpReadingRow(BoxLayout):
 
         self.add_widget(Label(
             text=f"P{pump['pump_no']}-{pump['fuel_name']}",
-            size_hint_x=0.3, halign="left", color=(1, 1, 1, 1), font_size="11sp",
+            size_hint_x=0.3, halign="left", color=TEXT_PRIMARY, font_size="11sp",
         ))
 
         self.opening_input = TextInput(
             text=str(opening) if opening else "0",
             input_filter="float", multiline=False,
             size_hint_x=0.2, font_size="11sp",
-            foreground_color=(1, 1, 1, 1), background_color=(0.15, 0.15, 0.18, 1),
+            foreground_color=TEXT_PRIMARY, background_color=(0.15, 0.15, 0.18, 1),
         )
         self.add_widget(self.opening_input)
 
@@ -44,14 +45,14 @@ class PumpReadingRow(BoxLayout):
             text=str(closing) if closing else "0",
             input_filter="float", multiline=False,
             size_hint_x=0.2, font_size="11sp",
-            foreground_color=(1, 1, 1, 1), background_color=(0.15, 0.15, 0.18, 1),
+            foreground_color=TEXT_PRIMARY, background_color=(0.15, 0.15, 0.18, 1),
         )
         self.add_widget(self.closing_input)
 
-        self.expected_label = Label(text="0", size_hint_x=0.15, color=(0.8, 0.8, 0.8, 1), font_size="11sp")
+        self.expected_label = Label(text="0", size_hint_x=0.15, color=TEXT_FIELD_LABEL, font_size="11sp")
         self.add_widget(self.expected_label)
 
-        self.variance_label = Label(text="0", size_hint_x=0.15, color=(0.6, 1, 0.6, 1), font_size="11sp")
+        self.variance_label = Label(text="0", size_hint_x=0.15, color=VAL_POSITIVE, font_size="11sp")
         self.add_widget(self.variance_label)
 
     def update_variance(self, actual_sales):
@@ -90,7 +91,7 @@ class ReconciliationScreen(Screen):
         for txt, sx in [("Pump", 0.3), ("Opening", 0.2), ("Closing", 0.2), ("Expected", 0.15), ("Variance", 0.15)]:
             header.add_widget(Label(
                 text=txt, size_hint_x=sx, bold=True,
-                color=(0.6, 0.6, 0.6, 1), font_size="10sp",
+                color=TEXT_SECONDARY, font_size="10sp",
             ))
         container.add_widget(header)
 
@@ -98,7 +99,7 @@ class ReconciliationScreen(Screen):
         if not pumps:
             container.add_widget(Label(
                 text="No pumps found. Add pumps in Inventory first.",
-                color=(0.8, 0.6, 0.2, 1), size_hint_y=None, height=dp(40),
+                color=TEXT_AMBER, size_hint_y=None, height=dp(40),
             ))
             return
 
@@ -155,13 +156,13 @@ class ReconciliationScreen(Screen):
         except Exception as e:
             Popup(
                 title="Error",
-                content=Label(text=f"Failed to start shift: {e}", color=(1, 0.3, 0.3, 1)),
+                content=Label(text=f"Failed to start shift: {e}", color=TEXT_ERROR),
                 size_hint=(0.7, 0.25),
             ).open()
             return
         Popup(
             title="Shift Started",
-            content=Label(text=f"Shift '{shift}' initialized for {count} pumps.", color=(1, 1, 1, 1)),
+            content=Label(text=f"Shift '{shift}' initialized for {count} pumps.", color=TEXT_PRIMARY),
             size_hint=(0.7, 0.25),
         ).open()
         self._rebuild()
@@ -177,15 +178,15 @@ class ReconciliationScreen(Screen):
         )
         confirm.content.add_widget(Label(
             text=f"Close {shift} shift for {sdate}?\nThis will finalize all pump readings.",
-            color=(1, 1, 1, 1), font_size="12sp",
+            color=TEXT_PRIMARY, font_size="12sp",
         ))
         btn_row = BoxLayout(orientation="horizontal", spacing=dp(12), size_hint_y=None, height=dp(40))
         btn_row.add_widget(Button(
-            text="Cancel", background_normal="", background_color=(0.3, 0.3, 0.35, 1), color=(1, 1, 1, 1),
+            text="Cancel", background_normal="", background_color=BTN_CANCEL, color=TEXT_PRIMARY,
             on_press=confirm.dismiss,
         ))
         btn_row.add_widget(Button(
-            text="Close", background_normal="", background_color=(0.4, 0.15, 0.15, 1), color=(1, 1, 1, 1),
+            text="Close", background_normal="", background_color=(0.4, 0.15, 0.15, 1), color=TEXT_PRIMARY,
             on_press=lambda *a: (confirm.dismiss(), self._do_close_shift(sdate, shift)),
         ))
         confirm.content.add_widget(btn_row)
@@ -219,13 +220,13 @@ class ReconciliationScreen(Screen):
         except Exception as e:
             Popup(
                 title="Error",
-                content=Label(text=f"Failed to close shift: {e}", color=(1, 0.3, 0.3, 1)),
+                content=Label(text=f"Failed to close shift: {e}", color=TEXT_ERROR),
                 size_hint=(0.7, 0.25),
             ).open()
             return
         Popup(
             title="Shift Closed",
-            content=Label(text=f"Shift '{shift}' readings saved.", color=(1, 1, 1, 1)),
+            content=Label(text=f"Shift '{shift}' readings saved.", color=TEXT_PRIMARY),
             size_hint=(0.7, 0.25),
         ).open()
 
@@ -274,7 +275,7 @@ class ReconciliationScreen(Screen):
         msg = "\n".join(lines)
         Popup(
             title="Reconciliation",
-            content=Label(text=msg, color=(1, 1, 1, 1), font_size="12sp"),
+            content=Label(text=msg, color=TEXT_PRIMARY, font_size="12sp"),
             size_hint=(0.85, 0.65),
         ).open()
 

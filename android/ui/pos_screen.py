@@ -8,6 +8,7 @@ from kivy.uix.popup import Popup
 from kivy.properties import NumericProperty, ObjectProperty
 from kivy.metrics import dp
 
+from libs.utils.theme import *
 from libs.models.sale import Sale
 from libs.models.customer import Customer
 from libs.database.settings import settings
@@ -40,7 +41,7 @@ class PumpCard(BoxLayout):
             text=f"P{pump['pump_no']}-{fuel_name}",
             size_hint_x=0.26,
             halign="left",
-            color=(1, 1, 1, 1),
+            color=TEXT_PRIMARY,
             font_size="12sp",
             text_size=(None, None),
         )
@@ -50,7 +51,7 @@ class PumpCard(BoxLayout):
         rate_lbl = Label(
             text=f"{curr(rate)}/L",
             size_hint_x=0.12,
-            color=(0.6, 0.6, 0.6, 1),
+            color=TEXT_SECONDARY,
             font_size="11sp",
         )
         self.add_widget(rate_lbl)
@@ -62,7 +63,7 @@ class PumpCard(BoxLayout):
             size_hint_x=0.14,
             hint_text="Open",
             font_size="11sp",
-            foreground_color=(1, 1, 1, 1),
+            foreground_color=TEXT_PRIMARY,
             background_color=(0.15, 0.15, 0.18, 1),
         )
         self.add_widget(self.opening_text)
@@ -74,7 +75,7 @@ class PumpCard(BoxLayout):
             size_hint_x=0.14,
             hint_text="Close",
             font_size="11sp",
-            foreground_color=(1, 1, 1, 1),
+            foreground_color=TEXT_PRIMARY,
             background_color=(0.15, 0.15, 0.18, 1),
         )
         self.add_widget(self.closing_text)
@@ -82,7 +83,7 @@ class PumpCard(BoxLayout):
         self.qty_label = Label(
             text="0.00 L",
             size_hint_x=0.14,
-            color=(0.6, 1, 0.6, 1),
+            color=VAL_POSITIVE,
             font_size="11sp",
         )
         self.add_widget(self.qty_label)
@@ -91,8 +92,8 @@ class PumpCard(BoxLayout):
             text="Add",
             size_hint_x=0.14,
             background_normal="",
-            background_color=(0.15, 0.5, 0.15, 1),
-            color=(1, 1, 1, 1),
+            background_color=BTN_PRIMARY,
+            color=TEXT_PRIMARY,
             font_size="11sp",
         )
         add_btn.bind(on_press=self._on_add)
@@ -171,7 +172,7 @@ class LubeCard(BoxLayout):
             text=lube["brand"],
             size_hint_x=0.18,
             halign="left",
-            color=(1, 1, 1, 1),
+            color=TEXT_PRIMARY,
         )
         self.add_widget(brand_lbl)
 
@@ -179,21 +180,21 @@ class LubeCard(BoxLayout):
             text=lube["product_name"],
             size_hint_x=0.25,
             halign="left",
-            color=(1, 1, 1, 1),
+            color=TEXT_PRIMARY,
         )
         self.add_widget(name_lbl)
 
         price_lbl = Label(
             text=curr(lube["selling_price"]),
             size_hint_x=0.12,
-            color=(0.6, 1, 0.6, 1),
+            color=VAL_POSITIVE,
         )
         self.add_widget(price_lbl)
 
         stock_lbl = Label(
             text=f"{lube['stock_qty']:,.2f} {lube['unit']}",
             size_hint_x=0.18,
-            color=(0.6, 0.6, 0.6, 1),
+            color=TEXT_SECONDARY,
         )
         self.add_widget(stock_lbl)
 
@@ -202,7 +203,7 @@ class LubeCard(BoxLayout):
             input_filter="float",
             multiline=False,
             size_hint_x=0.12,
-            foreground_color=(1, 1, 1, 1),
+            foreground_color=TEXT_PRIMARY,
             background_color=(0.15, 0.15, 0.18, 1),
         )
         self.add_widget(self.qty_input)
@@ -211,8 +212,8 @@ class LubeCard(BoxLayout):
             text="Add",
             size_hint_x=0.12,
             background_normal="",
-            background_color=(0.15, 0.5, 0.15, 1),
-            color=(1, 1, 1, 1),
+            background_color=BTN_PRIMARY,
+            color=TEXT_PRIMARY,
         )
         add_btn.bind(on_press=self._on_add)
         self.add_widget(add_btn)
@@ -272,7 +273,7 @@ class CartItem(BoxLayout):
             text=item["name"],
             size_hint_x=0.32,
             halign="left",
-            color=(1, 1, 1, 1),
+            color=TEXT_PRIMARY,
             font_size="10sp",
         )
         self.add_widget(name_lbl)
@@ -280,7 +281,7 @@ class CartItem(BoxLayout):
         qty_lbl = Label(
             text=f"{item['qty']:,.2f}",
             size_hint_x=0.16,
-            color=(0.8, 0.8, 0.8, 1),
+            color=TEXT_FIELD_LABEL,
             font_size="10sp",
         )
         self.add_widget(qty_lbl)
@@ -288,7 +289,7 @@ class CartItem(BoxLayout):
         rate_lbl = Label(
             text=curr(item["rate"]),
             size_hint_x=0.16,
-            color=(0.8, 0.8, 0.8, 1),
+            color=TEXT_FIELD_LABEL,
             font_size="10sp",
         )
         self.add_widget(rate_lbl)
@@ -296,7 +297,7 @@ class CartItem(BoxLayout):
         amt_lbl = Label(
             text=curr(item["amount"]),
             size_hint_x=0.2,
-            color=(0.6, 1, 0.6, 1),
+            color=VAL_POSITIVE,
             font_size="10sp",
         )
         self.add_widget(amt_lbl)
@@ -305,8 +306,8 @@ class CartItem(BoxLayout):
             text="X",
             size_hint_x=0.12,
             background_normal="",
-            background_color=(0.6, 0.15, 0.15, 1),
-            color=(1, 1, 1, 1),
+            background_color=BTN_DANGER,
+            color=TEXT_PRIMARY,
             font_size="10sp",
         )
         del_btn.bind(on_press=self._on_delete)
@@ -347,7 +348,7 @@ class PosScreen(Screen):
         if not pumps:
             container.add_widget(Label(
                 text="No pumps configured. Add pumps in Inventory first.",
-                color=(0.8, 0.6, 0.2, 1),
+                color=TEXT_AMBER,
                 size_hint_y=None,
                 height=dp(40),
             ))
@@ -372,7 +373,7 @@ class PosScreen(Screen):
                 text=txt,
                 size_hint_x=sx,
                 bold=True,
-                color=(0.6, 0.6, 0.6, 1),
+                color=TEXT_SECONDARY,
                 font_size="11sp",
             )
             header.add_widget(h)
@@ -380,7 +381,7 @@ class PosScreen(Screen):
         if not lubes:
             container.add_widget(Label(
                 text="No lubricants available. Add them in Inventory first.",
-                color=(0.8, 0.6, 0.2, 1), size_hint_y=None, height=dp(40),
+                color=TEXT_AMBER, size_hint_y=None, height=dp(40),
             ))
             container.add_widget(Widget(size_hint_y=1))
             return
@@ -442,20 +443,20 @@ class PosScreen(Screen):
         if not silent and self.cart_items:
             confirm = Popup(
                 title="Clear Cart",
-                content=Label(text="Clear entire cart?", color=(1, 1, 1, 1)),
+                content=Label(text="Clear entire cart?", color=TEXT_PRIMARY),
                 size_hint=(0.6, 0.3),
             )
             btn_row = BoxLayout(orientation="horizontal", spacing=dp(12), size_hint_y=None, height=dp(40))
             btn_row.add_widget(Button(
-                text="Cancel", background_normal="", background_color=(0.3, 0.3, 0.35, 1), color=(1, 1, 1, 1),
+                text="Cancel", background_normal="", background_color=BTN_CANCEL, color=TEXT_PRIMARY,
                 on_press=confirm.dismiss,
             ))
             btn_row.add_widget(Button(
-                text="Clear", background_normal="", background_color=(0.5, 0.15, 0.15, 1), color=(1, 1, 1, 1),
+                text="Clear", background_normal="", background_color=BTN_DANGER_VARIANT, color=TEXT_PRIMARY,
                 on_press=lambda *a: (confirm.dismiss(), self._do_clear_cart()),
             ))
             confirm.content = BoxLayout(orientation="vertical", spacing=dp(8))
-            confirm.content.add_widget(Label(text="Clear entire cart?", color=(1, 1, 1, 1)))
+            confirm.content.add_widget(Label(text="Clear entire cart?", color=TEXT_PRIMARY))
             confirm.content.add_widget(btn_row)
             confirm.open()
         else:
@@ -468,7 +469,7 @@ class PosScreen(Screen):
     def show_error(self, msg):
         popup = Popup(
             title="Error",
-            content=Label(text=msg, color=(1, 0.3, 0.3, 1)),
+            content=Label(text=msg, color=TEXT_ERROR),
             size_hint=(0.7, 0.3),
         )
         popup.open()
@@ -476,7 +477,7 @@ class PosScreen(Screen):
     def show_info(self, title, msg):
         popup = Popup(
             title=title,
-            content=Label(text=msg, color=(1, 1, 1, 1)),
+            content=Label(text=msg, color=TEXT_PRIMARY),
             size_hint=(0.8, 0.4),
         )
         popup.open()
@@ -532,20 +533,31 @@ class PosScreen(Screen):
         )
 
         popup_content = BoxLayout(orientation="vertical", spacing=dp(8))
-        popup_content.add_widget(Label(text=msg, color=(1, 1, 1, 1)))
-        btn_row = BoxLayout(orientation="horizontal", spacing=dp(12), size_hint_y=None, height=dp(40))
-        btn_row.add_widget(Button(
-            text="OK", background_normal="", background_color=(0.3, 0.3, 0.35, 1), color=(1, 1, 1, 1),
+        popup_content.add_widget(Label(text=msg, color=TEXT_PRIMARY))
+        top_btn_row = BoxLayout(orientation="horizontal", spacing=dp(12), size_hint_y=None, height=dp(40))
+        top_btn_row.add_widget(Button(
+            text="OK", background_normal="", background_color=BTN_CANCEL, color=TEXT_PRIMARY,
             on_press=lambda *a: popup.dismiss(),
         ))
-        btn_row.add_widget(Button(
-            text="Print", background_normal="", background_color=(0.15, 0.4, 0.15, 1), color=(1, 1, 1, 1),
+        top_btn_row.add_widget(Button(
+            text="Save PDF", background_normal="", background_color=BTN_INFO, color=TEXT_PRIMARY,
+            on_press=lambda *a: (
+                popup.dismiss(),
+                self._save_pdf(inv_no, totals, payment_mode, customer_id),
+            ),
+        ))
+        popup_content.add_widget(top_btn_row)
+        bot_btn_row = BoxLayout(orientation="horizontal", spacing=dp(12), size_hint_y=None, height=dp(40))
+        bot_btn_row.add_widget(Widget())
+        bot_btn_row.add_widget(Button(
+            text="Print Receipt", background_normal="", background_color=BTN_SECONDARY, color=TEXT_PRIMARY,
             on_press=lambda *a: (
                 popup.dismiss(),
                 self._print_receipt(inv_no, totals, payment_mode, customer_id),
             ),
         ))
-        popup_content.add_widget(btn_row)
+        bot_btn_row.add_widget(Widget())
+        popup_content.add_widget(bot_btn_row)
 
         popup = Popup(
             title="Sale Complete",
@@ -597,6 +609,35 @@ class PosScreen(Screen):
             self.show_error("Receipt printed.")
         except Exception as e:
             self.show_error(f"Print failed: {e}")
+
+    def _save_pdf(self, inv_no, totals, payment_mode, customer_id=None):
+        from libs.models.customer import Customer
+        cname = ""
+        if customer_id:
+            c = Customer.get_by_id(customer_id)
+            if c:
+                cname = c.get("name", "")
+        sale_data = {
+            "invoice": inv_no,
+            "items": [],
+            "taxable_display": f"Rs {totals['taxable']:,.2f}",
+            "cgst_display": f"Rs {totals['cgst']:,.2f}",
+            "sgst_display": f"Rs {totals['sgst']:,.2f}",
+            "grand_total_display": f"Rs {totals['grand_total']:,.2f}",
+        }
+        for item in self.cart_items:
+            sale_data["items"].append({
+                "name": item.get("name", ""),
+                "qty_display": f"{item.get('qty', 0):.1f}L" if item.get("type") == "fuel" else f"{item.get('qty', 0):.0f}",
+                "rate_display": f"Rs {item.get('rate', 0):,.2f}",
+                "amount_display": f"Rs {item.get('amount', 0):,.2f}",
+            })
+        from libs.utils.invoice_pdf import generate_invoice
+        try:
+            path = generate_invoice(inv_no, sale_data["items"], sale_data, payment_mode, cname)
+            self.show_error(f"Invoice saved:\n{path.name}")
+        except Exception as e:
+            self.show_error(f"Invoice failed: {e}")
 
     def go_back(self):
         self.manager.current = "main"

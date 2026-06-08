@@ -1,6 +1,7 @@
 from datetime import date
 
 from kivy.uix.screenmanager import Screen
+from libs.utils.theme import *
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.widget import Widget
@@ -27,7 +28,7 @@ class ExpenseScreen(Screen):
         if not expenses:
             container.add_widget(Label(
                 text="No expenses recorded. Tap + to add one.",
-                color=(0.8, 0.6, 0.2, 1),
+                color=TEXT_AMBER,
                 size_hint_y=None, height=dp(40),
             ))
         else:
@@ -59,10 +60,10 @@ class ExpenseScreen(Screen):
 
     def confirm_delete(self, eid):
         content = BoxLayout(orientation="vertical", spacing=dp(10), padding=dp(10))
-        content.add_widget(Label(text="Delete this expense?", color=(1, 1, 1, 1)))
+        content.add_widget(Label(text="Delete this expense?", color=TEXT_PRIMARY))
         btn_row = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(40), spacing=dp(10))
-        yes_btn = Button(text="Yes", background_normal="", background_color=(0.6, 0.15, 0.15, 1), color=(1,1,1,1))
-        no_btn = Button(text="No", background_normal="", background_color=(0.2, 0.2, 0.25, 1), color=(1,1,1,1))
+        yes_btn = Button(text="Yes", background_normal="", background_color=BTN_DANGER, color=(1,1,1,1))
+        no_btn = Button(text="No", background_normal="", background_color=BTN_NEUTRAL_DARK, color=(1,1,1,1))
         btn_row.add_widget(yes_btn)
         btn_row.add_widget(no_btn)
         content.add_widget(btn_row)
@@ -74,7 +75,7 @@ class ExpenseScreen(Screen):
     def show_error(self, msg):
         popup = Popup(
             title="Error",
-            content=Label(text=msg, color=(1, 0.3, 0.3, 1)),
+            content=Label(text=msg, color=TEXT_ERROR),
             size_hint=(0.7, 0.3),
         )
         popup.open()
@@ -105,10 +106,10 @@ class ExpenseRow(BoxLayout):
 
         btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.28, spacing=dp(4))
         edit_btn = Button(text="Edit", font_size="11sp", background_normal="",
-                          background_color=(0.2, 0.3, 0.5, 1), color=(1,1,1,1))
+                          background_color=BTN_INFO, color=(1,1,1,1))
         edit_btn.bind(on_press=lambda *a: screen.show_form(expense))
         del_btn = Button(text="Del", font_size="11sp", background_normal="",
-                         background_color=(0.5, 0.15, 0.15, 1), color=(1,1,1,1))
+                         background_color=BTN_DANGER_VARIANT, color=(1,1,1,1))
         del_btn.bind(on_press=lambda *a: screen.confirm_delete(expense["id"]))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(del_btn)
@@ -139,7 +140,7 @@ class ExpenseForm(BoxLayout):
                     break
         add_cat_btn = Button(
             text="+", size_hint_x=0.15,
-            background_normal="", background_color=(0.15, 0.4, 0.15, 1), color=(1,1,1,1),
+            background_normal="", background_color=BTN_SECONDARY, color=(1,1,1,1),
         )
         add_cat_btn.bind(on_press=self._add_category)
         cat_row.add_widget(self.category_spinner)
@@ -173,10 +174,10 @@ class ExpenseForm(BoxLayout):
         self.add_widget(Widget())
         btn_row = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(44), spacing=dp(10))
         save_btn = Button(text="Save", background_normal="",
-                          background_color=(0.15, 0.5, 0.15, 1), color=(1,1,1,1))
+                          background_color=BTN_PRIMARY, color=(1,1,1,1))
         save_btn.bind(on_press=self._save)
         cancel_btn = Button(text="Cancel", background_normal="",
-                            background_color=(0.3, 0.3, 0.35, 1), color=(1,1,1,1))
+                            background_color=BTN_CANCEL, color=(1,1,1,1))
         cancel_btn.bind(on_press=lambda *a: self.popup.dismiss())
         btn_row.add_widget(save_btn)
         btn_row.add_widget(cancel_btn)
@@ -203,9 +204,9 @@ class ExpenseForm(BoxLayout):
         content.add_widget(name_input)
         btn_row = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(40), spacing=dp(10))
         add_btn = Button(text="Add", background_normal="",
-                         background_color=(0.15, 0.5, 0.15, 1), color=(1,1,1,1))
+                         background_color=BTN_PRIMARY, color=(1,1,1,1))
         cancel_btn = Button(text="Cancel", background_normal="",
-                            background_color=(0.3, 0.3, 0.35, 1), color=(1,1,1,1))
+                            background_color=BTN_CANCEL, color=(1,1,1,1))
         btn_row.add_widget(add_btn)
         btn_row.add_widget(cancel_btn)
         content.add_widget(btn_row)

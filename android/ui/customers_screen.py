@@ -8,6 +8,7 @@ from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.metrics import dp
 
+from libs.utils.theme import *
 from libs.models.customer import Customer
 from libs.database.connection import get_connection
 from libs.utils.formatting import curr
@@ -24,7 +25,7 @@ class CustomerScreen(Screen):
         if not customers:
             container.add_widget(Label(
                 text="No customers yet. Tap + to add one.",
-                color=(0.8, 0.6, 0.2, 1),
+                color=TEXT_AMBER,
                 size_hint_y=None, height=dp(40),
             ))
         else:
@@ -56,10 +57,10 @@ class CustomerScreen(Screen):
 
     def confirm_delete(self, cid):
         content = BoxLayout(orientation="vertical", spacing=dp(10), padding=dp(10))
-        content.add_widget(Label(text="Delete this customer?", color=(1, 1, 1, 1)))
+        content.add_widget(Label(text="Delete this customer?", color=TEXT_PRIMARY))
         btn_row = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(40), spacing=dp(10))
-        yes_btn = Button(text="Yes", background_normal="", background_color=(0.6, 0.15, 0.15, 1), color=(1,1,1,1))
-        no_btn = Button(text="No", background_normal="", background_color=(0.2, 0.2, 0.25, 1), color=(1,1,1,1))
+        yes_btn = Button(text="Yes", background_normal="", background_color=BTN_DANGER, color=(1,1,1,1))
+        no_btn = Button(text="No", background_normal="", background_color=BTN_NEUTRAL_DARK, color=(1,1,1,1))
         btn_row.add_widget(yes_btn)
         btn_row.add_widget(no_btn)
         content.add_widget(btn_row)
@@ -71,7 +72,7 @@ class CustomerScreen(Screen):
     def show_error(self, msg):
         popup = Popup(
             title="Error",
-            content=Label(text=msg, color=(1, 0.3, 0.3, 1)),
+            content=Label(text=msg, color=TEXT_ERROR),
             size_hint=(0.7, 0.3),
         )
         popup.open()
@@ -106,10 +107,10 @@ class CustomerRow(BoxLayout):
 
         btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.14, spacing=dp(4))
         edit_btn = Button(text="Edit", font_size="11sp", background_normal="",
-                          background_color=(0.2, 0.3, 0.5, 1), color=(1,1,1,1))
+                          background_color=BTN_INFO, color=(1,1,1,1))
         edit_btn.bind(on_press=lambda *a: screen.show_form(cust))
         del_btn = Button(text="Del", font_size="11sp", background_normal="",
-                         background_color=(0.5, 0.15, 0.15, 1), color=(1,1,1,1))
+                         background_color=BTN_DANGER_VARIANT, color=(1,1,1,1))
         del_btn.bind(on_press=lambda *a: screen.confirm_delete(cust["id"]))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(del_btn)
@@ -169,10 +170,10 @@ class CustomerForm(BoxLayout):
         self.add_widget(Widget())
         btn_row = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(44), spacing=dp(10))
         save_btn = Button(text="Save", background_normal="",
-                          background_color=(0.15, 0.5, 0.15, 1), color=(1,1,1,1))
+                          background_color=BTN_PRIMARY, color=(1,1,1,1))
         save_btn.bind(on_press=self._save)
         cancel_btn = Button(text="Cancel", background_normal="",
-                            background_color=(0.3, 0.3, 0.35, 1), color=(1,1,1,1))
+                            background_color=BTN_CANCEL, color=(1,1,1,1))
         cancel_btn.bind(on_press=lambda *a: self.popup.dismiss())
         btn_row.add_widget(save_btn)
         btn_row.add_widget(cancel_btn)

@@ -1,4 +1,5 @@
 from kivy.uix.screenmanager import Screen
+from libs.utils.theme import *
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.widget import Widget
@@ -31,7 +32,7 @@ class InventoryScreen(Screen):
         if not tanks:
             self.ids.tank_container.add_widget(Label(
                 text="No tanks configured. Tap + to add one.",
-                color=(0.8, 0.6, 0.2, 1),
+                color=TEXT_AMBER,
                 size_hint_y=None, height=dp(40),
             ))
         else:
@@ -45,7 +46,7 @@ class InventoryScreen(Screen):
         if not pumps:
             self.ids.pump_container.add_widget(Label(
                 text="No pumps configured. Tap + to add one.",
-                color=(0.8, 0.6, 0.2, 1),
+                color=TEXT_AMBER,
                 size_hint_y=None, height=dp(40),
             ))
         else:
@@ -80,7 +81,7 @@ class InventoryScreen(Screen):
         if self._lube_page == 0 and not lubes:
             self.ids.lube_container.add_widget(Label(
                 text="No lubricants. Tap + to add one.",
-                color=(0.8, 0.6, 0.2, 1),
+                color=TEXT_AMBER,
                 size_hint_y=None, height=dp(40),
             ))
         else:
@@ -96,7 +97,7 @@ class InventoryScreen(Screen):
             self._lube_page += 1
             more_btn = Button(
                 text="Load More", size_hint_y=None, height=dp(40),
-                background_normal="", background_color=(0.2, 0.3, 0.5, 1), color=(1, 1, 1, 1),
+                background_normal="", background_color=BTN_INFO, color=TEXT_PRIMARY,
                 on_press=lambda *a: self._rebuild_lubes(load_more=True),
             )
             self.ids.lube_container.add_widget(more_btn)
@@ -167,10 +168,10 @@ class InventoryScreen(Screen):
 
     def _confirm_delete(self, msg, callback):
         content = BoxLayout(orientation="vertical", spacing=dp(10), padding=dp(10))
-        content.add_widget(Label(text=msg, color=(1, 1, 1, 1)))
+        content.add_widget(Label(text=msg, color=TEXT_PRIMARY))
         btn_row = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(40), spacing=dp(10))
-        yes_btn = Button(text="Yes", background_normal="", background_color=(0.6, 0.15, 0.15, 1), color=(1,1,1,1))
-        no_btn = Button(text="No", background_normal="", background_color=(0.2, 0.2, 0.25, 1), color=(1,1,1,1))
+        yes_btn = Button(text="Yes", background_normal="", background_color=BTN_DANGER, color=(1,1,1,1))
+        no_btn = Button(text="No", background_normal="", background_color=BTN_NEUTRAL_DARK, color=(1,1,1,1))
         btn_row.add_widget(yes_btn)
         btn_row.add_widget(no_btn)
         content.add_widget(btn_row)
@@ -194,7 +195,7 @@ class InventoryScreen(Screen):
     def show_error(self, msg):
         popup = Popup(
             title="Error",
-            content=Label(text=msg, color=(1, 0.3, 0.3, 1)),
+            content=Label(text=msg, color=TEXT_ERROR),
             size_hint=(0.7, 0.3),
         )
         popup.open()
@@ -225,10 +226,10 @@ class TankRow(BoxLayout):
 
         btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.25, spacing=dp(4))
         edit_btn = Button(text="Edit", font_size="11sp", background_normal="",
-                          background_color=(0.2, 0.3, 0.5, 1), color=(1,1,1,1))
+                          background_color=BTN_INFO, color=(1,1,1,1))
         edit_btn.bind(on_press=lambda *a: screen.show_tank_form(tank))
         del_btn = Button(text="Del", font_size="11sp", background_normal="",
-                         background_color=(0.5, 0.15, 0.15, 1), color=(1,1,1,1))
+                         background_color=BTN_DANGER_VARIANT, color=(1,1,1,1))
         del_btn.bind(on_press=lambda *a: screen.confirm_delete_tank(tank["id"]))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(del_btn)
@@ -257,10 +258,10 @@ class PumpRow(BoxLayout):
 
         btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.2, spacing=dp(4))
         edit_btn = Button(text="Edit", font_size="11sp", background_normal="",
-                          background_color=(0.2, 0.3, 0.5, 1), color=(1,1,1,1))
+                          background_color=BTN_INFO, color=(1,1,1,1))
         edit_btn.bind(on_press=lambda *a: screen.show_pump_form(pump))
         del_btn = Button(text="Del", font_size="11sp", background_normal="",
-                         background_color=(0.5, 0.15, 0.15, 1), color=(1,1,1,1))
+                         background_color=BTN_DANGER_VARIANT, color=(1,1,1,1))
         del_btn.bind(on_press=lambda *a: screen.confirm_delete_pump(pump["id"]))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(del_btn)
@@ -290,10 +291,10 @@ class LubeRow(BoxLayout):
 
         btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.2, spacing=dp(4))
         edit_btn = Button(text="Edit", font_size="11sp", background_normal="",
-                          background_color=(0.2, 0.3, 0.5, 1), color=(1,1,1,1))
+                          background_color=BTN_INFO, color=(1,1,1,1))
         edit_btn.bind(on_press=lambda *a: screen.show_lube_form(lube))
         del_btn = Button(text="Del", font_size="11sp", background_normal="",
-                         background_color=(0.5, 0.15, 0.15, 1), color=(1,1,1,1))
+                         background_color=BTN_DANGER_VARIANT, color=(1,1,1,1))
         del_btn.bind(on_press=lambda *a: screen.confirm_delete_lube(lube["id"]))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(del_btn)
@@ -357,10 +358,10 @@ class TankForm(BoxLayout):
         self.add_widget(Widget())
         btn_row = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(44), spacing=dp(10))
         save_btn = Button(text="Save", background_normal="",
-                          background_color=(0.15, 0.5, 0.15, 1), color=(1,1,1,1))
+                          background_color=BTN_PRIMARY, color=(1,1,1,1))
         save_btn.bind(on_press=self._save)
         cancel_btn = Button(text="Cancel", background_normal="",
-                            background_color=(0.3, 0.3, 0.35, 1), color=(1,1,1,1))
+                            background_color=BTN_CANCEL, color=(1,1,1,1))
         cancel_btn.bind(on_press=lambda *a: self.popup.dismiss())
         btn_row.add_widget(save_btn)
         btn_row.add_widget(cancel_btn)
@@ -451,10 +452,10 @@ class PumpForm(BoxLayout):
         self.add_widget(Widget())
         btn_row = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(44), spacing=dp(10))
         save_btn = Button(text="Save", background_normal="",
-                          background_color=(0.15, 0.5, 0.15, 1), color=(1,1,1,1))
+                          background_color=BTN_PRIMARY, color=(1,1,1,1))
         save_btn.bind(on_press=self._save)
         cancel_btn = Button(text="Cancel", background_normal="",
-                            background_color=(0.3, 0.3, 0.35, 1), color=(1,1,1,1))
+                            background_color=BTN_CANCEL, color=(1,1,1,1))
         cancel_btn.bind(on_press=lambda *a: self.popup.dismiss())
         btn_row.add_widget(save_btn)
         btn_row.add_widget(cancel_btn)
@@ -565,10 +566,10 @@ class LubeForm(BoxLayout):
         self.add_widget(Widget())
         btn_row = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(44), spacing=dp(10))
         save_btn = Button(text="Save", background_normal="",
-                          background_color=(0.15, 0.5, 0.15, 1), color=(1,1,1,1))
+                          background_color=BTN_PRIMARY, color=(1,1,1,1))
         save_btn.bind(on_press=self._save)
         cancel_btn = Button(text="Cancel", background_normal="",
-                            background_color=(0.3, 0.3, 0.35, 1), color=(1,1,1,1))
+                            background_color=BTN_CANCEL, color=(1,1,1,1))
         cancel_btn.bind(on_press=lambda *a: self.popup.dismiss())
         btn_row.add_widget(save_btn)
         btn_row.add_widget(cancel_btn)

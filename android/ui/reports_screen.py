@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 
 from kivy.uix.screenmanager import Screen
+from libs.utils.theme import *
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.widget import Widget
@@ -58,7 +59,7 @@ class ReportScreen(Screen):
         if not rows:
             container.add_widget(Label(
                 text="No data found for the selected period.",
-                color=(0.8, 0.6, 0.2, 1),
+                color=TEXT_AMBER,
                 size_hint_y=None, height=dp(40),
             ))
             container.add_widget(Widget(size_hint_y=1))
@@ -73,7 +74,7 @@ class ReportScreen(Screen):
         for label, sx in headers:
             header_row.add_widget(Label(
                 text=label, size_hint_x=sx / total_sx,
-                bold=True, color=(0.6, 0.6, 0.6, 1), font_size="11sp",
+                bold=True, color=TEXT_SECONDARY, font_size="11sp",
             ))
         container.add_widget(header_row)
 
@@ -87,7 +88,7 @@ class ReportScreen(Screen):
                 lbl = Label(
                     text=str(cell) if cell is not None else "",
                     size_hint_x=sx / total_sx,
-                    halign="left", color=(1, 1, 1, 1), font_size="11sp",
+                    halign="left", color=TEXT_PRIMARY, font_size="11sp",
                 )
                 row_box.add_widget(lbl)
             container.add_widget(row_box)
@@ -298,7 +299,7 @@ class ReportScreen(Screen):
     def _show_error(self, msg):
         popup = Popup(
             title="Error",
-            content=Label(text=msg, color=(1, 0.3, 0.3, 1)),
+            content=Label(text=msg, color=TEXT_ERROR),
             size_hint=(0.7, 0.3),
         )
         popup.open()
@@ -306,7 +307,7 @@ class ReportScreen(Screen):
     def _show_info(self, title, msg):
         popup = Popup(
             title=title,
-            content=Label(text=msg, color=(1, 1, 1, 1)),
+            content=Label(text=msg, color=TEXT_PRIMARY),
             size_hint=(0.8, 0.4),
         )
         popup.open()

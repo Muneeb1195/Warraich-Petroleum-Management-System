@@ -1,3 +1,4 @@
+#:import Theme libs.utils.theme
 <ReconciliationScreen>:
     BoxLayout:
         orientation: "vertical"
@@ -7,7 +8,7 @@
             size_hint_y: 0.07
             canvas.before:
                 Color:
-                    rgba: 0.1, 0.1, 0.12, 1
+                    rgba: Theme.BG_HEADER
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -15,14 +16,14 @@
                 text: "< Back"
                 size_hint_x: 0.15
                 background_normal: ""
-                background_color: 0.12, 0.12, 0.15, 1
-                color: 1, 1, 1, 1
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
                 on_press: root.go_back()
             Label:
                 text: "Shift Recon"
                 font_size: "18sp"
                 bold: True
-                color: 1, 1, 1, 1
+                color: Theme.TEXT_PRIMARY
             Label:
                 text: ""
 
@@ -34,27 +35,27 @@
             padding: [dp(8), dp(4)]
             canvas.before:
                 Color:
-                    rgba: 0.09, 0.09, 0.12, 1
+                    rgba: Theme.BG_CARD
                 Rectangle:
                     pos: self.pos
                     size: self.size
             Label:
                 text: "Date:"
                 size_hint_x: 0.12
-                color: 0.8, 0.8, 0.8, 1
+                color: Theme.TEXT_FIELD_LABEL
                 font_size: "12sp"
             TextInput:
                 id: date_input
                 size_hint_x: 0.22
                 multiline: False
-                font_size: "11sp"
-                foreground_color: 1, 1, 1, 1
+                font_size: "12sp"
+                foreground_color: Theme.TEXT_PRIMARY
                 background_color: 0.15, 0.15, 0.18, 1
                 on_text: root.on_date_shift_change()
             Label:
                 text: "Shift:"
                 size_hint_x: 0.08
-                color: 0.8, 0.8, 0.8, 1
+                color: Theme.TEXT_FIELD_LABEL
                 font_size: "12sp"
             Spinner:
                 id: shift_spinner
@@ -62,24 +63,24 @@
                 text: "Morning"
                 values: ["Morning", "Evening", "Night"]
                 background_color: 0.18, 0.18, 0.22, 1
-                color: 1, 1, 1, 1
-                font_size: "11sp"
+                color: Theme.TEXT_PRIMARY
+                font_size: "12sp"
                 on_text: root.on_date_shift_change()
             Button:
                 text: "Start"
                 size_hint_x: 0.14
                 background_normal: ""
-                background_color: 0.15, 0.4, 0.15, 1
-                color: 1, 1, 1, 1
-                font_size: "11sp"
+                background_color: Theme.BTN_SECONDARY
+                color: Theme.TEXT_PRIMARY
+                font_size: "12sp"
                 on_press: root.start_shift()
             Button:
                 text: "Close"
                 size_hint_x: 0.14
                 background_normal: ""
-                background_color: 0.4, 0.15, 0.15, 1
-                color: 1, 1, 1, 1
-                font_size: "11sp"
+                background_color: Theme.BTN_CLOSE
+                color: Theme.TEXT_PRIMARY
+                font_size: "12sp"
                 on_press: root.close_shift()
 
         # Pump readings header + rows
@@ -103,9 +104,9 @@
                     size_hint_y: None
                     height: dp(44)
                     background_normal: ""
-                    background_color: 0.4, 0.4, 0.15, 1
-                    color: 1, 1, 1, 1
-                    font_size: "14sp"
+                    background_color: Theme.BTN_OLIVE
+                    color: Theme.TEXT_PRIMARY
+                    font_size: "15sp"
                     on_press: root.reconcile()
 
                 Widget:

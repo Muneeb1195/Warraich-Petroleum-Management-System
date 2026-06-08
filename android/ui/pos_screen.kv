@@ -1,3 +1,4 @@
+#:import Theme libs.utils.theme
 <PosScreen>:
     BoxLayout:
         orientation: "vertical"
@@ -7,7 +8,7 @@
             size_hint_y: 0.07
             canvas.before:
                 Color:
-                    rgba: 0.1, 0.1, 0.12, 1
+                    rgba: Theme.BG_HEADER
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -15,14 +16,14 @@
                 text: "< Back"
                 size_hint_x: 0.15
                 background_normal: ""
-                background_color: 0.12, 0.12, 0.15, 1
-                color: 1, 1, 1, 1
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
                 on_press: root.go_back()
             Label:
                 text: "Point of Sale"
                 font_size: "18sp"
                 bold: True
-                color: 1, 1, 1, 1
+                color: Theme.TEXT_PRIMARY
             Label:
                 text: ""
 
@@ -30,7 +31,7 @@
         TabbedPanel:
             do_default_tab: False
             tab_width: self.width / 2
-            background_color: 0.12, 0.12, 0.15, 1
+            background_color: Theme.BTN_NAV
             border: [0, 0, 0, 0]
             size_hint_y: 0.55
             TabbedPanelItem:
@@ -62,7 +63,7 @@
             spacing: dp(2)
             canvas.before:
                 Color:
-                    rgba: 0.09, 0.09, 0.12, 1
+                    rgba: Theme.BG_CARD
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -76,42 +77,42 @@
                 Label:
                     text: "Customer:"
                     size_hint_x: 0.22
-                    color: 0.8, 0.8, 0.8, 1
-                    font_size: "10sp"
+                    color: Theme.TEXT_FIELD_LABEL
+                    font_size: "12sp"
                 Spinner:
                     id: customer_spinner
                     size_hint_x: 0.28
                     text: "Walk-in Customer"
                     values: ["Walk-in Customer"]
                     background_color: 0.18, 0.18, 0.22, 1
-                    color: 1, 1, 1, 1
-                    font_size: "10sp"
+                    color: Theme.TEXT_PRIMARY
+                    font_size: "12sp"
                 Label:
                     text: "Pay:"
                     size_hint_x: 0.1
-                    color: 0.8, 0.8, 0.8, 1
-                    font_size: "10sp"
+                    color: Theme.TEXT_FIELD_LABEL
+                    font_size: "12sp"
                 Spinner:
                     id: payment_spinner
                     size_hint_x: 0.18
                     text: "Cash"
                     values: ["Cash", "Card", "UPI", "Credit"]
                     background_color: 0.18, 0.18, 0.22, 1
-                    color: 1, 1, 1, 1
-                    font_size: "10sp"
+                    color: Theme.TEXT_PRIMARY
+                    font_size: "12sp"
                 Label:
                     text: "GST:"
                     size_hint_x: 0.07
-                    color: 0.8, 0.8, 0.8, 1
-                    font_size: "10sp"
+                    color: Theme.TEXT_FIELD_LABEL
+                    font_size: "12sp"
                 TextInput:
                     id: gst_input
                     size_hint_x: 0.12
                     multiline: False
                     input_filter: "float"
                     text: "18"
-                    font_size: "10sp"
-                    foreground_color: 1, 1, 1, 1
+                    font_size: "12sp"
+                    foreground_color: Theme.TEXT_PRIMARY
                     background_color: 0.15, 0.15, 0.18, 1
                     on_text: root.on_gst_change()
 
@@ -129,25 +130,25 @@
                         text: "Item"
                         size_hint_x: 0.32
                         bold: True
-                        color: 0.6, 0.6, 0.6, 1
+                        color: Theme.TEXT_SECONDARY
                         font_size: "9sp"
                     Label:
                         text: "Qty"
                         size_hint_x: 0.16
                         bold: True
-                        color: 0.6, 0.6, 0.6, 1
+                        color: Theme.TEXT_SECONDARY
                         font_size: "9sp"
                     Label:
                         text: "Rate"
                         size_hint_x: 0.16
                         bold: True
-                        color: 0.6, 0.6, 0.6, 1
+                        color: Theme.TEXT_SECONDARY
                         font_size: "9sp"
                     Label:
                         text: "Amt"
                         size_hint_x: 0.2
                         bold: True
-                        color: 0.6, 0.6, 0.6, 1
+                        color: Theme.TEXT_SECONDARY
                         font_size: "9sp"
                     Label:
                         text: ""
@@ -176,34 +177,34 @@
                     height: dp(18)
                     Label:
                         text: "Taxable:"
-                        color: 0.8, 0.8, 0.8, 1
-                        font_size: "10sp"
+                        color: Theme.TEXT_FIELD_LABEL
+                        font_size: "12sp"
                         halign: "left"
                     Label:
                         id: taxable_label
                         text: "Rs 0"
-                        color: 1, 1, 1, 1
-                        font_size: "10sp"
+                        color: Theme.TEXT_PRIMARY
+                        font_size: "12sp"
                     Label:
                         text: "CGST:"
-                        color: 0.8, 0.8, 0.8, 1
-                        font_size: "10sp"
+                        color: Theme.TEXT_FIELD_LABEL
+                        font_size: "12sp"
                         halign: "left"
                     Label:
                         id: cgst_label
                         text: "Rs 0"
-                        color: 1, 1, 1, 1
-                        font_size: "10sp"
+                        color: Theme.TEXT_PRIMARY
+                        font_size: "12sp"
                     Label:
                         text: "SGST:"
-                        color: 0.8, 0.8, 0.8, 1
-                        font_size: "10sp"
+                        color: Theme.TEXT_FIELD_LABEL
+                        font_size: "12sp"
                         halign: "left"
                     Label:
                         id: sgst_label
                         text: "Rs 0"
-                        color: 1, 1, 1, 1
-                        font_size: "10sp"
+                        color: Theme.TEXT_PRIMARY
+                        font_size: "12sp"
 
                 BoxLayout:
                     orientation: "horizontal"
@@ -211,35 +212,35 @@
                     height: dp(18)
                     Label:
                         text: "Total:"
-                        color: 0.8, 0.8, 0.8, 1
-                        font_size: "10sp"
+                        color: Theme.TEXT_FIELD_LABEL
+                        font_size: "12sp"
                         halign: "left"
                     Label:
                         id: total_label
                         text: "Rs 0"
-                        color: 1, 1, 1, 1
-                        font_size: "10sp"
+                        color: Theme.TEXT_PRIMARY
+                        font_size: "12sp"
                     Label:
                         text: "R/Off:"
-                        color: 0.8, 0.8, 0.8, 1
-                        font_size: "10sp"
+                        color: Theme.TEXT_FIELD_LABEL
+                        font_size: "12sp"
                         halign: "left"
                     Label:
                         id: round_off_label
                         text: "Rs 0"
-                        color: 1, 1, 1, 1
-                        font_size: "10sp"
+                        color: Theme.TEXT_PRIMARY
+                        font_size: "12sp"
                     Label:
                         text: "Grand:"
-                        color: 0.6, 0.8, 1, 1
-                        font_size: "11sp"
+                        color: Theme.TEXT_BLUE_HEADER
+                        font_size: "12sp"
                         bold: True
                         halign: "left"
                     Label:
                         id: grand_total_label
                         text: "Rs 0"
-                        color: 0.4, 0.7, 1, 1
-                        font_size: "11sp"
+                        color: Theme.TEXT_GRAND_TOTAL
+                        font_size: "12sp"
                         bold: True
 
                 BoxLayout:
@@ -252,15 +253,15 @@
                     Button:
                         text: "Clear"
                         background_normal: ""
-                        background_color: 0.5, 0.15, 0.15, 1
-                        color: 1, 1, 1, 1
+                        background_color: Theme.BTN_DANGER_VARIANT
+                        color: Theme.TEXT_PRIMARY
                         font_size: "12sp"
                         on_press: root._clear_cart()
 
                     Button:
                         text: "Complete Sale"
                         background_normal: ""
-                        background_color: 0.15, 0.5, 0.15, 1
-                        color: 1, 1, 1, 1
+                        background_color: Theme.BTN_PRIMARY
+                        color: Theme.TEXT_PRIMARY
                         font_size: "12sp"
                         on_press: root._checkout()

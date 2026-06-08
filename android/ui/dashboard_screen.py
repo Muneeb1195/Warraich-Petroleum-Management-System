@@ -10,6 +10,7 @@ from kivy.uix.popup import Popup
 from kivy.metrics import dp
 from kivy.properties import StringProperty, ListProperty
 
+from libs.utils.theme import *
 from libs.database.connection import get_connection
 from libs.utils.formatting import curr
 
@@ -122,10 +123,10 @@ class DashboardScreen(Screen):
 
         content = BoxLayout(orientation="vertical", spacing=dp(10), padding=dp(10))
         msg = "\n".join(lines)
-        content.add_widget(Label(text=msg, color=(1, 1, 1, 1), font_size="13sp", halign="left"))
+        content.add_widget(Label(text=msg, color=TEXT_PRIMARY, font_size="13sp", halign="left"))
         close_btn = Button(
             text="Close", size_hint_y=None, height=dp(40),
-            background_normal="", background_color=(0.3, 0.3, 0.35, 1), color=(1,1,1,1),
+            background_normal="", background_color=BTN_CANCEL, color=(1,1,1,1),
         )
         content.add_widget(close_btn)
         popup = Popup(title="Day Closing Summary", content=content, size_hint=(0.75, 0.6))

@@ -1,3 +1,4 @@
+#:import Theme libs.utils.theme
 <MainScreen>:
     BoxLayout:
         orientation: "vertical"
@@ -7,7 +8,7 @@
             size_hint_y: 0.1
             canvas.before:
                 Color:
-                    rgba: 0.1, 0.1, 0.12, 1
+                    rgba: Theme.BG_HEADER
                 Rectangle:
                     pos: self.pos
                     size: self.size
@@ -15,11 +16,11 @@
                 text: "⛽ Warraich Petroleum"
                 font_size: "20sp"
                 bold: True
-                color: 1, 1, 1, 1
+                color: Theme.TEXT_PRIMARY
             Label:
                 text: "Management System"
                 font_size: "12sp"
-                color: 0.6, 0.6, 0.6, 1
+                color: Theme.TEXT_SECONDARY
 
         # Body with sidebar + content placeholder
         BoxLayout:
@@ -31,7 +32,7 @@
                 size_hint_x: 0.45
                 canvas.before:
                     Color:
-                        rgba: 0.07, 0.07, 0.1, 1
+                        rgba: Theme.BG_SIDEBAR
                     Rectangle:
                         pos: self.pos
                         size: self.size
@@ -49,87 +50,87 @@
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: 0.12, 0.12, 0.15, 1
-                            color: 1, 1, 1, 1
+                            background_color: Theme.BTN_NAV
+                            color: Theme.TEXT_PRIMARY
                             on_press: root.manager.current = "dashboard"
                         Button:
                             text: "⛽ Inventory"
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: 0.12, 0.12, 0.15, 1
-                            color: 1, 1, 1, 1
+                            background_color: Theme.BTN_NAV
+                            color: Theme.TEXT_PRIMARY
                             on_press: root.manager.current = "inventory"
                         Button:
                             text: "📦 Purchases"
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: 0.12, 0.12, 0.15, 1
-                            color: 1, 1, 1, 1
+                            background_color: Theme.BTN_NAV
+                            color: Theme.TEXT_PRIMARY
                             on_press: root.manager.current = "purchases"
                         Button:
                             text: "🧾 POS / Sales"
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: 0.12, 0.12, 0.15, 1
-                            color: 1, 1, 1, 1
+                            background_color: Theme.BTN_NAV
+                            color: Theme.TEXT_PRIMARY
                             on_press: root.manager.current = "pos"
                         Button:
                             text: "👥 Customers"
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: 0.12, 0.12, 0.15, 1
-                            color: 1, 1, 1, 1
+                            background_color: Theme.BTN_NAV
+                            color: Theme.TEXT_PRIMARY
                             on_press: root.manager.current = "customers"
                         Button:
                             text: "💰 Expenses"
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: 0.12, 0.12, 0.15, 1
-                            color: 1, 1, 1, 1
+                            background_color: Theme.BTN_NAV
+                            color: Theme.TEXT_PRIMARY
                             on_press: root.manager.current = "expenses"
                         Button:
                             text: "📈 Reports"
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: 0.12, 0.12, 0.15, 1
-                            color: 1, 1, 1, 1
+                            background_color: Theme.BTN_NAV
+                            color: Theme.TEXT_PRIMARY
                             on_press: root.manager.current = "reports"
                         Button:
                             text: "🔄 Shift Recon"
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: 0.12, 0.12, 0.15, 1
-                            color: 1, 1, 1, 1
+                            background_color: Theme.BTN_NAV
+                            color: Theme.TEXT_PRIMARY
                             on_press: root.manager.current = "reconciliation"
                         Button:
                             text: "👥 Staff"
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: 0.12, 0.12, 0.15, 1
-                            color: 1, 1, 1, 1
+                            background_color: Theme.BTN_NAV
+                            color: Theme.TEXT_PRIMARY
                             on_press: root.manager.current = "staff"
                         Button:
                             text: "⚙️ Settings"
                             size_hint_y: None
                             height: "44dp"
                             background_normal: ""
-                            background_color: 0.12, 0.12, 0.15, 1
-                            color: 1, 1, 1, 1
+                            background_color: Theme.BTN_NAV
+                            color: Theme.TEXT_PRIMARY
                             on_press: root.manager.current = "settings"
 
                         Label:
                             text: "v1.0"
                             size_hint_y: None
                             height: "32dp"
-                            color: 0.4, 0.4, 0.4, 1
+                            color: Theme.TEXT_VERSION
 
             # Content area placeholder
             BoxLayout:
@@ -137,7 +138,7 @@
                 padding: "16dp"
                 canvas.before:
                     Color:
-                        rgba: 0.13, 0.14, 0.16, 1
+                        rgba: Theme.BG_MAIN
                     Rectangle:
                         pos: self.pos
                         size: self.size
@@ -145,8 +146,8 @@
                     text: "Welcome to Warraich Petroleum"
                     font_size: "24sp"
                     bold: True
-                    color: 1, 1, 1, 1
+                    color: Theme.TEXT_PRIMARY
                 Label:
                     text: "Select a section from the sidebar to get started."
-                    font_size: "14sp"
-                    color: 0.6, 0.6, 0.6, 1
+                    font_size: "15sp"
+                    color: Theme.TEXT_SECONDARY

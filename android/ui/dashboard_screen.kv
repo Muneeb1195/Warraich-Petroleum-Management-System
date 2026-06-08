@@ -1,8 +1,9 @@
+#:import Theme libs.utils.theme
 # Custom StatCard widget
 <StatCard>:
     canvas.before:
         Color:
-            rgba: 0.09, 0.09, 0.12, 1
+            rgba: Theme.BG_CARD
         Rectangle:
             pos: self.pos
             size: self.size
@@ -15,15 +16,15 @@
         text: root.icon
         size_hint_x: 0.2
         font_size: "24sp"
-        color: 1, 1, 1, 1
+        color: Theme.TEXT_PRIMARY
     BoxLayout:
         orientation: "vertical"
         spacing: dp(2)
         Label:
             text: root.card_title
-            font_size: "10sp"
+            font_size: "12sp"
             bold: True
-            color: 0.55, 0.55, 0.58, 1
+            color: Theme.TEXT_DIM
             halign: "left"
             text_size: self.width, None
         Label:
@@ -44,22 +45,28 @@
             size_hint_y: 0.07
             canvas.before:
                 Color:
-                    rgba: 0.1, 0.1, 0.12, 1
+                    rgba: Theme.BG_HEADER
                 Rectangle:
                     pos: self.pos
                     size: self.size
-            Widget:
+            Button:
+                text: "< Menu"
+                size_hint_x: 0.15
+                background_normal: ""
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
+                on_press: root.go_back()
             Label:
                 text: "Dashboard"
                 font_size: "20sp"
                 bold: True
-                color: 1, 1, 1, 1
+                color: Theme.TEXT_PRIMARY
             Button:
                 text: "Refresh"
                 size_hint_x: 0.2
                 background_normal: ""
-                background_color: 0.12, 0.12, 0.15, 1
-                color: 0.6, 0.6, 0.6, 1
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
                 on_press: root.refresh()
 
         # Scrollable dashboard content
@@ -77,7 +84,7 @@
                     text: "Real-time overview of sales, stock, and staff"
                     size_hint_y: None
                     height: dp(20)
-                    color: 0.55, 0.55, 0.58, 1
+                    color: Theme.TEXT_DIM
                     font_size: "12sp"
                     halign: "left"
                     text_size: self.width, None
@@ -150,16 +157,16 @@
                     Button:
                         text: "🧾 Quick Sale"
                         background_normal: ""
-                        background_color: 0.13, 0.53, 0.21, 1
-                        color: 1, 1, 1, 1
-                        font_size: "14sp"
+                        background_color: Theme.BTN_QUICK_SALE
+                        color: Theme.TEXT_PRIMARY
+                        font_size: "15sp"
                         on_press: root.quick_sale()
                     Button:
                         text: "📋 Close Day"
                         background_normal: ""
-                        background_color: 0.8, 0.58, 0.1, 1
-                        color: 0.05, 0.07, 0.09, 1
-                        font_size: "14sp"
+                        background_color: Theme.BTN_AMBER
+                        color: Theme.TEXT_DARK
+                        font_size: "15sp"
                         on_press: root.close_day()
 
                 # Spacer at bottom
