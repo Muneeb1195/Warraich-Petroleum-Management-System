@@ -46,6 +46,7 @@ jobs:
       - name: Build APK
         working-directory: ./android
         run: |
+          export JAVA_HOME=/usr/lib/jvm/temurin-17-jdk-amd64
           unset ANDROID_NDK_HOME ANDROID_NDK_ROOT ANDROID_HOME ANDROID_SDK_ROOT ANDROID_SDK_HOME NDK_ROOT SDK_ROOT
           buildozer android debug
 
