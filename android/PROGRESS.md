@@ -63,7 +63,7 @@ android/
 - Separated tag conventions: `v*-android` = APK, `v*` = desktop release
 
 ## Remaining — Blocked
-- **APK build fails** — CI builds keep failing (currently on attempt #5). Last attempt removed `pyjnius` dep (likely JDK header issue). Awaiting build result.
+- **APK build fails** — CI builds keep failing (currently on attempt #6). Latest failure: `ModuleNotFoundError: No module named 'cgi'` in Cython 0.29.x Tempita module, because p4a's host Python is 3.14 and `cgi` was removed in Python 3.13+. Fixed by upgrading to `kivy==2.3.1` (uses Cython 3.0+, no `cgi` dependency).
 - Shift reconciliation screen
 - Purchase management screen
 - Settings screen
@@ -78,7 +78,7 @@ android/
 - Desktop and Android use the same DB schema — backups are compatible between both
 - `buildozer.spec` has `log_level = 2` for detailed CI logs
 - Removed `pydrive2`, `google-auth-oauthlib`, `pyjnius` from requirements to minimize build deps
-- Current requirements: `python3, kivy==2.2.0, openpyxl, requests` (reportlab removed — unused on Android; Kivy pinned to 2.2.0 for stability)
+- Current requirements: `python3, kivy==2.3.1, openpyxl, requests` (reportlab removed — unused on Android; Kivy upgraded to 2.3.1 to fix Cython 0.29 `cgi` module error with Python 3.14)
 - Build configured for single arch (`arm64-v8a`) — 2x faster than dual-arch
 - CI: Python 3.11, JDK 17, 2-hour timeout, no retry loop, cache restore-keys fallback
 - Placeholder splash/icon assets created in `assets/`

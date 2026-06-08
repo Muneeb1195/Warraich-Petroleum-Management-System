@@ -11,7 +11,7 @@ source.exclude_dirs = tests, venv, __pycache__, .git
 
 version = 1.0.0
 
-requirements = python3,kivy==2.2.0,openpyxl,requests
+requirements = python3,kivy==2.3.1,openpyxl,requests
 
 presplash.filename = assets/splash.png
 icon.filename = assets/icon.png
