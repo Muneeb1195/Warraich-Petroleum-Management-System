@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from models.base import BaseModel
 from database.connection import get_connection
 from database.settings import settings
@@ -120,15 +122,54 @@ class Sale(BaseModel):
         return result
 
     @classmethod
-    def get_all_summary(cls, limit=100):
+    def get_all_summary(cls, limit=100, include_voided=False):
         conn = get_connection()
-        rows = conn.execute("""
+        where = "" if include_voided else "WHERE s.voided IS NULL OR s.voided = 0"
+        rows = conn.execute(f"""
             SELECT s.id, s.invoice_no, s.sale_date, s.payment_mode,
-                   s.grand_total, c.name as customer_name
+                   s.grand_total, s.voided, c.name as customer_name
             FROM sales s
             LEFT JOIN customers c ON c.id = s.customer_id
+            {where}
             ORDER BY s.sale_date DESC, s.id DESC
             LIMIT ?
         """, (limit,)).fetchall()
         conn.close()
         return [dict(r) for r in rows]
+
+    @classmethod
+    def void(cls, sale_id, reason=""):
+        conn = get_connection()
+        sale = conn.execute("SELECT * FROM sales WHERE id=?", (sale_id,)).fetchone()
+        if not sale:
+            conn.close()
+            return False, "Sale not found."
+        if sale.get("voided"):
+            conn.close()
+            return False, "Sale already voided."
+
+        # Reverse lube stock
+        items = conn.execute(
+            "SELECT * FROM sale_items WHERE sale_id=? AND item_type='lube'",
+            (sale_id,),
+        ).fetchall()
+        for item in items:
+            conn.execute(
+                "UPDATE lube_products SET stock_qty = stock_qty + ? WHERE id=?",
+                (item["qty"], item["lube_product_id"]),
+            )
+
+        # Reverse customer balance if credit
+        if sale["payment_mode"] == "Credit" and sale["customer_id"]:
+            conn.execute(
+                "UPDATE customers SET balance = balance - ? WHERE id=?",
+                (sale["grand_total"], sale["customer_id"]),
+            )
+
+        conn.execute(
+            "UPDATE sales SET voided=1, voided_at=?, void_reason=? WHERE id=?",
+            (datetime.now().isoformat(), reason, sale_id),
+        )
+        conn.commit()
+        conn.close()
+        return True, "Sale voided."

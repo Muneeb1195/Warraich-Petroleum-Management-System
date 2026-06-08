@@ -19,5 +19,11 @@ def init_db():
     from database.schema import SCHEMA_SQL
     conn = get_connection()
     conn.executescript(SCHEMA_SQL)
+    # Migrations
+    for col, typ in [("voided", "INTEGER DEFAULT 0"), ("voided_at", "TEXT"), ("void_reason", "TEXT")]:
+        try:
+            conn.execute(f"ALTER TABLE sales ADD COLUMN {col} {typ}")
+        except sqlite3.OperationalError:
+            pass
     conn.commit()
     conn.close()

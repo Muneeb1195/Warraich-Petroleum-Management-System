@@ -1,0 +1,70 @@
+#:import Theme libs.utils.theme
+<SalesHistoryScreen>:
+    BoxLayout:
+        orientation: "vertical"
+
+        BoxLayout:
+            size_hint_y: 0.07
+            canvas.before:
+                Color:
+                    rgba: Theme.BG_HEADER
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+            Button:
+                text: "< Back"
+                size_hint_x: 0.15
+                background_normal: ""
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
+                on_press: root.go_back()
+            Label:
+                text: "Sales History"
+                font_size: "18sp"
+                bold: True
+                color: Theme.TEXT_PRIMARY
+            Label:
+                text: ""
+
+        BoxLayout:
+            orientation: "vertical"
+            padding: [dp(8), dp(4)]
+            spacing: dp(4)
+
+            BoxLayout:
+                orientation: "horizontal"
+                size_hint_y: None
+                height: dp(32)
+                spacing: dp(4)
+                Label:
+                    text: "Invoice"
+                    font_size: "11sp"
+                    bold: True
+                    color: Theme.TEXT_BLUE_HEADER
+                    size_hint_x: 0.35
+                Label:
+                    text: "Customer"
+                    font_size: "11sp"
+                    bold: True
+                    color: Theme.TEXT_BLUE_HEADER
+                    size_hint_x: 0.35
+                Label:
+                    text: "Amount"
+                    font_size: "11sp"
+                    bold: True
+                    color: Theme.TEXT_BLUE_HEADER
+                    size_hint_x: 0.2
+                Label:
+                    text: "T"
+                    font_size: "11sp"
+                    bold: True
+                    color: Theme.TEXT_BLUE_HEADER
+                    size_hint_x: 0.1
+
+            ScrollView:
+                GridLayout:
+                    id: sales_container
+                    cols: 1
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: dp(2)

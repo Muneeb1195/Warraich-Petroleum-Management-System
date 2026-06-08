@@ -26,8 +26,10 @@ from ui.dashboard_screen import DashboardScreen
 from ui.settings_screen import SettingsScreen
 from ui.purchases_screen import PurchasesScreen
 from ui.reconciliation_screen import ReconciliationScreen
+from ui.sales_history_screen import SalesHistoryScreen
 
 Builder.load_file("ui/main_screen.kv")
+Builder.load_file("ui/sales_history_screen.kv")
 Builder.load_file("ui/dashboard_screen.kv")
 Builder.load_file("ui/pos_screen.kv")
 Builder.load_file("ui/inventory_screen.kv")
@@ -73,6 +75,7 @@ class WarraichPetroleumApp(App):
         sm.add_widget(DashboardScreen(name="dashboard"))
         sm.add_widget(SettingsScreen(name="settings"))
         sm.add_widget(PurchasesScreen(name="purchases"))
+        sm.add_widget(SalesHistoryScreen(name="sales_history"))
         sm.add_widget(ReconciliationScreen(name="reconciliation"))
         sm.current = "dashboard"
         return sm

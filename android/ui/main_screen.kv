@@ -83,6 +83,14 @@
                             color: Theme.TEXT_PRIMARY
                             on_press: root.go_to("pos")
                         Button:
+                            text: "Sales History"
+                            size_hint_y: None
+                            height: "44dp"
+                            background_normal: ""
+                            background_color: Theme.BTN_PRIMARY if root.active_screen == 'sales_history' else Theme.BTN_NAV
+                            color: Theme.TEXT_PRIMARY
+                            on_press: root.go_to("sales_history")
+                        Button:
                             text: "Customers"
                             size_hint_y: None
                             height: "44dp"
