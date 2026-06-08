@@ -56,7 +56,7 @@ class MainScreen(Screen):
         self.manager.current = name
 
     def on_enter(self):
-        self.drawer_open = False
+        pass
 
 
 class WarraichPetroleumApp(App):
@@ -80,7 +80,7 @@ class WarraichPetroleumApp(App):
         sm.add_widget(PurchasesScreen(name="purchases"))
         sm.add_widget(SalesHistoryScreen(name="sales_history"))
         sm.add_widget(ReconciliationScreen(name="reconciliation"))
-        sm.current = "pin"
+        Clock.schedule_once(lambda *a: setattr(sm, 'current', 'pin'))
         return sm
 
     def get_application_name(self):

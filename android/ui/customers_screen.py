@@ -6,7 +6,9 @@ from kivy.uix.label import Label
 from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.popup import Popup
+from kivy.graphics import RoundedRectangle, Color
 from kivy.metrics import dp
+from kivy.clock import Clock
 
 from libs.utils.theme import *
 from libs.models.customer import Customer
@@ -70,7 +72,7 @@ class CustomerScreen(Screen):
         popup.open()
 
     def go_back(self):
-        self.manager.current = "main"
+        Clock.schedule_once(lambda *a: setattr(self.manager, 'current', "main"))
 
 
 class CustomerCard(BoxLayout):
@@ -80,14 +82,16 @@ class CustomerCard(BoxLayout):
         self.screen = screen
         self.orientation = "vertical"
         self.size_hint_y = None
-        self.height = dp(64)
+        self.height = dp(72)
         self.spacing = dp(2)
         self.padding = [dp(10), dp(6)]
-
+        with self.canvas.before:
+            Color(rgba=BG_CARD)
+            self._bg = RoundedRectangle(pos=self.pos, size=self.size, radius=[dp(8)])
+        self.bind(pos=self._update_bg, size=self._update_bg)
         balance = cust.get("balance", 0)
         bal_color = VAL_NEGATIVE if balance > 0 else VAL_POSITIVE
-
-        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
+        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(30))
         top.add_widget(Label(
             text=cust["name"], bold=True, color=TEXT_PRIMARY,
             font_size="14sp", halign="left",
@@ -97,28 +101,27 @@ class CustomerCard(BoxLayout):
             font_size="13sp", halign="right", size_hint_x=0.3,
         ))
         self.add_widget(top)
-
-        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(22))
+        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
         phone = cust.get("phone", "")
         gstin = cust.get("gstin", "")
         limit = cust["credit_limit"]
         bot.add_widget(Label(
             text=f"Ph: {phone}" if phone else "",
-            color=TEXT_SECONDARY, font_size="11sp", halign="left", size_hint_x=0.3,
+            color=TEXT_SECONDARY, font_size="12sp", halign="left", size_hint_x=0.3,
         ))
         bot.add_widget(Label(
             text=f"GST: {gstin}" if gstin else "",
-            color=TEXT_SECONDARY, font_size="11sp", halign="left", size_hint_x=0.3,
+            color=TEXT_SECONDARY, font_size="12sp", halign="left", size_hint_x=0.3,
         ))
         bot.add_widget(Label(
             text=f"Limit: {curr(limit)}", color=TEXT_DIM,
-            font_size="11sp", halign="left", size_hint_x=0.2,
+            font_size="12sp", halign="left", size_hint_x=0.2,
         ))
         btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.2, spacing=dp(4))
-        edit_btn = Button(text="Edit", font_size="10sp", background_normal="",
+        edit_btn = Button(text="Edit", font_size="12sp", background_normal="",
                           background_color=BTN_INFO, color=TEXT_PRIMARY)
         edit_btn.bind(on_press=lambda *a: screen.show_form(cust))
-        del_btn = Button(text="Del", font_size="10sp", background_normal="",
+        del_btn = Button(text="Del", font_size="12sp", background_normal="",
                          background_color=BTN_DANGER, color=TEXT_PRIMARY)
         del_btn.bind(on_press=lambda *a: screen.confirm_delete(cust["id"]))
         btn_row.add_widget(edit_btn)
@@ -126,7 +129,9 @@ class CustomerCard(BoxLayout):
         bot.add_widget(btn_row)
         self.add_widget(bot)
 
-
+    def _update_bg(self, *args):
+        self._bg.pos = self.pos
+        self._bg.size = self.size
 class CustomerForm(BoxLayout):
     def __init__(self, customer, screen, **kwargs):
         super().__init__(**kwargs)

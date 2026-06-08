@@ -10,7 +10,9 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.spinner import Spinner
 from kivy.uix.popup import Popup
+from kivy.graphics import RoundedRectangle, Color
 from kivy.metrics import dp
+from kivy.clock import Clock
 
 from libs.models.expense import Expense, ExpenseCategory
 from libs.database.connection import get_connection
@@ -81,7 +83,7 @@ class ExpenseScreen(Screen):
         popup.open()
 
     def go_back(self):
-        self.manager.current = "main"
+        Clock.schedule_once(lambda *a: setattr(self.manager, 'current', "main"))
 
 
 class ExpenseCard(BoxLayout):
@@ -91,11 +93,14 @@ class ExpenseCard(BoxLayout):
         self.screen = screen
         self.orientation = "vertical"
         self.size_hint_y = None
-        self.height = dp(64)
+        self.height = dp(72)
         self.spacing = dp(2)
         self.padding = [dp(10), dp(6)]
-
-        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
+        with self.canvas.before:
+            Color(rgba=BG_CARD)
+            self._bg = RoundedRectangle(pos=self.pos, size=self.size, radius=[dp(8)])
+        self.bind(pos=self._update_bg, size=self._update_bg)
+        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(30))
         top.add_widget(Label(
             text=curr(expense["amount"]), bold=True, color=VAL_NEGATIVE,
             font_size="14sp", halign="left", size_hint_x=0.25,
@@ -109,27 +114,28 @@ class ExpenseCard(BoxLayout):
             font_size="12sp", halign="right", size_hint_x=0.25,
         ))
         btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.2, spacing=dp(4))
-        edit_btn = Button(text="Edit", font_size="10sp", background_normal="",
+        edit_btn = Button(text="Edit", font_size="12sp", background_normal="",
                           background_color=BTN_INFO, color=TEXT_PRIMARY)
         edit_btn.bind(on_press=lambda *a: screen.show_form(expense))
-        del_btn = Button(text="Del", font_size="10sp", background_normal="",
+        del_btn = Button(text="Del", font_size="12sp", background_normal="",
                          background_color=BTN_DANGER, color=TEXT_PRIMARY)
         del_btn.bind(on_press=lambda *a: screen.confirm_delete(expense["id"]))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(del_btn)
         top.add_widget(btn_row)
         self.add_widget(top)
-
-        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(22))
+        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
         desc = expense.get("description", "")
         bot.add_widget(Label(
             text=desc if desc else "No description",
             color=TEXT_DIM if desc else TEXT_VERSION,
-            font_size="11sp", halign="left", italic=not desc,
+            font_size="12sp", halign="left", italic=not desc,
         ))
         self.add_widget(bot)
 
-
+    def _update_bg(self, *args):
+        self._bg.pos = self.pos
+        self._bg.size = self.size
 class ExpenseForm(BoxLayout):
     def __init__(self, expense, screen, **kwargs):
         super().__init__(**kwargs)
@@ -210,7 +216,7 @@ class ExpenseForm(BoxLayout):
 
     def _add_category(self, *args):
         content = BoxLayout(orientation="vertical", spacing=dp(10), padding=dp(10))
-        content.add_widget(Label(text="New Category Name:", color=(1,1,1,1), size_hint_y=None, height=dp(30)))
+        content.add_widget(Label(text="New Category Name:", color=(1,1,1,1), size_hint_y=None, height=dp(34)))
         name_input = TextInput(
             hint_text="e.g. Electricity", multiline=False,
             foreground_color=(1,1,1,1), background_color=(0.15, 0.15, 0.18, 1),

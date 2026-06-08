@@ -52,12 +52,12 @@ class PinScreen(Screen):
     def _check(self, dt):
         if self._mode == "enter":
             if settings.verify_pin(self._pin):
-                self.manager.current = "dashboard"
+                Clock.schedule_once(lambda *a: setattr(self.manager, 'current', "dashboard"))
             else:
                 self.ids.title.text = "Wrong PIN. Try again."
                 self._pin = ""
                 self._update_dots()
-                Clock.schedule_once(lambda *a: self.ids.title.text or self._reset_title(), 1.5)
+                Clock.schedule_once(lambda *a: self._reset_title(), 1.5)
         elif self._mode == "set":
             self._set_pin = self._pin
             self._pin = ""
@@ -67,14 +67,14 @@ class PinScreen(Screen):
         elif self._mode == "confirm":
             if self._pin == self._set_pin:
                 settings.set_pin(self._pin)
-                self.manager.current = "dashboard"
+                Clock.schedule_once(lambda *a: setattr(self.manager, 'current', "dashboard"))
             else:
                 self.ids.title.text = "PINs don't match. Try again."
                 self._pin = ""
                 self._set_pin = ""
                 self._mode = "set"
                 self._update_dots()
-                Clock.schedule_once(lambda *a: self.ids.title.text or self._reset_title(), 1.5)
+                Clock.schedule_once(lambda *a: self._reset_title(), 1.5)
 
     def _reset_title(self):
         if self._mode == "enter":

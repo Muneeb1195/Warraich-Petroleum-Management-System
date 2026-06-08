@@ -7,7 +7,9 @@ from kivy.uix.button import Button
 from kivy.uix.textinput import TextInput
 from kivy.uix.popup import Popup
 from kivy.uix.scrollview import ScrollView
+from kivy.graphics import RoundedRectangle, Color
 from kivy.metrics import dp
+from kivy.clock import Clock
 
 from libs.utils.theme import *
 from libs.models.sale import Sale
@@ -44,7 +46,7 @@ class SalesHistoryScreen(Screen):
         ))
         reason_input = TextInput(
             hint_text="Reason for void (optional)",
-            multiline=False, size_hint_y=None, height=dp(36),
+            multiline=False, size_hint_y=None, height=dp(42),
             foreground_color=TEXT_PRIMARY,
             background_color=(0.15, 0.15, 0.18, 1),
         )
@@ -74,7 +76,7 @@ class SalesHistoryScreen(Screen):
             self._rebuild()
 
     def go_back(self):
-        self.manager.current = "main"
+        Clock.schedule_once(lambda *a: setattr(self.manager, 'current', "main"))
 
 
 class SaleCard(BoxLayout):
@@ -82,14 +84,16 @@ class SaleCard(BoxLayout):
         super().__init__(**kwargs)
         self.orientation = "vertical"
         self.size_hint_y = None
-        self.height = dp(56)
+        self.height = dp(64)
         self.spacing = dp(2)
         self.padding = [dp(10), dp(4)]
-
+        with self.canvas.before:
+            Color(rgba=BG_CARD)
+            self._bg = RoundedRectangle(pos=self.pos, size=self.size, radius=[dp(8)])
+        self.bind(pos=self._update_bg, size=self._update_bg)
         is_voided = sale.get("voided")
         voided_label = " [VOIDED]" if is_voided else ""
-
-        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(28))
+        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(32))
         top.add_widget(Label(
             text=f"{sale['invoice_no']}{voided_label}", bold=True,
             color=TEXT_DIM if is_voided else TEXT_PRIMARY,
@@ -108,19 +112,18 @@ class SaleCard(BoxLayout):
         top.add_widget(Label(
             text=sale["payment_mode"][0],
             color=TEXT_DIM if is_voided else TEXT_SECONDARY,
-            font_size="11sp", halign="right", size_hint_x=0.1,
+            font_size="12sp", halign="right", size_hint_x=0.1,
         ))
         self.add_widget(top)
-
-        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(22))
+        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
         bot.add_widget(Label(
             text=sale["sale_date"],
             color=TEXT_DIM if is_voided else TEXT_SECONDARY,
-            font_size="11sp", halign="left", size_hint_x=0.4,
+            font_size="12sp", halign="left", size_hint_x=0.4,
         ))
         if not is_voided:
             void_btn = Button(
-                text="Void", font_size="10sp", size_hint_x=0.15,
+                text="Void", font_size="12sp", size_hint_x=0.15,
                 background_normal="", background_color=BTN_DANGER, color=TEXT_PRIMARY,
             )
             void_btn.bind(on_press=lambda *a: screen.show_void_popup(sale))
@@ -129,3 +132,7 @@ class SaleCard(BoxLayout):
             bot.add_widget(Widget(size_hint_x=0.15))
         bot.add_widget(Widget(size_hint_x=0.45))
         self.add_widget(bot)
+
+    def _update_bg(self, *args):
+        self._bg.pos = self.pos
+        self._bg.size = self.size

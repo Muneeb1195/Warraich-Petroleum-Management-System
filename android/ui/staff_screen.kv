@@ -45,7 +45,7 @@
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         spacing: dp(8)
                         Label:
                             text: "Staff Members"
@@ -65,7 +65,7 @@
                     TextInput:
                         id: employee_search
                         size_hint_y: None
-                        height: dp(32)
+                        height: dp(38)
                         hint_text: "Search employees..."
                         multiline: False
                         foreground_color: Theme.TEXT_PRIMARY
@@ -92,13 +92,13 @@
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         spacing: dp(4)
                         Label:
                             text: "Date:"
                             size_hint_x: 0.06
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         TextInput:
                             id: attendance_date
                             size_hint_x: 0.14
@@ -107,12 +107,12 @@
                             multiline: False
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
-                            font_size: "12sp"
+                            font_size: "14sp"
                             on_text: root._rebuild_attendance()
                         Button:
                             text: "Today"
                             size_hint_x: 0.1
-                            font_size: "10sp"
+                            font_size: "14sp"
                             background_normal: ""
                             background_color: Theme.BTN_NAV
                             color: Theme.TEXT_PRIMARY
@@ -120,7 +120,7 @@
                         Button:
                             text: "Yest"
                             size_hint_x: 0.08
-                            font_size: "10sp"
+                            font_size: "14sp"
                             background_normal: ""
                             background_color: Theme.BTN_NAV
                             color: Theme.TEXT_PRIMARY
@@ -129,7 +129,7 @@
                             text: "Shift:"
                             size_hint_x: 0.06
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         Spinner:
                             id: attendance_shift
                             size_hint_x: 0.14
@@ -137,7 +137,7 @@
                             values: ["Morning", "Evening", "Night"]
                             background_color: 0.18, 0.18, 0.22, 1
                             color: Theme.TEXT_PRIMARY
-                            font_size: "12sp"
+                            font_size: "14sp"
                             on_text: root._rebuild_attendance()
                         Widget:
                         Button:
@@ -151,7 +151,7 @@
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(24)
+                        height: dp(28)
                         spacing: dp(4)
                         padding: [dp(4), 0]
                         Label:
@@ -159,19 +159,19 @@
                             size_hint_x: 0.2
                             bold: True
                             color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
+                            font_size: "14sp"
                         Label:
                             text: "Role"
                             size_hint_x: 0.12
                             bold: True
                             color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
+                            font_size: "14sp"
                         Label:
                             text: "Status"
                             size_hint_x: 0.15
                             bold: True
                             color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
+                            font_size: "14sp"
                         Label:
                             text: ""
                             size_hint_x: 0.45
@@ -196,13 +196,13 @@
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         spacing: dp(6)
                         Label:
                             text: "Month:"
                             size_hint_x: 0.08
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         TextInput:
                             id: payroll_month
                             size_hint_x: 0.08
@@ -213,13 +213,13 @@
                             input_type: "number"
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
-                            font_size: "12sp"
+                            font_size: "14sp"
                             on_text: root._rebuild_payroll()
                         Label:
                             text: "Year:"
                             size_hint_x: 0.07
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         TextInput:
                             id: payroll_year
                             size_hint_x: 0.1
@@ -230,7 +230,7 @@
                             input_type: "number"
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
-                            font_size: "12sp"
+                            font_size: "14sp"
                             on_text: root._rebuild_payroll()
                         Widget:
                         Button:
@@ -244,16 +244,16 @@
                     Label:
                         id: payroll_summary
                         size_hint_y: None
-                        height: dp(24)
+                        height: dp(28)
                         text: "Select month/year and tap Calculate."
                         color: Theme.TEXT_SECONDARY
-                        font_size: "12sp"
+                        font_size: "14sp"
                         halign: "left"
 
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(24)
+                        height: dp(28)
                         spacing: dp(4)
                         padding: [dp(4), 0]
                         Label:
@@ -261,37 +261,37 @@
                             size_hint_x: 0.18
                             bold: True
                             color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
+                            font_size: "14sp"
                         Label:
                             text: "Role"
                             size_hint_x: 0.1
                             bold: True
                             color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
+                            font_size: "14sp"
                         Label:
                             text: "Days"
                             size_hint_x: 0.08
                             bold: True
                             color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
+                            font_size: "14sp"
                         Label:
                             text: "Gross"
                             size_hint_x: 0.12
                             bold: True
                             color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
+                            font_size: "14sp"
                         Label:
                             text: "Net"
                             size_hint_x: 0.12
                             bold: True
                             color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
+                            font_size: "14sp"
                         Label:
                             text: "Status"
                             size_hint_x: 0.12
                             bold: True
                             color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
+                            font_size: "14sp"
                         Label:
                             text: ""
                             size_hint_x: 0.2

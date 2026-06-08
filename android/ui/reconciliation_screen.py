@@ -11,6 +11,7 @@ from kivy.uix.button import Button
 from kivy.uix.spinner import Spinner
 from kivy.uix.popup import Popup
 from kivy.metrics import dp
+from kivy.clock import Clock
 
 from libs.database.connection import get_connection
 from libs.models.fuel import Pump
@@ -30,13 +31,13 @@ class PumpReadingRow(BoxLayout):
 
         self.add_widget(Label(
             text=f"P{pump['pump_no']}-{pump['fuel_name']}",
-            size_hint_x=0.3, halign="left", color=TEXT_PRIMARY, font_size="11sp",
+            size_hint_x=0.3, halign="left", color=TEXT_PRIMARY, font_size="12sp",
         ))
 
         self.opening_input = TextInput(
             text=str(opening) if opening else "0",
             input_filter="float", multiline=False,
-            size_hint_x=0.2, font_size="11sp",
+            size_hint_x=0.2, font_size="12sp",
             foreground_color=TEXT_PRIMARY, background_color=(0.15, 0.15, 0.18, 1),
         )
         self.add_widget(self.opening_input)
@@ -44,15 +45,15 @@ class PumpReadingRow(BoxLayout):
         self.closing_input = TextInput(
             text=str(closing) if closing else "0",
             input_filter="float", multiline=False,
-            size_hint_x=0.2, font_size="11sp",
+            size_hint_x=0.2, font_size="12sp",
             foreground_color=TEXT_PRIMARY, background_color=(0.15, 0.15, 0.18, 1),
         )
         self.add_widget(self.closing_input)
 
-        self.expected_label = Label(text="0", size_hint_x=0.15, color=TEXT_FIELD_LABEL, font_size="11sp")
+        self.expected_label = Label(text="0", size_hint_x=0.15, color=TEXT_FIELD_LABEL, font_size="12sp")
         self.add_widget(self.expected_label)
 
-        self.variance_label = Label(text="0", size_hint_x=0.15, color=VAL_POSITIVE, font_size="11sp")
+        self.variance_label = Label(text="0", size_hint_x=0.15, color=VAL_POSITIVE, font_size="12sp")
         self.add_widget(self.variance_label)
 
     def update_variance(self, actual_sales):
@@ -94,13 +95,13 @@ class ReconciliationScreen(Screen):
         self.reading_rows = []
 
         header = BoxLayout(
-            orientation="horizontal", size_hint_y=None, height=dp(28),
+            orientation="horizontal", size_hint_y=None, height=dp(32),
             spacing=dp(4), padding=[dp(6), 0],
         )
         for txt, sx in [("Pump", 0.3), ("Opening", 0.2), ("Closing", 0.2), ("Expected", 0.15), ("Variance", 0.15)]:
             header.add_widget(Label(
                 text=txt, size_hint_x=sx, bold=True,
-                color=TEXT_SECONDARY, font_size="10sp",
+                color=TEXT_SECONDARY, font_size="12sp",
             ))
         container.add_widget(header)
 
@@ -289,4 +290,4 @@ class ReconciliationScreen(Screen):
         ).open()
 
     def go_back(self):
-        self.manager.current = "main"
+        Clock.schedule_once(lambda *a: setattr(self.manager, 'current', "main"))

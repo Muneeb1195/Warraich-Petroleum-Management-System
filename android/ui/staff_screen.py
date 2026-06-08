@@ -10,7 +10,9 @@ from kivy.uix.textinput import TextInput
 from kivy.uix.button import Button
 from kivy.uix.spinner import Spinner
 from kivy.uix.popup import Popup
+from kivy.graphics import RoundedRectangle, Color
 from kivy.metrics import dp
+from kivy.clock import Clock
 
 from libs.models.employee import Employee, Attendance
 from libs.models.payroll import Payroll
@@ -210,7 +212,7 @@ class StaffScreen(Screen):
         popup.open()
 
     def go_back(self):
-        self.manager.current = "main"
+        Clock.schedule_once(lambda *a: setattr(self.manager, 'current', "main"))
 
 
 # ==================== EMPLOYEE WIDGETS ====================
@@ -221,15 +223,17 @@ class EmployeeCard(BoxLayout):
         self.screen = screen
         self.orientation = "vertical"
         self.size_hint_y = None
-        self.height = dp(64)
+        self.height = dp(72)
         self.spacing = dp(2)
         self.padding = [dp(10), dp(6)]
-
+        with self.canvas.before:
+            Color(rgba=BG_CARD)
+            self._bg = RoundedRectangle(pos=self.pos, size=self.size, radius=[dp(8)])
+        self.bind(pos=self._update_bg, size=self._update_bg)
         is_active = emp["is_active"]
         status_text = "Active" if is_active else "Inactive"
         status_color = VAL_POSITIVE if is_active else TEXT_DIM
-
-        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
+        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(30))
         top.add_widget(Label(
             text=emp["name"], bold=True, color=TEXT_PRIMARY,
             font_size="14sp", halign="left",
@@ -243,12 +247,12 @@ class EmployeeCard(BoxLayout):
             font_size="12sp", halign="center", size_hint_x=0.15,
         ))
         btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.2, spacing=dp(4))
-        edit_btn = Button(text="Edit", font_size="10sp", background_normal="",
+        edit_btn = Button(text="Edit", font_size="12sp", background_normal="",
                           background_color=BTN_INFO, color=TEXT_PRIMARY)
         edit_btn.bind(on_press=lambda *a: screen.show_employee_form(emp))
         toggle_btn = Button(
             text="Deact" if is_active else "Act",
-            font_size="10sp", background_normal="",
+            font_size="12sp", background_normal="",
             background_color=BTN_STAFF_TOGGLE if is_active else BTN_SECONDARY,
             color=TEXT_PRIMARY,
         )
@@ -257,26 +261,27 @@ class EmployeeCard(BoxLayout):
         btn_row.add_widget(toggle_btn)
         top.add_widget(btn_row)
         self.add_widget(top)
-
-        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(22))
+        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
         role = emp.get("role", "")
         phone = emp.get("phone", "")
         sal_type = emp["salary_type"]
         bot.add_widget(Label(
             text=f"Role: {role}" if role else "",
-            color=TEXT_SECONDARY, font_size="11sp", halign="left", size_hint_x=0.3,
+            color=TEXT_SECONDARY, font_size="12sp", halign="left", size_hint_x=0.3,
         ))
         bot.add_widget(Label(
             text=f"Ph: {phone}" if phone else "",
-            color=TEXT_SECONDARY, font_size="11sp", halign="left", size_hint_x=0.3,
+            color=TEXT_SECONDARY, font_size="12sp", halign="left", size_hint_x=0.3,
         ))
         bot.add_widget(Label(
             text=sal_type, color=TEXT_DIM,
-            font_size="11sp", halign="left", size_hint_x=0.2,
+            font_size="12sp", halign="left", size_hint_x=0.2,
         ))
         self.add_widget(bot)
 
-
+    def _update_bg(self, *args):
+        self._bg.pos = self.pos
+        self._bg.size = self.size
 class EmployeeForm(BoxLayout):
     def __init__(self, employee, screen, **kwargs):
         super().__init__(**kwargs)
@@ -296,7 +301,7 @@ class EmployeeForm(BoxLayout):
         self.role_spinner = Spinner(
             text=employee["role"] if employee else "Attendant",
             values=["Manager", "Cashier", "Attendant", "Supervisor", "Other"],
-            size_hint_y=None, height=dp(36),
+            size_hint_y=None, height=dp(42),
             background_color=(0.18, 0.18, 0.22, 1), color=(1,1,1,1),
         )
         self.add_widget(self.role_spinner)
@@ -336,7 +341,7 @@ class EmployeeForm(BoxLayout):
         )
         self.add_widget(self.ifsc_input)
 
-        sal_row = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(36), spacing=dp(6))
+        sal_row = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(42), spacing=dp(6))
         self.salary_type = Spinner(
             text=employee["salary_type"] if employee else "Fixed",
             values=["Fixed", "Daily"],
@@ -397,16 +402,17 @@ class AttendanceRow(BoxLayout):
         super().__init__(**kwargs)
         self.orientation = "horizontal"
         self.size_hint_y = None
-        self.height = dp(40)
+        self.height = dp(46)
         self.spacing = dp(4)
         self.padding = [dp(4), dp(2)]
-
+        with self.canvas.before:
+            Color(rgba=BG_CARD)
+            self._bg = RoundedRectangle(pos=self.pos, size=self.size, radius=[dp(8)])
+        self.bind(pos=self._update_bg, size=self._update_bg)
         name_lbl = Label(text=emp["name"], size_hint_x=0.2, halign="left", color=(1,1,1,1), font_size="12sp")
         self.add_widget(name_lbl)
-
         role_lbl = Label(text=emp["role"], size_hint_x=0.12, halign="left", color=(0.8,0.8,0.8,1), font_size="12sp")
         self.add_widget(role_lbl)
-
         status_clr = {
             "Present": (0.4, 1, 0.4, 1),
             "Absent": (1, 0.4, 0.4, 1),
@@ -414,14 +420,12 @@ class AttendanceRow(BoxLayout):
             "Leave": (0.6, 0.6, 0.6, 1),
             "Not Marked": (0.6, 0.6, 0.6, 1),
         }.get(current_status, (0.6, 0.6, 0.6, 1))
-
         status_lbl = Label(text=current_status, size_hint_x=0.15, halign="left", color=status_clr, font_size="12sp")
         self.add_widget(status_lbl)
-
         btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.45, spacing=dp(4))
         for s in ["Present", "Absent", "Half Day", "Leave"]:
             b = Button(
-                text=s, font_size="10sp", background_normal="",
+                text=s, font_size="12sp", background_normal="",
                 background_color=BTN_SECONDARY if s == "Present" else
                                 (0.5, 0.15, 0.15, 1) if s == "Absent" else
                                 (0.5, 0.4, 0.15, 1) if s == "Half Day" else
@@ -434,16 +438,22 @@ class AttendanceRow(BoxLayout):
             btn_row.add_widget(b)
         self.add_widget(btn_row)
 
-
+    def _update_bg(self, *args):
+        self._bg.pos = self.pos
+        self._bg.size = self.size
 # ==================== PAYROLL WIDGETS ====================
 class PayrollRow(BoxLayout):
     def __init__(self, record, screen, **kwargs):
         super().__init__(**kwargs)
         self.orientation = "horizontal"
         self.size_hint_y = None
-        self.height = dp(40)
+        self.height = dp(46)
         self.spacing = dp(4)
         self.padding = [dp(4), dp(2)]
+        with self.canvas.before:
+            Color(rgba=BG_CARD)
+            self._bg = RoundedRectangle(pos=self.pos, size=self.size, radius=[dp(8)])
+        self.bind(pos=self._update_bg, size=self._update_bg)
 
         paid_text = "Paid" if record["paid"] else "Pending"
         paid_color = (0.4, 1, 0.4, 1) if record["paid"] else (1, 0.6, 0.2, 1)
@@ -456,12 +466,12 @@ class PayrollRow(BoxLayout):
             (curr(record["net_salary"]), 0.12, (0.6, 1, 0.6, 1)),
             (paid_text, 0.12, paid_color),
         ]:
-            lbl = Label(text=txt, size_hint_x=sx, halign="left", color=clr, font_size="11sp")
+            lbl = Label(text=txt, size_hint_x=sx, halign="left", color=clr, font_size="12sp")
             self.add_widget(lbl)
 
         if not record["paid"]:
             pay_btn = Button(
-                text="Mark Paid", font_size="10sp",
+                text="Mark Paid", font_size="12sp",
                 size_hint_x=0.2, background_normal="",
                 background_color=BTN_PRIMARY, color=(1,1,1,1),
             )
@@ -470,3 +480,7 @@ class PayrollRow(BoxLayout):
         else:
             spacer = Widget(size_hint_x=0.2)
             self.add_widget(spacer)
+
+    def _update_bg(self, *args):
+        self._bg.pos = self.pos
+        self._bg.size = self.size

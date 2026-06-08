@@ -93,13 +93,13 @@ class ReportScreen(Screen):
         total_sx = sum(sx for _, sx in headers)
         header_row = BoxLayout(
             orientation="horizontal",
-            size_hint_y=None, height=dp(26),
+            size_hint_y=None, height=dp(30),
             spacing=dp(2), padding=[dp(2), 0],
         )
         for label, sx in headers:
             header_row.add_widget(Label(
                 text=label, size_hint_x=sx / total_sx,
-                bold=True, color=TEXT_SECONDARY, font_size="11sp",
+                bold=True, color=TEXT_SECONDARY, font_size="12sp",
             ))
         container.add_widget(header_row)
 
@@ -113,7 +113,7 @@ class ReportScreen(Screen):
                 lbl = Label(
                     text=str(cell) if cell is not None else "",
                     size_hint_x=sx / total_sx,
-                    halign="left", color=TEXT_PRIMARY, font_size="11sp",
+                    halign="left", color=TEXT_PRIMARY, font_size="12sp",
                 )
                 row_box.add_widget(lbl)
             container.add_widget(row_box)
@@ -313,7 +313,7 @@ class ReportScreen(Screen):
                         row_data.append(c.text)
                 if row_data:
                     ws.append(row_data)
-            break
+                    break
 
         for row in self._current_rows:
             ws.append(list(row))
@@ -342,7 +342,7 @@ class ReportScreen(Screen):
                     header = [c.text for c in child.children if isinstance(c, Label)]
                     if header:
                         writer.writerow(header)
-                break
+                        break
             for row in self._current_rows:
                 writer.writerow(list(row))
 
@@ -365,4 +365,4 @@ class ReportScreen(Screen):
         popup.open()
 
     def go_back(self):
-        self.manager.current = "main"
+        Clock.schedule_once(lambda *a: setattr(self.manager, 'current', "main"))

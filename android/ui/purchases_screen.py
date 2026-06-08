@@ -9,6 +9,7 @@ from kivy.uix.spinner import Spinner
 from kivy.uix.popup import Popup
 from kivy.uix.widget import Widget
 from kivy.metrics import dp
+from kivy.clock import Clock
 
 from libs.utils.theme import *
 from libs.models.purchase import Purchase
@@ -30,23 +31,23 @@ class PurchaseRow(BoxLayout):
         self.padding = [dp(6), dp(4)]
         self.add_widget(Label(
             text=purchase["purchase_date"] or "",
-            size_hint_x=0.2, color=TEXT_FIELD_LABEL, font_size="11sp",
+            size_hint_x=0.2, color=TEXT_FIELD_LABEL, font_size="12sp",
         ))
         self.add_widget(Label(
             text=purchase["supplier_name"],
-            size_hint_x=0.24, halign="left", color=TEXT_PRIMARY, font_size="11sp",
+            size_hint_x=0.24, halign="left", color=TEXT_PRIMARY, font_size="12sp",
         ))
         inv = purchase.get("invoice_no", "") or ""
         self.add_widget(Label(
             text=inv, size_hint_x=0.22, halign="left",
-            color=TEXT_FIELD_LABEL, font_size="11sp",
+            color=TEXT_FIELD_LABEL, font_size="12sp",
         ))
         self.add_widget(Label(
             text=curr(purchase.get("total_amount", 0)),
-            size_hint_x=0.2, color=VAL_POSITIVE, font_size="11sp",
+            size_hint_x=0.2, color=VAL_POSITIVE, font_size="12sp",
         ))
         btn = Button(
-            text="View", size_hint_x=0.14, font_size="10sp",
+            text="View", size_hint_x=0.14, font_size="12sp",
             background_normal="", background_color=BTN_NEUTRAL_DARK, color=TEXT_PRIMARY,
         )
         btn.bind(on_press=lambda *a: screen._view_purchase(purchase["id"]))
@@ -61,13 +62,13 @@ class PurchasesScreen(Screen):
         container = self.ids.purchases_container
         container.clear_widgets()
         header = BoxLayout(
-            orientation="horizontal", size_hint_y=None, height=dp(28),
+            orientation="horizontal", size_hint_y=None, height=dp(32),
             spacing=dp(4), padding=[dp(6), 0],
         )
         for txt, sx in [("Date", 0.2), ("Supplier", 0.24), ("Invoice", 0.22), ("Total", 0.2), ("", 0.14)]:
             header.add_widget(Label(
                 text=txt, size_hint_x=sx, bold=True,
-                color=TEXT_SECONDARY, font_size="10sp",
+                color=TEXT_SECONDARY, font_size="12sp",
             ))
         container.add_widget(header)
         purchases = Purchase.get_all_with_supplier()
@@ -84,7 +85,7 @@ class PurchasesScreen(Screen):
     def show_form(self):
         content = BoxLayout(orientation="vertical", spacing=dp(6), padding=dp(10))
         content.add_widget(Label(
-            text="New Purchase", size_hint_y=None, height=dp(30),
+            text="New Purchase", size_hint_y=None, height=dp(34),
             font_size="16sp", bold=True, color=TEXT_PRIMARY,
         ))
 
@@ -92,27 +93,27 @@ class PurchasesScreen(Screen):
         supplier_spinner = Spinner(
             text="Select Supplier" if not suppliers else suppliers[0]["name"],
             values=[s["name"] for s in suppliers] or ["No suppliers"],
-            size_hint_y=None, height=dp(36),
+            size_hint_y=None, height=dp(42),
             background_color=(0.18, 0.18, 0.22, 1), color=TEXT_PRIMARY,
         )
         content.add_widget(supplier_spinner)
 
         inv_input = TextInput(
             hint_text="Invoice No", multiline=False,
-            size_hint_y=None, height=dp(36),
+            size_hint_y=None, height=dp(42),
             foreground_color=TEXT_PRIMARY, background_color=(0.15, 0.15, 0.18, 1),
         )
         content.add_widget(inv_input)
 
         date_input = TextInput(
             text=date.today().isoformat(), multiline=False,
-            size_hint_y=None, height=dp(36),
+            size_hint_y=None, height=dp(42),
             foreground_color=TEXT_PRIMARY, background_color=(0.15, 0.15, 0.18, 1),
         )
         content.add_widget(date_input)
 
         items_label = Label(
-            text="Items:", size_hint_y=None, height=dp(24),
+            text="Items:", size_hint_y=None, height=dp(28),
             bold=True, color=TEXT_FIELD_LABEL, font_size="12sp",
         )
         content.add_widget(items_label)
@@ -124,13 +125,13 @@ class PurchasesScreen(Screen):
 
         type_spinner = Spinner(
             text="Fuel", values=["Fuel", "Lube"],
-            size_hint_y=None, height=dp(32),
-            background_color=(0.18, 0.18, 0.22, 1), color=TEXT_PRIMARY, font_size="11sp",
+            size_hint_y=None, height=dp(38),
+            background_color=(0.18, 0.18, 0.22, 1), color=TEXT_PRIMARY, font_size="12sp",
         )
         item_spinner = Spinner(
             text="--Select--", values=["--Select--"],
-            size_hint_y=None, height=dp(32),
-            background_color=(0.18, 0.18, 0.22, 1), color=TEXT_PRIMARY, font_size="11sp",
+            size_hint_y=None, height=dp(38),
+            background_color=(0.18, 0.18, 0.22, 1), color=TEXT_PRIMARY, font_size="12sp",
         )
 
         def _update_items(*a):
@@ -149,18 +150,18 @@ class PurchasesScreen(Screen):
 
         qty_input = TextInput(
             text="0", input_filter="float", multiline=False,
-            hint_text="Qty", size_hint_y=None, height=dp(32),
+            hint_text="Qty", size_hint_y=None, height=dp(38),
             foreground_color=TEXT_PRIMARY, background_color=(0.15, 0.15, 0.18, 1),
-            font_size="11sp",
+            font_size="12sp",
         )
         rate_input = TextInput(
             text="0", input_filter="float", multiline=False,
-            hint_text="Rate", size_hint_y=None, height=dp(32),
+            hint_text="Rate", size_hint_y=None, height=dp(38),
             foreground_color=TEXT_PRIMARY, background_color=(0.15, 0.15, 0.18, 1),
-            font_size="11sp",
+            font_size="12sp",
         )
 
-        item_row = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(32), spacing=dp(4))
+        item_row = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(38), spacing=dp(4))
         item_row.add_widget(type_spinner)
         item_row.add_widget(item_spinner)
         item_row.add_widget(qty_input)
@@ -169,7 +170,7 @@ class PurchasesScreen(Screen):
         items_container.add_widget(item_row)
 
         added_items_container = BoxLayout(orientation="vertical", size_hint_y=None, spacing=dp(2))
-        total_label = Label(text="Total: Rs 0", size_hint_y=None, height=dp(24), color=VAL_POSITIVE)
+        total_label = Label(text="Total: Rs 0", size_hint_y=None, height=dp(28), color=VAL_POSITIVE)
         added_items = []
 
         def _add_item(*a):
@@ -196,11 +197,11 @@ class PurchasesScreen(Screen):
             added_items_container.clear_widgets()
             total = 0
             for ai in added_items:
-                row = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(24), spacing=dp(4))
-                row.add_widget(Label(text=ai["name"], size_hint_x=0.4, font_size="10sp", color=TEXT_PRIMARY))
-                row.add_widget(Label(text=f"{ai['qty']:,.2f}", size_hint_x=0.15, font_size="10sp", color=TEXT_FIELD_LABEL))
-                row.add_widget(Label(text=curr(ai["rate"]), size_hint_x=0.15, font_size="10sp", color=TEXT_FIELD_LABEL))
-                row.add_widget(Label(text=curr(ai["amount"]), size_hint_x=0.15, font_size="10sp", color=VAL_POSITIVE))
+                row = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(28), spacing=dp(4))
+                row.add_widget(Label(text=ai["name"], size_hint_x=0.4, font_size="12sp", color=TEXT_PRIMARY))
+                row.add_widget(Label(text=f"{ai['qty']:,.2f}", size_hint_x=0.15, font_size="12sp", color=TEXT_FIELD_LABEL))
+                row.add_widget(Label(text=curr(ai["rate"]), size_hint_x=0.15, font_size="12sp", color=TEXT_FIELD_LABEL))
+                row.add_widget(Label(text=curr(ai["amount"]), size_hint_x=0.15, font_size="12sp", color=VAL_POSITIVE))
                 added_items_container.add_widget(row)
                 total += ai["amount"]
             total_label.text = f"Total: {curr(total)}"
@@ -208,7 +209,7 @@ class PurchasesScreen(Screen):
             rate_input.text = "0"
 
         add_item_btn = Button(
-            text="+ Add Item", size_hint_y=None, height=dp(30), font_size="11sp",
+            text="+ Add Item", size_hint_y=None, height=dp(34), font_size="12sp",
             background_normal="", background_color=BTN_SECONDARY, color=TEXT_PRIMARY,
         )
         add_item_btn.bind(on_press=_add_item)
@@ -293,4 +294,4 @@ class PurchasesScreen(Screen):
         popup.open()
 
     def go_back(self):
-        self.manager.current = "main"
+        Clock.schedule_once(lambda *a: setattr(self.manager, 'current', "main"))

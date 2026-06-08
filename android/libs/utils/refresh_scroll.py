@@ -32,4 +32,4 @@ class RefreshableScrollView(ScrollView):
 
     def _reset(self, dt):
         self._refreshing = False
-        self.scroll_to(self, padding=0, animate=False)
+        self.scroll_y = 0

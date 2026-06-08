@@ -43,13 +43,13 @@
                 BoxLayout:
                     orientation: "horizontal"
                     size_hint_y: None
-                    height: dp(34)
+                    height: dp(38)
                     spacing: dp(6)
                     Label:
                         text: "From:"
                         size_hint_x: 0.12
                         color: Theme.TEXT_FIELD_LABEL
-                        font_size: "12sp"
+                        font_size: "14sp"
                     TextInput:
                         id: from_input
                         size_hint_x: 0.38
@@ -57,12 +57,12 @@
                         multiline: False
                         foreground_color: Theme.TEXT_PRIMARY
                         background_color: 0.15, 0.15, 0.18, 1
-                        font_size: "12sp"
+                        font_size: "14sp"
                     Label:
                         text: "To:"
                         size_hint_x: 0.08
                         color: Theme.TEXT_FIELD_LABEL
-                        font_size: "12sp"
+                        font_size: "14sp"
                     TextInput:
                         id: to_input
                         size_hint_x: 0.38
@@ -70,23 +70,23 @@
                         multiline: False
                         foreground_color: Theme.TEXT_PRIMARY
                         background_color: 0.15, 0.15, 0.18, 1
-                        font_size: "12sp"
+                        font_size: "14sp"
 
                 # Row 2: Date presets
                 BoxLayout:
                     orientation: "horizontal"
                     size_hint_y: None
-                    height: dp(28)
+                    height: dp(32)
                     spacing: dp(4)
                     Label:
                         text: "Quick:"
                         size_hint_x: 0.1
                         color: Theme.TEXT_FIELD_LABEL
-                        font_size: "11sp"
+                        font_size: "14sp"
                     Button:
                         text: "Today"
                         size_hint_x: 0.2
-                        font_size: "11sp"
+                        font_size: "14sp"
                         background_normal: ""
                         background_color: Theme.BTN_NAV
                         color: Theme.TEXT_PRIMARY
@@ -94,7 +94,7 @@
                     Button:
                         text: "Yesterday"
                         size_hint_x: 0.25
-                        font_size: "11sp"
+                        font_size: "14sp"
                         background_normal: ""
                         background_color: Theme.BTN_NAV
                         color: Theme.TEXT_PRIMARY
@@ -102,7 +102,7 @@
                     Button:
                         text: "This Month"
                         size_hint_x: 0.28
-                        font_size: "11sp"
+                        font_size: "14sp"
                         background_normal: ""
                         background_color: Theme.BTN_NAV
                         color: Theme.TEXT_PRIMARY
@@ -112,13 +112,13 @@
                 BoxLayout:
                     orientation: "horizontal"
                     size_hint_y: None
-                    height: dp(34)
+                    height: dp(38)
                     spacing: dp(6)
                     Label:
                         text: "Report:"
                         size_hint_x: 0.12
                         color: Theme.TEXT_FIELD_LABEL
-                        font_size: "12sp"
+                        font_size: "14sp"
                     Spinner:
                         id: report_spinner
                         size_hint_x: 0.38
@@ -126,7 +126,7 @@
                         values: ["Daily Summary", "Profit & Loss", "Sales Report", "Stock Report", "Expense Report", "Payroll Report"]
                         background_color: 0.18, 0.18, 0.22, 1
                         color: Theme.TEXT_PRIMARY
-                        font_size: "12sp"
+                        font_size: "14sp"
                     Button:
                         text: "Generate"
                         size_hint_x: 0.22
@@ -137,7 +137,7 @@
                     Button:
                         text: "XLSX"
                         size_hint_x: 0.11
-                        font_size: "10sp"
+                        font_size: "14sp"
                         background_normal: ""
                         background_color: Theme.BTN_INFO
                         color: Theme.TEXT_PRIMARY
@@ -145,7 +145,7 @@
                     Button:
                         text: "CSV"
                         size_hint_x: 0.11
-                        font_size: "10sp"
+                        font_size: "14sp"
                         background_normal: ""
                         background_color: Theme.BTN_SECONDARY
                         color: Theme.TEXT_PRIMARY
@@ -155,10 +155,10 @@
             Label:
                 id: summary_label
                 size_hint_y: None
-                height: dp(28)
+                height: dp(32)
                 text: "Select report type and date range, then tap Generate."
                 color: Theme.TEXT_SECONDARY
-                font_size: "13sp"
+                font_size: "14sp"
                 halign: "left"
 
             # Results table header + scrollable rows
@@ -167,9 +167,10 @@
                 canvas.before:
                     Color:
                         rgba: Theme.BG_CARD
-                    Rectangle:
+                    RoundedRectangle:
                         pos: self.pos
                         size: self.size
+                        radius: [dp(8),]
                 padding: [dp(4), dp(2)]
 
                 ScrollView:

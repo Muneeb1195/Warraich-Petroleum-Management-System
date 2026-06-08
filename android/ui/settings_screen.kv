@@ -44,7 +44,7 @@
                 Label:
                     text: "Business Info"
                     size_hint_y: None
-                    height: dp(28)
+                    height: dp(32)
                     font_size: "15sp"
                     bold: True
                     color: Theme.TEXT_BLUE_HEADER
@@ -60,83 +60,84 @@
                     canvas.before:
                         Color:
                             rgba: Theme.BG_PANEL
-                        Rectangle:
+                        RoundedRectangle:
                             pos: self.pos
                             size: self.size
+                            radius: [dp(8),]
 
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         Label:
                             text: "Name:"
                             size_hint_x: 0.3
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         TextInput:
                             id: biz_name
                             size_hint_x: 0.7
                             multiline: False
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
-                            font_size: "12sp"
+                            font_size: "14sp"
 
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         Label:
                             text: "Address:"
                             size_hint_x: 0.3
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         TextInput:
                             id: biz_address
                             size_hint_x: 0.7
                             multiline: False
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
-                            font_size: "12sp"
+                            font_size: "14sp"
 
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         Label:
                             text: "Phone:"
                             size_hint_x: 0.3
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         TextInput:
                             id: biz_phone
                             size_hint_x: 0.7
                             multiline: False
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
-                            font_size: "12sp"
+                            font_size: "14sp"
 
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         Label:
                             text: "GSTIN:"
                             size_hint_x: 0.3
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         TextInput:
                             id: biz_gstin
                             size_hint_x: 0.7
                             multiline: False
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
-                            font_size: "12sp"
+                            font_size: "14sp"
 
                 # Fuel Rates
                 Label:
                     text: "Fuel Rates"
                     size_hint_y: None
-                    height: dp(28)
+                    height: dp(32)
                     font_size: "15sp"
                     bold: True
                     color: Theme.TEXT_BLUE_HEADER
@@ -152,19 +153,20 @@
                     canvas.before:
                         Color:
                             rgba: Theme.BG_PANEL
-                        Rectangle:
+                        RoundedRectangle:
                             pos: self.pos
                             size: self.size
+                            radius: [dp(8),]
 
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         Label:
                             text: "Petrol (Rs/L):"
                             size_hint_x: 0.4
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         TextInput:
                             id: petrol_rate
                             size_hint_x: 0.6
@@ -173,17 +175,17 @@
                             input_type: "number"
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
-                            font_size: "12sp"
+                            font_size: "14sp"
 
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         Label:
                             text: "Diesel (Rs/L):"
                             size_hint_x: 0.4
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         TextInput:
                             id: diesel_rate
                             size_hint_x: 0.6
@@ -192,13 +194,13 @@
                             input_type: "number"
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
-                            font_size: "12sp"
+                            font_size: "14sp"
 
                 # GST Settings
                 Label:
                     text: "GST Settings"
                     size_hint_y: None
-                    height: dp(28)
+                    height: dp(32)
                     font_size: "15sp"
                     bold: True
                     color: Theme.TEXT_BLUE_HEADER
@@ -214,19 +216,20 @@
                     canvas.before:
                         Color:
                             rgba: Theme.BG_PANEL
-                        Rectangle:
+                        RoundedRectangle:
                             pos: self.pos
                             size: self.size
+                            radius: [dp(8),]
 
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         Label:
                             text: "Default GST %:"
                             size_hint_x: 0.35
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         TextInput:
                             id: default_gst
                             size_hint_x: 0.65
@@ -235,64 +238,64 @@
                             input_type: "number"
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
-                            font_size: "12sp"
+                            font_size: "14sp"
 
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         Label:
                             text: "HSN Petrol:"
                             size_hint_x: 0.35
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         TextInput:
                             id: hsn_petrol
                             size_hint_x: 0.65
                             multiline: False
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
-                            font_size: "12sp"
+                            font_size: "14sp"
 
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         Label:
                             text: "HSN Diesel:"
                             size_hint_x: 0.35
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         TextInput:
                             id: hsn_diesel
                             size_hint_x: 0.65
                             multiline: False
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
-                            font_size: "12sp"
+                            font_size: "14sp"
 
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         Label:
                             text: "HSN Lube:"
                             size_hint_x: 0.35
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         TextInput:
                             id: hsn_lube
                             size_hint_x: 0.65
                             multiline: False
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
-                            font_size: "12sp"
+                            font_size: "14sp"
 
                 # Regional
                 Label:
                     text: "Regional"
                     size_hint_y: None
-                    height: dp(28)
+                    height: dp(32)
                     font_size: "15sp"
                     bold: True
                     color: Theme.TEXT_BLUE_HEADER
@@ -308,19 +311,20 @@
                     canvas.before:
                         Color:
                             rgba: Theme.BG_PANEL
-                        Rectangle:
+                        RoundedRectangle:
                             pos: self.pos
                             size: self.size
+                            radius: [dp(8),]
 
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         Label:
                             text: "Currency Symbol:"
                             size_hint_x: 0.4
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         TextInput:
                             id: currency_symbol
                             size_hint_x: 0.6
@@ -328,17 +332,17 @@
                             text: "Rs."
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
-                            font_size: "12sp"
+                            font_size: "14sp"
 
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         Label:
                             text: "Date Format:"
                             size_hint_x: 0.4
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         TextInput:
                             id: date_format
                             size_hint_x: 0.6
@@ -346,13 +350,13 @@
                             text: "DD/MM/YYYY"
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
-                            font_size: "12sp"
+                            font_size: "14sp"
 
                 # Google Drive Backup
                 Label:
                     text: "Google Drive Backup"
                     size_hint_y: None
-                    height: dp(28)
+                    height: dp(32)
                     font_size: "15sp"
                     bold: True
                     color: Theme.TEXT_BLUE_HEADER
@@ -368,25 +372,26 @@
                     canvas.before:
                         Color:
                             rgba: Theme.BG_PANEL
-                        Rectangle:
+                        RoundedRectangle:
                             pos: self.pos
                             size: self.size
+                            radius: [dp(8),]
 
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         Label:
                             text: "Status:"
                             size_hint_x: 0.25
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         Label:
                             id: drive_status
                             text: "Not connected"
                             size_hint_x: 0.75
                             color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
+                            font_size: "14sp"
 
                     BoxLayout:
                         orientation: "horizontal"
@@ -400,21 +405,21 @@
                             background_normal: ""
                             background_color: Theme.BTN_PRIMARY
                             color: Theme.TEXT_PRIMARY
-                            font_size: "12sp"
+                            font_size: "14sp"
                         Button:
                             text: "Backup Now"
                             size_hint_x: 0.4
                             background_normal: ""
                             background_color: Theme.BTN_SECONDARY
                             color: Theme.TEXT_PRIMARY
-                            font_size: "12sp"
+                            font_size: "14sp"
                             on_press: root.drive_backup_now()
 
                 # Restore
                 Label:
                     text: "Restore"
                     size_hint_y: None
-                    height: dp(28)
+                    height: dp(32)
                     font_size: "15sp"
                     bold: True
                     color: Theme.TEXT_BLUE_HEADER
@@ -430,9 +435,10 @@
                     canvas.before:
                         Color:
                             rgba: Theme.BG_PANEL
-                        Rectangle:
+                        RoundedRectangle:
                             pos: self.pos
                             size: self.size
+                            radius: [dp(8),]
 
                     BoxLayout:
                         orientation: "horizontal"
@@ -445,7 +451,7 @@
                             background_normal: ""
                             background_color: Theme.BTN_INFO
                             color: Theme.TEXT_PRIMARY
-                            font_size: "12sp"
+                            font_size: "14sp"
                             on_press: root.show_cloud_restore()
                         Button:
                             text: "Restore from Local"
@@ -453,14 +459,14 @@
                             background_normal: ""
                             background_color: Theme.BTN_SECONDARY
                             color: Theme.TEXT_PRIMARY
-                            font_size: "12sp"
+                            font_size: "14sp"
                             on_press: root.show_local_restore()
 
                 # App PIN Lock
                 Label:
                     text: "App PIN Lock"
                     size_hint_y: None
-                    height: dp(28)
+                    height: dp(32)
                     font_size: "15sp"
                     bold: True
                     color: Theme.TEXT_BLUE_HEADER
@@ -476,25 +482,26 @@
                     canvas.before:
                         Color:
                             rgba: Theme.BG_PANEL
-                        Rectangle:
+                        RoundedRectangle:
                             pos: self.pos
                             size: self.size
+                            radius: [dp(8),]
 
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         Label:
                             text: "Status:"
                             size_hint_x: 0.25
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         Label:
                             id: pin_status
                             text: "Not set"
                             size_hint_x: 0.75
                             color: Theme.TEXT_SECONDARY
-                            font_size: "12sp"
+                            font_size: "14sp"
 
                     BoxLayout:
                         orientation: "horizontal"
@@ -508,21 +515,21 @@
                             background_normal: ""
                             background_color: Theme.BTN_PRIMARY
                             color: Theme.TEXT_PRIMARY
-                            font_size: "12sp"
+                            font_size: "14sp"
                         Button:
                             text: "Disable PIN"
                             size_hint_x: 0.4
                             background_normal: ""
                             background_color: Theme.BTN_DANGER
                             color: Theme.TEXT_PRIMARY
-                            font_size: "12sp"
+                            font_size: "14sp"
                             on_press: root.disable_pin_action()
 
                 # Printer (Network ESC/POS)
                 Label:
                     text: "Printer (Network)"
                     size_hint_y: None
-                    height: dp(28)
+                    height: dp(32)
                     font_size: "15sp"
                     bold: True
                     color: Theme.TEXT_BLUE_HEADER
@@ -538,19 +545,20 @@
                     canvas.before:
                         Color:
                             rgba: Theme.BG_PANEL
-                        Rectangle:
+                        RoundedRectangle:
                             pos: self.pos
                             size: self.size
+                            radius: [dp(8),]
 
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         Label:
                             text: "IP Address:"
                             size_hint_x: 0.35
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         TextInput:
                             id: printer_host
                             size_hint_x: 0.65
@@ -558,17 +566,17 @@
                             hint_text: "192.168.1.100"
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
-                            font_size: "12sp"
+                            font_size: "14sp"
 
                     BoxLayout:
                         orientation: "horizontal"
                         size_hint_y: None
-                        height: dp(36)
+                        height: dp(42)
                         Label:
                             text: "Port:"
                             size_hint_x: 0.35
                             color: Theme.TEXT_FIELD_LABEL
-                            font_size: "12sp"
+                            font_size: "14sp"
                         TextInput:
                             id: printer_port
                             size_hint_x: 0.65
@@ -578,9 +586,9 @@
                             input_type: "number"
                             foreground_color: Theme.TEXT_PRIMARY
                             background_color: 0.15, 0.15, 0.18, 1
-                            font_size: "12sp"
+                            font_size: "14sp"
 
                 # spacer at bottom
                 Widget:
                     size_hint_y: None
-                    height: dp(20)
+                    height: dp(24)

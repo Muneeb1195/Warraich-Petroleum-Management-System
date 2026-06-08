@@ -138,7 +138,7 @@ class PumpCard(BoxLayout):
             text=f"{curr(rate)}/L",
             size_hint_x=0.12,
             color=TEXT_SECONDARY,
-            font_size="11sp",
+            font_size="12sp",
         )
         self.add_widget(rate_lbl)
 
@@ -151,7 +151,7 @@ class PumpCard(BoxLayout):
             background_normal="",
             background_color=BTN_NAV,
             color=TEXT_SECONDARY,
-            font_size="10sp",
+            font_size="12sp",
         )
         self.opening_btn.bind(on_press=self._open_opening_pad)
         self.add_widget(self.opening_btn)
@@ -162,7 +162,7 @@ class PumpCard(BoxLayout):
             background_normal="",
             background_color=BTN_NAV,
             color=TEXT_SECONDARY,
-            font_size="10sp",
+            font_size="12sp",
         )
         self.closing_btn.bind(on_press=self._open_closing_pad)
         self.add_widget(self.closing_btn)
@@ -171,7 +171,7 @@ class PumpCard(BoxLayout):
             text="0.00 L",
             size_hint_x=0.14,
             color=VAL_POSITIVE,
-            font_size="11sp",
+            font_size="12sp",
         )
         self.add_widget(self.qty_label)
 
@@ -181,7 +181,7 @@ class PumpCard(BoxLayout):
             background_normal="",
             background_color=BTN_PRIMARY,
             color=TEXT_PRIMARY,
-            font_size="11sp",
+            font_size="12sp",
         )
         add_btn.bind(on_press=self._on_add)
         self.add_widget(add_btn)
@@ -289,7 +289,7 @@ class LubeCard(BoxLayout):
             size_hint_x=0.18,
             halign="left",
             color=TEXT_PRIMARY,
-            font_size="11sp",
+            font_size="12sp",
         )
         self.add_widget(brand_lbl)
 
@@ -298,7 +298,7 @@ class LubeCard(BoxLayout):
             size_hint_x=0.25,
             halign="left",
             color=TEXT_PRIMARY,
-            font_size="11sp",
+            font_size="12sp",
         )
         self.add_widget(name_lbl)
 
@@ -306,7 +306,7 @@ class LubeCard(BoxLayout):
             text=curr(lube["selling_price"]),
             size_hint_x=0.12,
             color=VAL_POSITIVE,
-            font_size="11sp",
+            font_size="12sp",
         )
         self.add_widget(price_lbl)
 
@@ -314,7 +314,7 @@ class LubeCard(BoxLayout):
             text=f"{lube['stock_qty']:,.2f} {lube['unit']}",
             size_hint_x=0.17,
             color=TEXT_SECONDARY,
-            font_size="11sp",
+            font_size="12sp",
         )
         self.add_widget(stock_lbl)
 
@@ -336,7 +336,7 @@ class LubeCard(BoxLayout):
             background_normal="",
             background_color=BTN_PRIMARY,
             color=TEXT_PRIMARY,
-            font_size="11sp",
+            font_size="12sp",
         )
         add_btn.bind(on_press=self._on_add)
         self.add_widget(add_btn)
@@ -413,7 +413,7 @@ class CartItem(BoxLayout):
             size_hint_x=0.32,
             halign="left",
             color=TEXT_PRIMARY,
-            font_size="10sp",
+            font_size="12sp",
         )
         self.add_widget(name_lbl)
 
@@ -421,7 +421,7 @@ class CartItem(BoxLayout):
             text=f"{item['qty']:,.2f}",
             size_hint_x=0.16,
             color=TEXT_FIELD_LABEL,
-            font_size="10sp",
+            font_size="12sp",
         )
         self.add_widget(qty_lbl)
 
@@ -429,7 +429,7 @@ class CartItem(BoxLayout):
             text=curr(item["rate"]),
             size_hint_x=0.16,
             color=TEXT_FIELD_LABEL,
-            font_size="10sp",
+            font_size="12sp",
         )
         self.add_widget(rate_lbl)
 
@@ -437,7 +437,7 @@ class CartItem(BoxLayout):
             text=curr(item["amount"]),
             size_hint_x=0.2,
             color=VAL_POSITIVE,
-            font_size="10sp",
+            font_size="12sp",
         )
         self.add_widget(amt_lbl)
 
@@ -447,7 +447,7 @@ class CartItem(BoxLayout):
             background_normal="",
             background_color=BTN_DANGER,
             color=TEXT_PRIMARY,
-            font_size="10sp",
+            font_size="12sp",
         )
         del_btn.bind(on_press=self._on_delete)
         self.add_widget(del_btn)
@@ -517,7 +517,7 @@ class PosScreen(Screen):
         if fuel_types:
             quick_row = BoxLayout(
                 orientation="horizontal",
-                size_hint_y=None, height=dp(36),
+                size_hint_y=None, height=dp(42),
                 spacing=dp(4), padding=[dp(4), 0],
             )
             for fuel_name in fuel_types:
@@ -527,7 +527,7 @@ class PosScreen(Screen):
                 for amt in [200, 500, 1000]:
                     btn = Button(
                         text=f"{fuel_name.title()} ₹{amt}",
-                        font_size="10sp",
+                        font_size="12sp",
                         background_normal="",
                         background_color=BTN_QUICK_SALE,
                         color=TEXT_PRIMARY,
@@ -555,7 +555,7 @@ class PosScreen(Screen):
         header = BoxLayout(
             orientation="horizontal",
             size_hint_y=None,
-            height=dp(28),
+            height=dp(32),
             spacing=dp(6),
             padding=[dp(8), 0],
         )
@@ -565,7 +565,7 @@ class PosScreen(Screen):
                 size_hint_x=sx,
                 bold=True,
                 color=TEXT_SECONDARY,
-                font_size="11sp",
+                font_size="12sp",
             )
             header.add_widget(h)
         container.add_widget(header)
@@ -878,4 +878,4 @@ class PosScreen(Screen):
             self.show_error(f"Invoice failed: {e}")
 
     def go_back(self):
-        self.manager.current = "main"
+        Clock.schedule_once(lambda *a: setattr(self.manager, 'current', "main"))

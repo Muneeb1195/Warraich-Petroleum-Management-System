@@ -10,7 +10,9 @@ from kivy.uix.button import Button
 from kivy.uix.spinner import Spinner
 from kivy.uix.popup import Popup
 from kivy.properties import ObjectProperty
+from kivy.graphics import RoundedRectangle, Color
 from kivy.metrics import dp
+from kivy.clock import Clock
 
 from libs.models.fuel import FuelType, Tank, Pump
 from libs.models.lube import LubeProduct
@@ -187,7 +189,7 @@ class InventoryScreen(Screen):
         popup.open()
 
     def go_back(self):
-        self.manager.current = "main"
+        Clock.schedule_once(lambda *a: setattr(self.manager, 'current', "main"))
 
 
 class TankCard(BoxLayout):
@@ -197,11 +199,14 @@ class TankCard(BoxLayout):
         self.screen = screen
         self.orientation = "vertical"
         self.size_hint_y = None
-        self.height = dp(64)
+        self.height = dp(72)
         self.spacing = dp(2)
         self.padding = [dp(10), dp(6)]
-
-        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
+        with self.canvas.before:
+            Color(rgba=BG_CARD)
+            self._bg = RoundedRectangle(pos=self.pos, size=self.size, radius=[dp(8)])
+        self.bind(pos=self._update_bg, size=self._update_bg)
+        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(30))
         top.add_widget(Label(
             text=tank["name"], bold=True, color=TEXT_PRIMARY,
             font_size="14sp", halign="left",
@@ -215,25 +220,26 @@ class TankCard(BoxLayout):
             color=pct_color, font_size="12sp", halign="right", size_hint_x=0.4,
         ))
         btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.2, spacing=dp(4))
-        edit_btn = Button(text="Edit", font_size="10sp", background_normal="",
+        edit_btn = Button(text="Edit", font_size="12sp", background_normal="",
                           background_color=BTN_INFO, color=TEXT_PRIMARY)
         edit_btn.bind(on_press=lambda *a: screen.show_tank_form(tank))
-        del_btn = Button(text="Del", font_size="10sp", background_normal="",
+        del_btn = Button(text="Del", font_size="12sp", background_normal="",
                          background_color=BTN_DANGER, color=TEXT_PRIMARY)
         del_btn.bind(on_press=lambda *a: screen.confirm_delete_tank(tank["id"]))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(del_btn)
         top.add_widget(btn_row)
         self.add_widget(top)
-
-        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(22))
+        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
         bot.add_widget(Label(
             text=f"Fuel: {tank['fuel_name']}", color=TEXT_SECONDARY,
-            font_size="11sp", halign="left", size_hint_x=0.5,
+            font_size="12sp", halign="left", size_hint_x=0.5,
         ))
         self.add_widget(bot)
 
-
+    def _update_bg(self, *args):
+        self._bg.pos = self.pos
+        self._bg.size = self.size
 class PumpCard(BoxLayout):
     def __init__(self, pump, screen, **kwargs):
         super().__init__(**kwargs)
@@ -241,11 +247,14 @@ class PumpCard(BoxLayout):
         self.screen = screen
         self.orientation = "vertical"
         self.size_hint_y = None
-        self.height = dp(64)
+        self.height = dp(72)
         self.spacing = dp(2)
         self.padding = [dp(10), dp(6)]
-
-        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
+        with self.canvas.before:
+            Color(rgba=BG_CARD)
+            self._bg = RoundedRectangle(pos=self.pos, size=self.size, radius=[dp(8)])
+        self.bind(pos=self._update_bg, size=self._update_bg)
+        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(30))
         top.add_widget(Label(
             text=f"Pump #{pump['pump_no']}", bold=True, color=TEXT_PRIMARY,
             font_size="14sp", halign="left", size_hint_x=0.35,
@@ -255,30 +264,31 @@ class PumpCard(BoxLayout):
             font_size="12sp", halign="left", size_hint_x=0.25,
         ))
         btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.25, spacing=dp(4))
-        edit_btn = Button(text="Edit", font_size="10sp", background_normal="",
+        edit_btn = Button(text="Edit", font_size="12sp", background_normal="",
                           background_color=BTN_INFO, color=TEXT_PRIMARY)
         edit_btn.bind(on_press=lambda *a: screen.show_pump_form(pump))
-        del_btn = Button(text="Del", font_size="10sp", background_normal="",
+        del_btn = Button(text="Del", font_size="12sp", background_normal="",
                          background_color=BTN_DANGER, color=TEXT_PRIMARY)
         del_btn.bind(on_press=lambda *a: screen.confirm_delete_pump(pump["id"]))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(del_btn)
         top.add_widget(btn_row)
         self.add_widget(top)
-
-        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(22))
+        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
         desc = pump.get("description", "")
         bot.add_widget(Label(
             text=f"Tank: {pump.get('tank_name', '—')}", color=TEXT_SECONDARY,
-            font_size="11sp", halign="left", size_hint_x=0.4,
+            font_size="12sp", halign="left", size_hint_x=0.4,
         ))
         bot.add_widget(Label(
             text=desc if desc else "", color=TEXT_DIM if desc else TEXT_VERSION,
-            font_size="11sp", halign="left",
+            font_size="12sp", halign="left",
         ))
         self.add_widget(bot)
 
-
+    def _update_bg(self, *args):
+        self._bg.pos = self.pos
+        self._bg.size = self.size
 class LubeCard(BoxLayout):
     def __init__(self, lube, screen, **kwargs):
         super().__init__(**kwargs)
@@ -286,11 +296,14 @@ class LubeCard(BoxLayout):
         self.screen = screen
         self.orientation = "vertical"
         self.size_hint_y = None
-        self.height = dp(64)
+        self.height = dp(72)
         self.spacing = dp(2)
         self.padding = [dp(10), dp(6)]
-
-        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
+        with self.canvas.before:
+            Color(rgba=BG_CARD)
+            self._bg = RoundedRectangle(pos=self.pos, size=self.size, radius=[dp(8)])
+        self.bind(pos=self._update_bg, size=self._update_bg)
+        top = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(30))
         top.add_widget(Label(
             text=lube["brand"], bold=True, color=TEXT_PRIMARY,
             font_size="14sp", halign="left", size_hint_x=0.3,
@@ -304,33 +317,34 @@ class LubeCard(BoxLayout):
             font_size="13sp", halign="right", size_hint_x=0.2,
         ))
         btn_row = BoxLayout(orientation="horizontal", size_hint_x=0.2, spacing=dp(4))
-        edit_btn = Button(text="Edit", font_size="10sp", background_normal="",
+        edit_btn = Button(text="Edit", font_size="12sp", background_normal="",
                           background_color=BTN_INFO, color=TEXT_PRIMARY)
         edit_btn.bind(on_press=lambda *a: screen.show_lube_form(lube))
-        del_btn = Button(text="Del", font_size="10sp", background_normal="",
+        del_btn = Button(text="Del", font_size="12sp", background_normal="",
                          background_color=BTN_DANGER, color=TEXT_PRIMARY)
         del_btn.bind(on_press=lambda *a: screen.confirm_delete_lube(lube["id"]))
         btn_row.add_widget(edit_btn)
         btn_row.add_widget(del_btn)
         top.add_widget(btn_row)
         self.add_widget(top)
-
-        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(22))
+        bot = BoxLayout(orientation="horizontal", size_hint_y=None, height=dp(26))
         stock = lube['stock_qty']
         unit = lube['unit']
         gst = lube.get('gst_rate', 18)
         bot.add_widget(Label(
             text=f"Stock: {stock:,.2f} {unit}",
             color=VAL_POSITIVE if stock > 0 else VAL_NEGATIVE,
-            font_size="11sp", halign="left", size_hint_x=0.4,
+            font_size="12sp", halign="left", size_hint_x=0.4,
         ))
         bot.add_widget(Label(
             text=f"GST: {gst}%", color=TEXT_SECONDARY,
-            font_size="11sp", halign="left", size_hint_x=0.3,
+            font_size="12sp", halign="left", size_hint_x=0.3,
         ))
         self.add_widget(bot)
 
-
+    def _update_bg(self, *args):
+        self._bg.pos = self.pos
+        self._bg.size = self.size
 class TankForm(BoxLayout):
     def __init__(self, tank, screen, **kwargs):
         super().__init__(**kwargs)

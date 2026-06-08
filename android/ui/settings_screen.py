@@ -289,34 +289,34 @@ class SettingsScreen(Screen):
         title = "Set PIN" if mode == "set" else "Change PIN"
         current_input = TextInput(
             hint_text="Enter current PIN", password=True,
-            multiline=False, size_hint_y=None, height=dp(36),
+            multiline=False, size_hint_y=None, height=dp(42),
             input_filter="int",
             foreground_color=TEXT_PRIMARY, background_color=(0.15, 0.15, 0.18, 1),
         )
         if mode == "change":
             content.add_widget(Label(
                 text="Current PIN:", color=TEXT_PRIMARY, font_size="12sp",
-                size_hint_y=None, height=dp(24),
+                size_hint_y=None, height=dp(28),
             ))
             content.add_widget(current_input)
         content.add_widget(Label(
             text="New 4-digit PIN:", color=TEXT_PRIMARY, font_size="12sp",
-            size_hint_y=None, height=dp(24),
+            size_hint_y=None, height=dp(28),
         ))
         new_input = TextInput(
             hint_text="Enter new PIN", password=True,
-            multiline=False, size_hint_y=None, height=dp(36),
+            multiline=False, size_hint_y=None, height=dp(42),
             input_filter="int",
             foreground_color=TEXT_PRIMARY, background_color=(0.15, 0.15, 0.18, 1),
         )
         content.add_widget(new_input)
         content.add_widget(Label(
             text="Confirm PIN:", color=TEXT_PRIMARY, font_size="12sp",
-            size_hint_y=None, height=dp(24),
+            size_hint_y=None, height=dp(28),
         ))
         confirm_input = TextInput(
             hint_text="Re-enter PIN", password=True,
-            multiline=False, size_hint_y=None, height=dp(36),
+            multiline=False, size_hint_y=None, height=dp(42),
             input_filter="int",
             foreground_color=TEXT_PRIMARY, background_color=(0.15, 0.15, 0.18, 1),
         )
@@ -354,10 +354,10 @@ class SettingsScreen(Screen):
     def disable_pin_action(self):
         content = BoxLayout(orientation="vertical", spacing=dp(8), padding=dp(10))
         content.add_widget(Label(text="Disable PIN lock?", color=TEXT_PRIMARY))
-        content.add_widget(Label(text="Enter current PIN:", color=TEXT_SECONDARY, font_size="12sp", size_hint_y=None, height=dp(24)))
+        content.add_widget(Label(text="Enter current PIN:", color=TEXT_SECONDARY, font_size="12sp", size_hint_y=None, height=dp(28)))
         pin_input = TextInput(
             hint_text="Current PIN", password=True,
-            multiline=False, size_hint_y=None, height=dp(36),
+            multiline=False, size_hint_y=None, height=dp(42),
             input_filter="int",
             foreground_color=TEXT_PRIMARY, background_color=(0.15, 0.15, 0.18, 1),
         )
@@ -386,4 +386,4 @@ class SettingsScreen(Screen):
         Popup(title="Disabled", content=Label(text="PIN lock removed.", color=TEXT_PRIMARY), size_hint=(0.6, 0.25)).open()
 
     def go_back(self):
-        self.manager.current = "main"
+        Clock.schedule_once(lambda *a: setattr(self.manager, 'current', "main"))

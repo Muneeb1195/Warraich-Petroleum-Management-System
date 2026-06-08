@@ -4,9 +4,10 @@
     canvas.before:
         Color:
             rgba: Theme.BG_CARD
-        Rectangle:
+        RoundedRectangle:
             pos: self.pos
             size: self.size
+            radius: [dp(8),]
         Color:
             rgba: root.accent_rgba
         Rectangle:
@@ -22,7 +23,7 @@
         spacing: dp(2)
         Label:
             text: root.card_title
-            font_size: "12sp"
+            font_size: "14sp"
             bold: True
             color: Theme.TEXT_DIM
             halign: "left"
@@ -36,7 +37,7 @@
             text_size: self.width, None
         Label:
             text: root.trend_text
-            font_size: "10sp"
+            font_size: "14sp"
             color: root.trend_color
             halign: "left"
             text_size: self.width, None
@@ -89,9 +90,9 @@
                 Label:
                     text: "Real-time overview of sales, stock, and staff"
                     size_hint_y: None
-                    height: dp(20)
+                    height: dp(24)
                     color: Theme.TEXT_DIM
-                    font_size: "12sp"
+                    font_size: "14sp"
                     halign: "left"
                     text_size: self.width, None
 
@@ -178,4 +179,4 @@
                 # Spacer at bottom
                 Widget:
                     size_hint_y: None
-                    height: dp(20)
+                    height: dp(24)

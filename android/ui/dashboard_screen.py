@@ -9,6 +9,7 @@ from kivy.uix.button import Button
 from kivy.uix.popup import Popup
 from kivy.metrics import dp
 from kivy.properties import StringProperty, ListProperty
+from kivy.clock import Clock
 
 from libs.utils.theme import *
 from libs.database.connection import get_connection
@@ -29,7 +30,7 @@ class StatCard(BoxLayout):
         super().__init__(**kwargs)
         self.orientation = "horizontal"
         self.size_hint_y = None
-        self.height = dp(80)
+        self.height = dp(90)
         self.padding = [dp(12), dp(8)]
         self.spacing = dp(12)
         self.accent_rgba = self._color_for_accent(self.accent)
@@ -122,7 +123,7 @@ class DashboardScreen(Screen):
             card.trend_color = TEXT_DIM
 
     def quick_sale(self):
-        self.manager.current = "pos"
+        Clock.schedule_once(lambda *a: setattr(self.manager, 'current', "pos"))
 
     def close_day(self):
         conn = get_connection()
@@ -164,4 +165,4 @@ class DashboardScreen(Screen):
         popup.open()
 
     def go_back(self):
-        self.manager.current = "main"
+        Clock.schedule_once(lambda *a: setattr(self.manager, 'current', "main"))

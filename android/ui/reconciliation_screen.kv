@@ -36,26 +36,27 @@
             canvas.before:
                 Color:
                     rgba: Theme.BG_CARD
-                Rectangle:
+                RoundedRectangle:
                     pos: self.pos
                     size: self.size
+                    radius: [dp(8),]
             Label:
                 text: "Date:"
                 size_hint_x: 0.1
                 color: Theme.TEXT_FIELD_LABEL
-                font_size: "12sp"
+                font_size: "14sp"
             TextInput:
                 id: date_input
                 size_hint_x: 0.18
                 multiline: False
-                font_size: "12sp"
+                font_size: "14sp"
                 foreground_color: Theme.TEXT_PRIMARY
                 background_color: 0.15, 0.15, 0.18, 1
                 on_text: root.on_date_shift_change()
             Button:
                 text: "Today"
                 size_hint_x: 0.12
-                font_size: "10sp"
+                font_size: "14sp"
                 background_normal: ""
                 background_color: Theme.BTN_NAV
                 color: Theme.TEXT_PRIMARY
@@ -63,7 +64,7 @@
             Button:
                 text: "Yest"
                 size_hint_x: 0.1
-                font_size: "10sp"
+                font_size: "14sp"
                 background_normal: ""
                 background_color: Theme.BTN_NAV
                 color: Theme.TEXT_PRIMARY
@@ -72,7 +73,7 @@
                 text: "Shift:"
                 size_hint_x: 0.08
                 color: Theme.TEXT_FIELD_LABEL
-                font_size: "12sp"
+                font_size: "14sp"
             Spinner:
                 id: shift_spinner
                 size_hint_x: 0.18
@@ -80,7 +81,7 @@
                 values: ["Morning", "Evening", "Night"]
                 background_color: 0.18, 0.18, 0.22, 1
                 color: Theme.TEXT_PRIMARY
-                font_size: "12sp"
+                font_size: "14sp"
                 on_text: root.on_date_shift_change()
             Button:
                 text: "Start"
@@ -88,7 +89,7 @@
                 background_normal: ""
                 background_color: Theme.BTN_SECONDARY
                 color: Theme.TEXT_PRIMARY
-                font_size: "12sp"
+                font_size: "14sp"
                 on_press: root.start_shift()
             Button:
                 text: "Close"
@@ -96,7 +97,7 @@
                 background_normal: ""
                 background_color: Theme.BTN_DANGER
                 color: Theme.TEXT_PRIMARY
-                font_size: "12sp"
+                font_size: "14sp"
                 on_press: root.close_shift()
 
         # Pump readings header + rows
@@ -127,4 +128,4 @@
 
                 Widget:
                     size_hint_y: None
-                    height: dp(20)
+                    height: dp(24)
