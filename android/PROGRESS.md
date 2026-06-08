@@ -78,4 +78,9 @@ android/
 - Desktop and Android use the same DB schema — backups are compatible between both
 - `buildozer.spec` has `log_level = 2` for detailed CI logs
 - Removed `pydrive2`, `google-auth-oauthlib`, `pyjnius` from requirements to minimize build deps
-- Current requirements: `python3, kivy, reportlab, openpyxl, requests`
+- Current requirements: `python3, kivy==2.2.0, openpyxl, requests` (reportlab removed — unused on Android; Kivy pinned to 2.2.0 for stability)
+- Build configured for single arch (`arm64-v8a`) — 2x faster than dual-arch
+- CI: Python 3.11, JDK 17, 2-hour timeout, no retry loop, cache restore-keys fallback
+- Placeholder splash/icon assets created in `assets/`
+- All `pydrive2`/`jnius` imports made fully lazy (inside functions) — p4a won't try to resolve them at build time
+- `threading` import removed from module level in `cloud_backup.py`

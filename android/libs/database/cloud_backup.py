@@ -3,10 +3,6 @@ import os
 import tempfile
 from pathlib import Path
 from datetime import datetime
-import threading
-
-from pydrive2.auth import GoogleAuth, ClientRedirectServer, ClientRedirectHandler
-from pydrive2.drive import GoogleDrive
 
 from database.settings import settings
 from utils.paths import config_dir
@@ -39,6 +35,7 @@ def _decode_client_config():
 
 
 def _load_gauth_with_config():
+    from pydrive2.auth import GoogleAuth
     config = _decode_client_config()
     fd, path = tempfile.mkstemp(suffix=".json")
     try:
@@ -61,6 +58,8 @@ def start_auth_flow():
     and grants access, the redirect is caught by the local server.
     Check server.query_params for the authorization code.
     """
+    import threading
+    from pydrive2.auth import ClientRedirectHandler, ClientRedirectServer
     TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)
 
     gauth = _load_gauth_with_config()
@@ -91,12 +90,14 @@ def start_auth_flow():
 
 def authenticate(gauth, auth_code):
     """Complete authentication with authorization code from user."""
+    from pydrive2.drive import GoogleDrive
     gauth.Auth(auth_code)
     gauth.SaveCredentialsFile(str(TOKEN_PATH))
     return GoogleDrive(gauth)
 
 
 def _get_drive():
+    from pydrive2.drive import GoogleDrive
     TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)
     gauth = _load_gauth_with_config()
 

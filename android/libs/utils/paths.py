@@ -19,13 +19,13 @@ def _app_dir():
         argument = os.environ.get("ANDROID_ARGUMENT")
         if argument:
             return Path(argument)
-    try:
-        from jnius import autoclass
-        PythonActivity = autoclass("org.kivy.android.PythonActivity")
-        context = PythonActivity.mActivity
-        return Path(context.getFilesDir().getAbsolutePath())
-    except Exception:
-        pass
+        try:
+            from jnius import autoclass
+            PythonActivity = autoclass("org.kivy.android.PythonActivity")
+            context = PythonActivity.mActivity
+            return Path(context.getFilesDir().getAbsolutePath())
+        except Exception:
+            pass
     return Path(__file__).resolve().parent.parent
 
 

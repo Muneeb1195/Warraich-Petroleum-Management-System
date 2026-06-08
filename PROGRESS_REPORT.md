@@ -75,14 +75,14 @@ android/                             # Android port (Kivy, self-contained)
 - Separate tag conventions (`v*-android` for APK, `v*` for desktop)
 
 ## Android — Pending
-- Build first working APK (currently debugging CI build)
+- Build first working APK (CI fixes applied: single arch arm64-v8a, removed reportlab, JDK 17, Python 3.11, no retry loop)
 - Shift reconciliation screen
 - Purchase management screen
 - Settings screen
 - Cloud backup integration (pydrive2 — deferred until base APK works)
 - PDF viewer for invoices
 - Dashboard charts (kivy-garden.graph or matplotlib)
-- Splash screen and app icon assets
+- Proper splash screen and app icon assets
 - Play Store deployment
 
 ## Key Decisions

@@ -11,7 +11,7 @@ source.exclude_dirs = tests, venv, __pycache__, .git
 
 version = 1.0.0
 
-requirements = python3,kivy,reportlab,openpyxl,requests
+requirements = python3,kivy==2.2.0,openpyxl,requests
 
 presplash.filename = assets/splash.png
 icon.filename = assets/icon.png
@@ -23,9 +23,9 @@ android.permissions = INTERNET
 android.api = 34
 android.minapi = 21
 android.sdk = 34
-android.ndk = 27
-android.ndk_version = 27.2.12479018
-android.archs = arm64-v8a, armeabi-v7a
+android.ndk = 25
+android.ndk_version = 25.2.9519653
+android.archs = arm64-v8a
 android.accept_sdk_license = True
 android.install_from_store = True
 android.enable_p4a = True
