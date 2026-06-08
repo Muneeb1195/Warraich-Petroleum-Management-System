@@ -1,4 +1,5 @@
 import configparser
+import hashlib
 from pathlib import Path
 from utils.paths import config_dir
 
@@ -115,6 +116,19 @@ class Settings:
             except Exception:
                 return val
         return "Never"
+
+    def pin_hash(self):
+        return self.get("Security", "pin_hash", "")
+
+    def set_pin(self, pin):
+        self.set("Security", "pin_hash", hashlib.sha256(pin.encode()).hexdigest())
+        self.save()
+
+    def has_pin(self):
+        return bool(self.pin_hash())
+
+    def verify_pin(self, pin):
+        return hashlib.sha256(pin.encode()).hexdigest() == self.pin_hash()
 
 
 settings = Settings()

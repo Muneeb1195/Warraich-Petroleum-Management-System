@@ -1,0 +1,131 @@
+#:import Theme libs.utils.theme
+<PinScreen>:
+    BoxLayout:
+        orientation: "vertical"
+        canvas.before:
+            Color:
+                rgba: Theme.BG_MAIN
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        # Spacer
+        Widget:
+            size_hint_y: 0.15
+
+        # Title
+        Label:
+            id: title
+            text: "Enter PIN"
+            font_size: "22sp"
+            bold: True
+            color: Theme.TEXT_PRIMARY
+            size_hint_y: None
+            height: dp(50)
+
+        # Dot indicators
+        Label:
+            id: dots
+            text: "\u25CB   \u25CB   \u25CB   \u25CB"
+            font_size: "32sp"
+            color: Theme.TEXT_PRIMARY
+            size_hint_y: None
+            height: dp(60)
+
+        # Spacer
+        Widget:
+            size_hint_y: 0.05
+
+        # Number pad
+        GridLayout:
+            cols: 3
+            size_hint_y: None
+            height: dp(280)
+            spacing: dp(8)
+            padding: [dp(40), dp(8)]
+
+            # Row 1
+            Button:
+                text: "1"
+                font_size: "24sp"
+                background_normal: ""
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
+                on_press: root.press(1)
+            Button:
+                text: "2"
+                font_size: "24sp"
+                background_normal: ""
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
+                on_press: root.press(2)
+            Button:
+                text: "3"
+                font_size: "24sp"
+                background_normal: ""
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
+                on_press: root.press(3)
+
+            # Row 2
+            Button:
+                text: "4"
+                font_size: "24sp"
+                background_normal: ""
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
+                on_press: root.press(4)
+            Button:
+                text: "5"
+                font_size: "24sp"
+                background_normal: ""
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
+                on_press: root.press(5)
+            Button:
+                text: "6"
+                font_size: "24sp"
+                background_normal: ""
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
+                on_press: root.press(6)
+
+            # Row 3
+            Button:
+                text: "7"
+                font_size: "24sp"
+                background_normal: ""
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
+                on_press: root.press(7)
+            Button:
+                text: "8"
+                font_size: "24sp"
+                background_normal: ""
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
+                on_press: root.press(8)
+            Button:
+                text: "9"
+                font_size: "24sp"
+                background_normal: ""
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
+                on_press: root.press(9)
+
+            # Row 4
+            Widget:
+            Button:
+                text: "0"
+                font_size: "24sp"
+                background_normal: ""
+                background_color: Theme.BTN_NAV
+                color: Theme.TEXT_PRIMARY
+                on_press: root.press(0)
+            Button:
+                text: "\u232B"
+                font_size: "24sp"
+                background_normal: ""
+                background_color: Theme.BTN_DANGER
+                color: Theme.TEXT_PRIMARY
+                on_press: root.backspace()

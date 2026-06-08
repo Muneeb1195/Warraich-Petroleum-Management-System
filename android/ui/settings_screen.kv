@@ -456,6 +456,68 @@
                             font_size: "12sp"
                             on_press: root.show_local_restore()
 
+                # App PIN Lock
+                Label:
+                    text: "App PIN Lock"
+                    size_hint_y: None
+                    height: dp(28)
+                    font_size: "15sp"
+                    bold: True
+                    color: Theme.TEXT_BLUE_HEADER
+                    halign: "left"
+                    text_size: self.width, None
+
+                BoxLayout:
+                    orientation: "vertical"
+                    size_hint_y: None
+                    height: dp(90)
+                    spacing: dp(6)
+                    padding: [dp(8), dp(8)]
+                    canvas.before:
+                        Color:
+                            rgba: Theme.BG_PANEL
+                        Rectangle:
+                            pos: self.pos
+                            size: self.size
+
+                    BoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: dp(36)
+                        Label:
+                            text: "Status:"
+                            size_hint_x: 0.25
+                            color: Theme.TEXT_FIELD_LABEL
+                            font_size: "12sp"
+                        Label:
+                            id: pin_status
+                            text: "Not set"
+                            size_hint_x: 0.75
+                            color: Theme.TEXT_SECONDARY
+                            font_size: "12sp"
+
+                    BoxLayout:
+                        orientation: "horizontal"
+                        size_hint_y: None
+                        height: dp(40)
+                        spacing: dp(8)
+                        Button:
+                            id: set_pin_btn
+                            text: "Set PIN"
+                            size_hint_x: 0.5
+                            background_normal: ""
+                            background_color: Theme.BTN_PRIMARY
+                            color: Theme.TEXT_PRIMARY
+                            font_size: "12sp"
+                        Button:
+                            text: "Disable PIN"
+                            size_hint_x: 0.4
+                            background_normal: ""
+                            background_color: Theme.BTN_DANGER
+                            color: Theme.TEXT_PRIMARY
+                            font_size: "12sp"
+                            on_press: root.disable_pin_action()
+
                 # Printer (Network ESC/POS)
                 Label:
                     text: "Printer (Network)"

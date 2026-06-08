@@ -27,9 +27,11 @@ from ui.settings_screen import SettingsScreen
 from ui.purchases_screen import PurchasesScreen
 from ui.reconciliation_screen import ReconciliationScreen
 from ui.sales_history_screen import SalesHistoryScreen
+from ui.pin_screen import PinScreen
 
 Builder.load_file("ui/main_screen.kv")
 Builder.load_file("ui/sales_history_screen.kv")
+Builder.load_file("ui/pin_screen.kv")
 Builder.load_file("ui/dashboard_screen.kv")
 Builder.load_file("ui/pos_screen.kv")
 Builder.load_file("ui/inventory_screen.kv")
@@ -65,6 +67,7 @@ class WarraichPetroleumApp(App):
         start_auto_backup()
         Clock.schedule_once(lambda *a: show_crash_dialog_if_needed(), 1)
         sm = ScreenManager()
+        sm.add_widget(PinScreen(name="pin"))
         sm.add_widget(MainScreen(name="main"))
         sm.add_widget(PosScreen(name="pos"))
         sm.add_widget(InventoryScreen(name="inventory"))
@@ -77,7 +80,7 @@ class WarraichPetroleumApp(App):
         sm.add_widget(PurchasesScreen(name="purchases"))
         sm.add_widget(SalesHistoryScreen(name="sales_history"))
         sm.add_widget(ReconciliationScreen(name="reconciliation"))
-        sm.current = "dashboard"
+        sm.current = "pin"
         return sm
 
     def get_application_name(self):

@@ -21,6 +21,7 @@ class SettingsScreen(Screen):
     def on_enter(self):
         self._load()
         self._refresh_drive_status()
+        self._refresh_pin_status()
 
     def _load(self):
         self.ids.biz_name.text = settings.business_name()
@@ -266,6 +267,123 @@ class SettingsScreen(Screen):
             content=Label(text=msg + ("\nRelaunch to apply." if ok else ""), color=TEXT_PRIMARY),
             size_hint=(0.7, 0.25),
         ).open()
+
+    def _refresh_pin_status(self):
+        if settings.has_pin():
+            self.ids.pin_status.text = "PIN is set"
+            self.ids.set_pin_btn.text = "Change PIN"
+            self.ids.set_pin_btn.on_press = self.change_pin_action
+        else:
+            self.ids.pin_status.text = "Not set"
+            self.ids.set_pin_btn.text = "Set PIN"
+            self.ids.set_pin_btn.on_press = self.set_pin_action
+
+    def set_pin_action(self):
+        self._show_pin_popup(mode="set")
+
+    def change_pin_action(self):
+        self._show_pin_popup(mode="change")
+
+    def _show_pin_popup(self, mode="set"):
+        content = BoxLayout(orientation="vertical", spacing=dp(8), padding=dp(10))
+        title = "Set PIN" if mode == "set" else "Change PIN"
+        current_input = TextInput(
+            hint_text="Enter current PIN", password=True,
+            multiline=False, size_hint_y=None, height=dp(36),
+            input_filter="int",
+            foreground_color=TEXT_PRIMARY, background_color=(0.15, 0.15, 0.18, 1),
+        )
+        if mode == "change":
+            content.add_widget(Label(
+                text="Current PIN:", color=TEXT_PRIMARY, font_size="12sp",
+                size_hint_y=None, height=dp(24),
+            ))
+            content.add_widget(current_input)
+        content.add_widget(Label(
+            text="New 4-digit PIN:", color=TEXT_PRIMARY, font_size="12sp",
+            size_hint_y=None, height=dp(24),
+        ))
+        new_input = TextInput(
+            hint_text="Enter new PIN", password=True,
+            multiline=False, size_hint_y=None, height=dp(36),
+            input_filter="int",
+            foreground_color=TEXT_PRIMARY, background_color=(0.15, 0.15, 0.18, 1),
+        )
+        content.add_widget(new_input)
+        content.add_widget(Label(
+            text="Confirm PIN:", color=TEXT_PRIMARY, font_size="12sp",
+            size_hint_y=None, height=dp(24),
+        ))
+        confirm_input = TextInput(
+            hint_text="Re-enter PIN", password=True,
+            multiline=False, size_hint_y=None, height=dp(36),
+            input_filter="int",
+            foreground_color=TEXT_PRIMARY, background_color=(0.15, 0.15, 0.18, 1),
+        )
+        content.add_widget(confirm_input)
+        btn_row = BoxLayout(orientation="horizontal", spacing=dp(12), size_hint_y=None, height=dp(40))
+        btn_row.add_widget(Button(
+            text="Cancel", background_normal="", background_color=BTN_CANCEL, color=TEXT_PRIMARY,
+            on_press=lambda *a: popup.dismiss(),
+        ))
+        btn_row.add_widget(Button(
+            text="Save", background_normal="", background_color=BTN_PRIMARY, color=TEXT_PRIMARY,
+            on_press=lambda *a: self._save_pin(mode, current_input.text if mode == "change" else "",
+                                                new_input.text, confirm_input.text, popup),
+        ))
+        content.add_widget(btn_row)
+        popup = Popup(title=title, content=content, size_hint=(0.8, 0.55 if mode == "change" else 0.45), auto_dismiss=False)
+        popup.open()
+
+    def _save_pin(self, mode, current, new_pin, confirm, popup):
+        if mode == "change":
+            if not settings.verify_pin(current):
+                self._show_error("Current PIN is wrong.")
+                return
+        if len(new_pin) != 4 or not new_pin.isdigit():
+            self._show_error("PIN must be 4 digits.")
+            return
+        if new_pin != confirm:
+            self._show_error("PINs do not match.")
+            return
+        popup.dismiss()
+        settings.set_pin(new_pin)
+        self._refresh_pin_status()
+        Popup(title="PIN Saved", content=Label(text="PIN updated.", color=TEXT_PRIMARY), size_hint=(0.6, 0.25)).open()
+
+    def disable_pin_action(self):
+        content = BoxLayout(orientation="vertical", spacing=dp(8), padding=dp(10))
+        content.add_widget(Label(text="Disable PIN lock?", color=TEXT_PRIMARY))
+        content.add_widget(Label(text="Enter current PIN:", color=TEXT_SECONDARY, font_size="12sp", size_hint_y=None, height=dp(24)))
+        pin_input = TextInput(
+            hint_text="Current PIN", password=True,
+            multiline=False, size_hint_y=None, height=dp(36),
+            input_filter="int",
+            foreground_color=TEXT_PRIMARY, background_color=(0.15, 0.15, 0.18, 1),
+        )
+        content.add_widget(pin_input)
+        btn_row = BoxLayout(orientation="horizontal", spacing=dp(12), size_hint_y=None, height=dp(40))
+        btn_row.add_widget(Button(
+            text="Cancel", background_normal="", background_color=BTN_CANCEL, color=TEXT_PRIMARY,
+            on_press=lambda *a: popup.dismiss(),
+        ))
+        btn_row.add_widget(Button(
+            text="Disable", background_normal="", background_color=BTN_DANGER, color=TEXT_PRIMARY,
+            on_press=lambda *a: self._do_disable_pin(pin_input.text, popup),
+        ))
+        content.add_widget(btn_row)
+        popup = Popup(title="Disable PIN", content=content, size_hint=(0.75, 0.4), auto_dismiss=False)
+        popup.open()
+
+    def _do_disable_pin(self, pin, popup):
+        if not settings.verify_pin(pin):
+            self._show_error("Wrong PIN.")
+            return
+        popup.dismiss()
+        settings.set("Security", "pin_hash", "")
+        settings.save()
+        self._refresh_pin_status()
+        Popup(title="Disabled", content=Label(text="PIN lock removed.", color=TEXT_PRIMARY), size_hint=(0.6, 0.25)).open()
 
     def go_back(self):
         self.manager.current = "main"
